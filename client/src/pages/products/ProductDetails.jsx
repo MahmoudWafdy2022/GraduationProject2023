@@ -4,13 +4,25 @@ import ProductsNavbar from "../../components/ProductsNavbar";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { addToCart } from "../../slices/cartSlice";
-
+import { toast } from "react-toastify";
 export default function VanDetail() {
   const location = useLocation();
   const product = useLoaderData();
 
   const hideReviewsText = false;
   const search = location.state?.search || "";
+
+  const addedSuccessfully = () =>
+    toast.success("Added Successfully", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
 
   const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
@@ -24,6 +36,7 @@ export default function VanDetail() {
   }
   function addToCardHandler() {
     dispatch(addToCart({ product, qty }));
+    addedSuccessfully();
   }
   return (
     <div>

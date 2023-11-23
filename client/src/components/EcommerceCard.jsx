@@ -11,16 +11,29 @@ import { Link } from "react-router-dom";
 import { RatingWithText } from "./RatingWithText";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
+import { toast } from "react-toastify";
 
 /* eslint-disable react/prop-types */
 export default function EcommerceCard({ product, id }) {
   const { image, name, price, description, rating, numReviews, countInStock } =
     product;
   const dispatch = useDispatch();
+  const addedSuccessfully = () =>
+    toast.success("Added Successfully", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   const showReviewsText = true;
   function addToCardHandler() {
     if (!countInStock) return;
     dispatch(addToCart({ product }));
+    addedSuccessfully();
   }
   return (
     <>
