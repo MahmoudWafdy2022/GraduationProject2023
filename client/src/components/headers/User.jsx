@@ -1,16 +1,32 @@
 import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
 export default function User({
   user,
   setShowProfile,
   showProfile,
   handleLogout,
 }) {
+  const btnRef = useRef();
+  useEffect(() => {
+    const closeDropDown = (e) => {
+      console.log(btnRef.current.contains(e.target));
+      console.log(btnRef.current);
+
+      if (!btnRef.current.contains(e.target)) {
+        setShowProfile(false);
+      }
+    };
+    document.addEventListener("click", closeDropDown);
+
+    return () => document.removeEventListener("click", closeDropDown);
+  }, [setShowProfile]);
   return (
     <>
       {user ? (
         <div className="flex cursor-pointer items-center justify-center gap-x-1 rounded-md py-2 px-4 hover:bg-gray-100 dark:hover:bg-[#242635]">
           <div className="relative z-40">
             <button
+              ref={btnRef}
               onClick={() => setShowProfile((prev) => !prev)}
               className="flex items-center justify-center  rounded-full overflow-hidden focus:outline-none"
             >
