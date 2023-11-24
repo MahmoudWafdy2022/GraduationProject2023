@@ -7,6 +7,8 @@ import {
 import React from "react";
 import { store } from "./store";
 import { Provider } from "react-redux";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 // Layouts
 import Layout from "./components/Layout";
 // Pages
@@ -19,8 +21,8 @@ import Protected from "./components/Protected";
 import Shipping from "./pages/Shipping";
 import Payment from "./pages/Payment";
 import PlaceOrder from "./pages/PlaceOrder";
+import Order from "./pages/Order";
 import Profile from "./pages/Profile";
-
 import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/products/ProductDetails";
@@ -75,6 +77,7 @@ const router = createBrowserRouter(
           element={<PlaceOrder />}
           loader={async () => null}
         />
+        <Route path="order/:id" element={<Order />} loader={async () => null} />
         <Route path="profile" element={<Profile />} loader={async () => null} />
       </Route>
       <Route path="*" element={<NotFound />} loader={async () => null} />
@@ -82,10 +85,20 @@ const router = createBrowserRouter(
   )
 );
 function App() {
-  // const { token } = useAuth();
+  const initialOptions = {
+    "client-id":
+      "AShmxN6Sc8_VehSatNhIWXAmvWmUrtPgb9EhZ8u6DIY5KMO7uVPdwb2HOGIXU8sGqPhllYrnKTw6J2u5",
+    "enable-funding": "paylater",
+    "disable-funding": "venmo,card",
+    "data-sdk-integration-source": "integrationbuilder_sc",
+    currency: "USD",
+    intent: "capture",
+  };
   return (
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <PayPalScriptProvider deferLoading={true} options={initialOptions}>
+        <RouterProvider router={router} />
+      </PayPalScriptProvider>
     </Provider>
   );
 }

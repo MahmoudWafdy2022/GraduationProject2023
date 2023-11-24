@@ -3,7 +3,7 @@
 const productRoute = require("./routes/productRoute");
 const userRoute = require("./routes/userRoute");
 
-const orderRoute = require("./routes/orderRoute")
+const orderRoute = require("./routes/orderRoute");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -38,6 +38,10 @@ app.use("/", userRoute);
 
 app.use("/", productRoute);
 app.use("/", orderRoute);
+
+app.get("/config/paypal", (req, res) => {
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
+});
 
 app.all("*", (req, res) => {
   res

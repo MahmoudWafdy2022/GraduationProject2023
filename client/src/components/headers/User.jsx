@@ -9,10 +9,7 @@ export default function User({
   const btnRef = useRef();
   useEffect(() => {
     const closeDropDown = (e) => {
-      console.log(btnRef.current.contains(e.target));
-      console.log(btnRef.current);
-
-      if (!btnRef.current.contains(e.target)) {
+      if (!btnRef?.current?.contains(e.target)) {
         setShowProfile(false);
       }
     };

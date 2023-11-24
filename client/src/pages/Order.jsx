@@ -1,91 +1,124 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useCreateOrderMutation } from "../slices/orderApiSlice";
-import { clearCartItems } from "../slices/cartSlice";
+import { Link, useParams } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  useGetOrderDetailsQuery,
+  usePayOrderMutation,
+  useGetPaypalClientIdQuery,
+} from "../slices/orderApiSlice";
 import CustomSpinner from "../components/CustomSpinner";
+import ErrorComponent from "../components/ErrorComponent";
 import { toast } from "react-toastify";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 export default function PlaceOrder() {
   const cart = useSelector((store) => store.cart.cardItems);
   const subs = useSelector((store) => store.cart);
   const user = useSelector((store) => store.auth.userInfo);
+  const { id } = useParams();
 
-  let token = user.token;
+  //   let token = user.token;
   // { isLoading, error }
 
-  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { data, refetch, isLoading, error } = useGetOrderDetailsQuery(id);
+  //   console.log(data.data.order);
+  const order = data?.data?.order;
+
+  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+  const {
+    data: paypal,
+    isLoading: loadingPayPal,
+    error: errorPayPal,
+  } = useGetPaypalClientIdQuery();
 
   useEffect(() => {
-    if (!subs.shippingAddress.address) {
-      navigate("/shipping");
-    } else if (!subs.paymentMethod) {
-      navigate("/payment");
-    }
-  }, [subs.paymentMethod, subs.shippingAddress.address, navigate]);
-
-  const placeOrderHandler = async () => {
-    const { address, postalCode, selectedCity, selectedCountry } =
-      subs.shippingAddress;
-    const shipAdd = {
-      address,
-      postalCode,
-      city: selectedCity.label,
-      country: selectedCountry.label,
-    };
-
-    try {
-      const res = await createOrder(
-        {
-          orderItems: subs.cardItems,
-          shippingAddress: shipAdd,
-          paymentMethod: subs.paymentMethod,
-          itemsPrice: subs.itemsPrice,
-          shippingPrice: subs.shippingPrice,
-          taxPrice: subs.taxPrice,
-          totalPrice: subs.totalPrice,
-        },
-        token
-      ).unwrap();
-      dispatch(clearCartItems());
-      // console.log(res.data.createdOrder._id);
-      navigate(`/order/${res.data.createdOrder._id}`);
-    } catch (err) {
-      console.log(error);
-      if (error.data === "Invalid Token") {
-        toast.error("Please Login again", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
+    if (!errorPayPal && !loadingPayPal && paypal.clientId) {
+      const loadPaypalScript = async () => {
+        paypalDispatch({
+          type: "resetOptions",
+          value: {
+            "client-id": paypal.clientId,
+            currency: "USD",
+          },
         });
+        paypalDispatch({ type: "setLoadingStatus", value: "pending" });
+      };
+      if (order && !order.isPaid) {
+        if (!window.paypal) {
+          loadPaypalScript();
+        }
       }
     }
-  };
+  }, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch]);
 
-  return (
-    <div className="bg-gray-100 dark:bg-[#1C1E2D] min-w-full min-h-full">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 p-5">
-        Place Order
-      </h1>
-      <ShippingSteps />
-      <Summary
-        cart={cart}
-        subs={subs}
-        user={user}
-        placeOrderHandler={placeOrderHandler}
-        isLoading={isLoading}
-      />
-    </div>
+  // createOrder={createOrder} onApprove={onApprove} onError={onError}
+  function onApprove(data, actions) {
+    return actions.order.capture().then(async function (details) {
+      try {
+        console.log(details);
+        await payOrder({ id, details });
+        refetch();
+        toast.success("Order is paid");
+      } catch (err) {
+        console.log(err);
+        toast.error(err?.data?.message || err.error);
+      }
+    });
+  }
+  // async function onApproveTest() {
+  //   await payOrder({ id, details: { payer: {} } });
+
+  //   refetch();
+  //   toast.success("Order is paid");
+  // }
+  function onError(err) {
+    toast.error(err.message);
+  }
+  function createOrder(data, actions) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            currency_code: "USD",
+            amount: { value: order.totalPrice },
+          },
+        ],
+      })
+      .then((orderID) => {
+        console.log("order id is:" + orderID);
+        return orderID;
+      });
+  }
+  return isLoading ? (
+    <CustomSpinner />
+  ) : error ? (
+    <ErrorComponent />
+  ) : (
+    <>
+      <div className="bg-gray-100 dark:bg-[#1C1E2D] min-w-full min-h-full">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 p-5">
+          Order: {id}
+        </h1>
+        <ShippingSteps />
+        <Summary
+          // onApproveTest={onApproveTest}
+          createOrder={createOrder}
+          onApprove={onApprove}
+          onError={onError}
+          cart={cart}
+          subs={subs}
+          user={user}
+          order={order}
+          loadingPay={loadingPay}
+          isPending={isPending}
+        />
+      </div>
+    </>
   );
 }
+
 function ShippingSteps() {
   return (
     <div className="flex items-center justify-center mb-3">
@@ -117,15 +150,15 @@ function ShippingSteps() {
         Payments
       </Link>
 
-      <button
-        className="flex text-sm text-gray-700 ml-8 focus:outline-none"
-        disabled
+      <Link
+        to="/placeorder"
+        className="flex text-sm text-blue-500 ml-8 focus:outline-none"
       >
-        <span className="flex items-center justify-center border-2 border-blue-500 rounded-full h-5 w-5 mr-2">
+        <span className="flex items-center justify-center text-white bg-blue-500 rounded-full h-5 w-5 mr-2">
           4
         </span>{" "}
         Place Order
-      </button>
+      </Link>
     </div>
   );
 }
@@ -181,7 +214,19 @@ function ShippingSteps() {
 //     </div>
 //   );
 // }
-function Summary({ cart, subs, user, placeOrderHandler, isLoading }) {
+
+function Summary({
+  cart,
+  subs,
+  user,
+  order,
+  loadingPay,
+  isPending,
+  createOrder,
+  onApprove,
+  onError,
+  // onApproveTest,
+}) {
   return (
     <div className="bg-gray-100 min-w-full dark:bg-[#1C1E2D] ">
       <div className=" min-w-full justify-center px-6 md:flex md:space-x-6 xl:px-0">
@@ -198,16 +243,37 @@ function Summary({ cart, subs, user, placeOrderHandler, isLoading }) {
               {/*  */}
             </div>
             <div className="bg-gray-50 dark:bg-[#151725] flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col min-w-fit ml-auto">
-              <Customer user={user} subs={subs} />
+              <Customer user={user} subs={subs} order={order} />
               <Shipping subs={subs} />
-              <button
-                type="button"
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-700"
-                onClick={placeOrderHandler}
-              >
-                Place Order
-              </button>
-              {isLoading && <CustomSpinner />}
+
+              {!order.isPaid && (
+                <>
+                  {loadingPay && <CustomSpinner />}
+                  {isPending ? (
+                    <CustomSpinner />
+                  ) : (
+                    <div>
+                      {/* <button
+                        onClick={onApproveTest}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-700"
+                      >
+                        test pay order
+                      </button> */}
+                      <div>
+                        <PayPalButtons
+                          style={{
+                            shape: "rect",
+                            layout: "vertical",
+                          }}
+                          createOrder={createOrder}
+                          onApprove={onApprove}
+                          onError={onError}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -260,7 +326,7 @@ function Cart({ cart }) {
   ));
   return mappedElements;
 }
-function Customer({ user, subs }) {
+function Customer({ user, subs, order }) {
   return (
     <>
       <h3 className="text-xl dark:text-white  font-semibold  text-gray-800">
@@ -268,7 +334,7 @@ function Customer({ user, subs }) {
       </h3>
       <div className="flex justify-center flex-col md:flex-row  flex-col items-stretch  ">
         <div className="flex flex-col justify-start items-start  ">
-          <div className=" flex justify-center text-gray-800 dark:text-white md:justify-start items-center space-x-4 py-4 border-b border-gray-200 w-full">
+          <div className=" flex justify-center text-gray-800 dark:text-white md:justify-start items-center space-x-4 py-2 border-b border-gray-200 w-full">
             <div className="flex flex-col">
               <p className="text-base dark:text-white font-semibold leading-4 text-left text-gray-800">
                 {user.name
@@ -282,23 +348,42 @@ function Customer({ user, subs }) {
               <p className="cursor-pointer text-sm leading-5 ">{user.email}</p>
             </div>
           </div>
-          <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4 xl:mt-8 mt-6">
-            <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">
+          <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-3 xl:mt-8 mt-3">
+            <p className="text-base dark:text-white font-semibold leading-4 text-left text-gray-800">
               Shipping Address
             </p>
-            <p className="w-50 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600 pb-4 border-b border-gray-200">
+            <p className="w-50 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600 ">
               {subs.shippingAddress.address} /{" "}
               {subs.shippingAddress.selectedCity.label} /{" "}
               {subs.shippingAddress.selectedCountry.label}
             </p>
+            {order.isDelivered ? (
+              <div className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
+                Delivered
+              </div>
+            ) : (
+              <div className="font-regular relative block w-full rounded-lg bg-red-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
+                Not Delivered
+              </div>
+            )}
           </div>
-          <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4 xl:mt-8 mt-6 w-full">
+          <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4 xl:mt-8 mt-4 w-full">
             <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">
               Payment Method
             </p>
-            <p className="w-50 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600 pb-4 border-b border-gray-200 w-full">
+
+            <p className="w-50 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600  w-full">
               {subs.paymentMethod}
             </p>
+            {order.isPaid ? (
+              <div className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
+                Paid on {order.paidAt}
+              </div>
+            ) : (
+              <div className="font-regular relative  block w-full rounded-lg bg-red-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
+                Not Paid
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,9 @@
+const asyncHandler = require("../middleware/asyncHandler.js");
 const orderModel = require("../models/orderModel");
 const httpStatusText = require("../utils/httpStatusText");
-
+// const PayPalUtils = require("../utils/paypal");
+// const { getPayPalAccessToken, checkIfNewTransaction, verifyPayPalPayment } =
+//   PayPalUtils;
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
@@ -23,7 +26,6 @@ const addOrderItems = async (req, res) => {
         msg: "No order items",
       });
     } else {
-      console.log(req);
       const order = new orderModel({
         orderItems: orderItems.map((x) => ({
           ...x,
@@ -92,9 +94,41 @@ const getOrderById = async (req, res) => {
   }
 };
 
-const updateOrderToPaid = async (req, res) => {
-  res.send("update order to paid");
-};
+const updateOrderToPaid = asyncHandler(async (req, res) => {
+  // NOTE: here we need to verify the payment was made to PayPal before marking
+  // the order as paid
+  // const { verified, value } = await verifyPayPalPayment(req.body.id);
+  // if (!verified) throw new Error("Payment not verified");
+
+  // // check if this transaction has been used before
+  // const isNewTransaction = await checkIfNewTransaction(Order, req.body.id);
+  // if (!isNewTransaction) throw new Error("Transaction has been used before");
+
+  const order = await orderModel.findById(req.params.id);
+
+  if (order) {
+    // check the correct amount was paid
+
+    // const paidCorrectAmount = order.totalPrice.toString() === value;
+    // if (!paidCorrectAmount) throw new Error("Incorrect amount paid");
+
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address,
+    };
+
+    const updatedOrder = await order.save();
+
+    res.json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+});
 
 const updateOrderToDeliverd = async (req, res) => {
   res.send("update order to delivered");

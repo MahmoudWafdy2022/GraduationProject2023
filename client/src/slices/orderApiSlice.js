@@ -12,7 +12,34 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
+    getOrderDetails: builder.query({
+      query: (id) => ({
+        url: `http://localhost:3001/orders/${id}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    payOrder: builder.mutation({
+      query: ({ id, details }) => ({
+        url: `http://localhost:3001/orders/${id}/pay`,
+        method: "POST",
+        body: details,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    }),
+    getPaypalClientId: builder.query({
+      query: () => ({
+        url: "http://localhost:3001/config/paypal",
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
-export const { useCreateOrderMutation } = orderApiSlice;
+export const {
+  useCreateOrderMutation,
+  useGetOrderDetailsQuery,
+  usePayOrderMutation,
+  useGetPaypalClientIdQuery,
+} = orderApiSlice;

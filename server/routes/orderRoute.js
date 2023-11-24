@@ -13,7 +13,7 @@ router.get(
 router.get("/orders/myorders", verifyToken, orderController.getMyOrders);
 router.post("/orders", verifyToken, orderController.addOrderItems);
 router.get("/orders/:id", verifyToken, orderController.getOrderById);
-router.put("/orders/:id/pay", verifyToken, orderController.updateOrderToPaid);
+router.post("/orders/:id/pay", verifyToken, orderController.updateOrderToPaid);
 router.get(
   "/orders/:id/deliver",
   verifyToken,
