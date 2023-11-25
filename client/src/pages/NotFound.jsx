@@ -7,11 +7,13 @@ export default function NotFound() {
         <div className="text-center">
           <h1 className="font-black text-gray-200 text-9xl">404</h1>
 
-          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
             Oops!
           </p>
 
-          <p className="mt-4 text-gray-500">That page not exist.</p>
+          <p className="mt-4 text-gray-500 dark:text-white">
+            That page not exist.
+          </p>
 
           <Link
             to="/"

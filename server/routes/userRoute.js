@@ -28,8 +28,8 @@ router.post(
 router.post("/users/logout", userController.logoutUser);
 router.get("/users/:id", userController.getUserByID);
 router.post("/users/register", userController.register);
-router.post("/users/profile", userController.getUserPorfile);
-router.put("/users/profile", userController.updateUserPorfile);
+router.post("/users/profile", userController.getUserProfile);
+router.put("/users/profile", userController.updateUserProfile);
 router.put("/users/:id", userController.UpdateUser);
 router.delete("/users/:id", userController.deleteUser);
 module.exports = router;

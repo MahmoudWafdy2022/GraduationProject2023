@@ -9,7 +9,7 @@ export default function Error() {
         <div className="text-center dark:bg-[#1C1E2D]">
           <h1 className="font-black text-gray-200 text-9xl">{error?.status}</h1>
 
-          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
             Oops!
           </p>
 

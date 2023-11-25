@@ -3,6 +3,7 @@ const httpStatusText = require("../utils/httpStatusText");
 const userModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const JWTGenerateToken = require("../utils//JWTGenerateToken");
+const asyncHandler = require("../middleware/asyncHandler");
 
 const register = async (req, res) => {
   try {
@@ -92,7 +93,7 @@ const logoutUser = async (req, res) => {
 // @route Get/api/users/profile
 // @private public
 
-const getUserPorfile = async (req, res) => {
+const getUserProfile = async (req, res) => {
   res.send("user profile");
 };
 
@@ -100,9 +101,30 @@ const getUserPorfile = async (req, res) => {
 // @route Put/api/users/profile
 // @private private
 
-const updateUserPorfile = async (req, res) => {
-  res.send("update user profile");
-};
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await userModel.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
 // @des get users
 // @route Get/api/users
 // @private/Admin
@@ -145,9 +167,9 @@ module.exports = {
   login,
   getUsers,
   getUserByID,
-  getUserPorfile,
+  getUserProfile,
   deleteUser,
-  updateUserPorfile,
+  updateUserProfile,
   UpdateUser,
   logoutUser,
 };
