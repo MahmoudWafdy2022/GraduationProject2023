@@ -7,6 +7,7 @@ const verifyToken = require("../middleware/VerifyToken")
 
 router.get("/products",productController.get_all_products)
 router.get("/products/:productId",productController.get_single_product)
+router.post("/products",verifyToken,allowdTo(userRole.ADMIN),productController.createProduct)
 
 
 

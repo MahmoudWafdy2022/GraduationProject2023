@@ -131,11 +131,35 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 });
 
 const updateOrderToDeliverd = async (req, res) => {
-  res.send("update order to delivered");
+ try{
+  const order = await orderModel.findById(req.params.id)
+  if(order){
+order.isDelivered = true
+order.deliveredAt = Date.now();
+const updatedOrder = await order.save();
+return res.status(200).json({status:httpStatusText.SUCCESS,data:{updatedOrder}})
+
+  }else{
+return res.status(404).json({status:httpStatusText.FAIL,data:null,msg:"order not found"})
+
+  }
+ }catch(err){
+  return res.status(401).json({status:httpStatusText.ERROR,data:null,msg:err.message})
+
+ }
+
 };
 
 const getOrders = async (req, res) => {
-  res.send("get orders");
+try{
+const Orders = await orderModel.find({}).populate('user','id name')
+res.status(200).json({status:httpStatusText.SUCCESS,data:{Orders}})
+}catch(err){
+
+  res.status(401).json({status:httpStatusText.ERROR,data:null,msg:err.message})
+}
+
+
 };
 
 module.exports = {

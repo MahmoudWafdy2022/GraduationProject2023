@@ -35,6 +35,7 @@ const get_all_products = async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = async (req, res) => {
+  try{
   const product = new productModel({
     name: 'Sample name',
     price: 0,
@@ -48,8 +49,11 @@ const createProduct = async (req, res) => {
   });
 
   const createdProduct = await createProduct.save();
-  res.status(201).json({status:httpStatusText.SUCCESS,data:{createdProduct}});
-};
+  return res.status(201).json({status:httpStatusText.SUCCESS,data:{createdProduct}});
+}catch(err){
+  return res.status(400).json({ message: err.message });
 
+}
+}
 
 module.exports = { get_single_product, get_all_products ,createProduct};
