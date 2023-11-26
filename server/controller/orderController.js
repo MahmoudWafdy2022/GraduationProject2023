@@ -129,7 +129,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     throw new Error("Order not found");
   }
 });
-
+// not check
 const updateOrderToDeliverd = async (req, res) => {
  try{
   const order = await orderModel.findById(req.params.id)
@@ -149,7 +149,7 @@ return res.status(404).json({status:httpStatusText.FAIL,data:null,msg:"order not
  }
 
 };
-
+// not check
 const getOrders = async (req, res) => {
 try{
 const Orders = await orderModel.find({}).populate('user','id name')

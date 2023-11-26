@@ -34,6 +34,7 @@ const get_all_products = async (req, res) => {
 // @desc    Create a product
 // @route   POST /api/products
 // @access  Private/Admin
+// not check
 const createProduct = async (req, res) => {
   try{
   const product = new productModel({
@@ -56,4 +57,54 @@ const createProduct = async (req, res) => {
 }
 }
 
-module.exports = { get_single_product, get_all_products ,createProduct};
+
+//not check
+const updateProduct = async (req, res) => {
+  try{
+  const { name, price, description, image, brand, category, countInStock } =req.body;
+
+  const product = await productModel.findById(req.params.id);
+
+  if (product) {
+    product.name = name;
+    product.price = price;
+    product.description = description;
+    product.image = image;
+    product.brand = brand;
+    product.category = category;
+    product.countInStock = countInStock;
+
+    const updatedProduct = await product.save();
+ return  res.status(200).json({status:httpStatusText.SUCCESS,data:{updatedProduct}});
+  } else {
+    return res.status(404).json({statur:httpStatusText.FAIL,data:null,msg:'Product not found'})
+   
+  }
+}catch(err){
+  return res.status(400).json({ message: err.message });
+
+
+}
+}
+// not check
+const deleteProduct = async (req, res) => {
+  try{
+  const product = await productModel.findById(req.params.id);
+
+  if (product) {
+    await Product.deleteOne({ _id: product._id });
+    res.status(200).json({ message: 'Product removed' });
+  } else {
+    res.status(404).json({ status:httpStatusText.FAIL,data:null,msg:'Product not found' })
+  
+  }
+}catch(err){
+  return res.status(400).json({status:httpStatusText.ERROR, message: err.message });
+
+
+}
+}
+
+
+
+module.exports = { get_single_product, get_all_products ,createProduct,updateProduct,deleteProduct};

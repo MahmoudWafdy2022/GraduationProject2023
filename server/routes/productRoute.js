@@ -6,8 +6,10 @@ const allowdTo = require("../middleware/allowedTo")
 const verifyToken = require("../middleware/VerifyToken")
 
 router.get("/products",productController.get_all_products)
-router.get("/products/:productId",productController.get_single_product)
+router.get("/products/:id",productController.get_single_product)
 router.post("/products",verifyToken,allowdTo(userRole.ADMIN),productController.createProduct)
+router.put("/products/:id",verifyToken,allowdTo(userRole.ADMIN),productController.updateProduct)
+router.delete("/products/:id",verifyToken,allowdTo(userRole.ADMIN),productController.deleteProduct)
 
 
 
