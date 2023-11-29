@@ -62,11 +62,11 @@ const login = async (req, res) => {
       role: oldUser.role,
     });
 
-    const { name, email } = oldUser;
+    const { firstname,lastname, email , id } = oldUser;
 
     return res
       .status(200)
-      .json({ status: httpStatusText.SUCCESS, token, name, email });
+      .json({status:httpStatusText.SUCCESS,data:{token, firstname,lastname, email,id }});
   }
   if (!matchedPassword) {
     return res.status(400).json({

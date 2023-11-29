@@ -9,7 +9,7 @@ router.get("/users", verifyToken, userController.getUsers);
 router.post(
   "/users/register",
   [
-    body("name").notEmpty().withMessage("please fill the input name"),
+    body("firstname").notEmpty().withMessage("please fill the input name"),
     body("email").notEmpty().withMessage("please fill the input email"),
     body("password").notEmpty().withMessage("please fill the input password"),
   ],
