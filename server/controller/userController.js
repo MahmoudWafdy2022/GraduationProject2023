@@ -9,7 +9,7 @@ const allowedTo = require('../middleware/allowedTo');
 
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { firstname,lastname, email, password } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -22,7 +22,7 @@ const register = async (req, res) => {
       return res.status(400).json("user is already exist");
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newuser = new userModel({ name, email, password: hashedPassword });
+    const newuser = new userModel({ firstname,lastname, email, password: hashedPassword });
  
     const token = await JWTGenerateToken({
       email: newuser.email,

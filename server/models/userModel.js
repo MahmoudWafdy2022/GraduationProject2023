@@ -3,7 +3,12 @@ const validator = require("validator");
 const userRoles = require('../utils/userRoles');
 
 const userSchema = new mongoose.Schema({
-  name: {
+  firstname: {
+    type: String,
+    required: true,
+  },
+
+  lastname: {
     type: String,
     required: true,
   },
@@ -16,8 +21,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-
 
 
 token:{type:String}
