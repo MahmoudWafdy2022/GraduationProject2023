@@ -6,7 +6,7 @@ import Logo from "./Logo";
 import Search from "./Search";
 import CartButton from "./CartButton";
 import BottomHeader from "./BottomHeader";
-import User from "./User";
+import UserHamburger from "./UserHamburger";
 export default function TopHeader({
   user,
   cart,
@@ -47,7 +47,7 @@ export default function TopHeader({
 
           <div className="ml-2 flex">
             <CartButton cart={cart} />
-            <User
+            <UserHamburger
               user={user}
               showProfile={showProfile}
               setShowProfile={setShowProfile}

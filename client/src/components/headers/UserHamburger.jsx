@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
-export default function User({
+export default function UserHamburger({
   user,
   setShowProfile,
   showProfile,
   handleLogout,
 }) {
   const btnRef = useRef();
+  console.log(user);
   useEffect(() => {
     const closeDropDown = (e) => {
       if (!btnRef?.current?.contains(e.target)) {
@@ -19,7 +20,7 @@ export default function User({
   }, [setShowProfile]);
   return (
     <>
-      {user ? (
+      {user?.token ? (
         <div className="flex cursor-pointer items-center justify-center gap-x-1 rounded-md py-2 px-4 hover:bg-gray-100 dark:hover:bg-[#242635]">
           <div className="relative z-40">
             <button
@@ -36,13 +37,7 @@ export default function User({
                 <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
               </svg>
               <span className="text-sm font-medium dark:text-white ml-1">
-                {user.name
-                  .split(" ")
-                  .map(
-                    (word) =>
-                      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-                  )
-                  .join(" ")}
+                {user.firstname} {user.lastname}
               </span>
             </button>
 

@@ -2,7 +2,9 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate, Link, useNavigation } from "react-router-dom";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
+// import { toast } from "react-toastify";
 import axios from "axios";
+
 function Register() {
   const navigation = useNavigation();
   const navigate = useNavigate();
@@ -12,14 +14,31 @@ function Register() {
     register,
     formState: { errors },
   } = useForm();
+
+  const validateName = (value) => {
+    // Validate that the input contains only letters and no whitespace
+    const isValid = /^[a-zA-Z]+$/.test(value);
+    return isValid || "Invalid input";
+  };
+
+  const validateEmail = (value) => {
+    // Validate that the input is a valid email and contains no whitespace
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    return isValid || "Invalid email address";
+  };
   const onSubmit = async (values) => {
     try {
+      values.firstname =
+        values.firstname.charAt(0).toUpperCase() + values.firstname.slice(1);
+      values.lastname =
+        values.lastname.charAt(0).toUpperCase() + values.lastname.slice(1);
       console.log(values);
       await axios.post("http://localhost:3001/users/register", values);
 
       return navigate("/login");
     } catch (err) {
       setErr(err.response.data);
+      console.log(err);
     }
   };
   return (
@@ -37,112 +56,186 @@ function Register() {
       {err && <p className="text-red-500 text-xs italic">{err}</p>}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96"
+        className="mt-8 mb-2 w-80 min-w-screen-lg sm:w-96"
       >
-        <div className="mb-1 flex flex-col gap-6 ">
-          <Typography
-            variant="h6"
-            color="blue-gray"
-            className="-mb-3 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
-          >
-            Your Name
-          </Typography>
-          <Input
-            name="name"
-            type="name"
-            id="name"
-            size="lg"
-            placeholder="john doe"
-            {...register("name", {
-              required: "Required",
-            })}
-            aria-invalid={errors.name ? "true" : "false"}
-            className={
-              " !border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-blue-gray-200 dark:text-white"
-            }
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          />
-          {errors.name?.type === "required" && (
-            <p
-              className="m-0 visible peer-invalid:visible text-pink-600 text-sm"
-              role="alert"
-            >
-              Name is required
-            </p>
-          )}
-          <Typography
-            variant="h6"
-            color="blue-gray"
-            className="-mb-3 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
-          >
-            Your Email
-          </Typography>
-          <Input
-            name="email"
-            type="email"
-            id="email"
-            size="lg"
-            {...register("email", {
-              required: "Required",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "invalid email address",
-              },
-            })}
-            aria-invalid={errors.email ? "true" : "false"}
-            placeholder="name@mail.com"
-            className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-blue-gray-200 dark:text-white"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          />
-          {errors.email && (
-            <p
-              className="m-0 visible peer-invalid:visible text-pink-600 text-sm"
-              role="alert"
-            >
-              {errors?.email?.message}
-            </p>
-          )}
+        <div className="grid md:grid-cols-2 md:gap-6 ">
+          <div className="mb-3  relative z-0 max-w-[50%] sm:min-w-full xs:min-w-full group">
+            <div className="min-w-full">
+              <Typography
+                variant="h6"
+                color="blue-gray"
+                className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
+              >
+                First Name
+              </Typography>
 
-          <Typography
-            variant="h6"
-            color="blue-gray"
-            className="-mb-3 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
-          >
-            Password
-          </Typography>
-          <Input
-            name="password"
-            id="password"
-            type="password"
-            size="lg"
-            {...register("password", {
-              required: "Required",
-              pattern: {
-                value:
-                  /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/,
-                message:
-                  "Password requirements: 8-20 characters, 1 number, 1 letter, 1 symbol.",
-              },
-            })}
-            aria-invalid={errors.password ? "true" : "false"}
-            placeholder="********"
-            className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-blue-gray-200 dark:text-white"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          />
-          {errors.password && (
-            <p
-              className="m-0 visible peer-invalid:visible text-pink-600 text-sm "
-              role="alert"
+              <Input
+                name="firstname"
+                type="firstname"
+                id="firstname"
+                size="md"
+                placeholder="John"
+                {...register("firstname", {
+                  required: "Required",
+                  validate: validateName,
+                })}
+                onBlur={(e) => {
+                  e.target.value = e.target.value.trim(); // Trim whitespace on blur
+                }}
+                aria-invalid={errors.firstname ? "true" : "false"}
+                className={
+                  " !border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-blue-gray-200 dark:text-white w-[90%] sm:min-w-full xs:min-w-full"
+                }
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+
+              {errors.firstname?.type === "validate" && (
+                <p
+                  className="m-0 visible peer-invalid:visible text-pink-600 text-sm"
+                  role="alert"
+                >
+                  {errors.firstname.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Repeat similar structure for other inputs */}
+
+          <div className="mb-3  relative z-0 max-w-[50%] sm:min-w-full xs:min-w-full group ">
+            <div className="min-w-min flex flex-col justify-center">
+              <Typography
+                variant="h6"
+                color="blue-gray"
+                className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white "
+              >
+                Last Name
+              </Typography>
+
+              <Input
+                name="lastname"
+                type="lastname"
+                id="lastname"
+                size="md"
+                placeholder="Doe"
+                {...register("lastname", {
+                  required: "Required",
+                  validate: validateName,
+                })}
+                onBlur={(e) => {
+                  e.target.value = e.target.value.trim(); // Trim whitespace on blur
+                }}
+                aria-invalid={errors.lastname ? "true" : "false"}
+                className={
+                  " !border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-blue-gray-200 dark:text-white md:w-[90%] xs:min-w-full "
+                }
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+
+              {errors.lastname?.type === "validate" && (
+                <p
+                  className="m-0 visible peer-invalid:visible text-pink-600 text-sm"
+                  role="alert"
+                >
+                  {errors.lastname.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Repeat similar structure for other inputs */}
+        </div>
+
+        <div className="mb-3 flex flex-col gap-6">
+          <div>
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
             >
-              {errors?.password?.message}
-            </p>
-          )}
+              Your Email
+            </Typography>
+            <Input
+              name="email"
+              type="email"
+              id="email"
+              size="lg"
+              {...register("email", {
+                required: "Required",
+                validate: validateEmail,
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "invalid email address",
+                },
+              })}
+              onBlur={(e) => {
+                e.target.value = e.target.value.trim(); //
+
+                //  Trim whitespace on blur
+              }}
+              aria-invalid={errors.email ? "true" : "false"}
+              placeholder="name@mail.com"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-blue-gray-200 dark:text-white"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+            {errors.email && (
+              <p
+                className="m-0 p-0 visible peer-invalid:visible text-pink-600 text-sm"
+                role="alert"
+              >
+                {errors?.email?.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Repeat similar structure for other inputs */}
+
+        <div className="mb-3 flex flex-col gap-6 ">
+          <div>
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
+            >
+              Password
+            </Typography>
+            <Input
+              name="password"
+              id="password"
+              type="password"
+              size="lg"
+              {...register("password", {
+                required: "Required",
+                pattern: {
+                  value:
+                    /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/,
+                  message:
+                    "Password requirements: 8-20 characters, 1 number, 1 letter, 1 symbol.",
+                },
+              })}
+              aria-invalid={errors.password ? "true" : "false"}
+              placeholder="********"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-blue-gray-200 dark:text-white "
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+            {errors.password && (
+              <p
+                className="m-0 visible peer-invalid:visible text-pink-600 text-sm "
+                role="alert"
+              >
+                {errors?.password?.message}
+              </p>
+            )}
+          </div>
         </div>
 
         <Button
@@ -169,4 +262,5 @@ function Register() {
     </Card>
   );
 }
+
 export default Register;

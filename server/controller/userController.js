@@ -3,13 +3,13 @@ const httpStatusText = require("../utils/httpStatusText");
 const userModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const JWTGenerateToken = require("../utils//JWTGenerateToken");
-const userRoles = require('../utils/userRoles');
-const allowedTo = require('../middleware/allowedTo');
+const userRoles = require("../utils/userRoles");
+const allowedTo = require("../middleware/allowedTo");
 // const asyncHandler = require("../middleware/asyncHandler");
 
 const register = async (req, res) => {
   try {
-    const { firstname,lastname, email, password } = req.body;
+    const { firstname, lastname, email, password } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -22,8 +22,13 @@ const register = async (req, res) => {
       return res.status(400).json("user is already exist");
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newuser = new userModel({ firstname,lastname, email, password: hashedPassword });
- 
+    const newuser = new userModel({
+      firstname,
+      lastname,
+      email,
+      password: hashedPassword,
+    });
+
     const token = await JWTGenerateToken({
       email: newuser.email,
       id: newuser._id,
@@ -62,11 +67,12 @@ const login = async (req, res) => {
       role: oldUser.role,
     });
 
-    const { firstname,lastname, email , id } = oldUser;
+    const { firstname, lastname, email, id } = oldUser;
 
-    return res
-      .status(200)
-      .json({status:httpStatusText.SUCCESS,data:{token, firstname,lastname, email,id }});
+    return res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      data: { token, firstname, lastname, email, id },
+    });
   }
   if (!matchedPassword) {
     return res.status(400).json({
@@ -101,30 +107,33 @@ const getUserProfile = async (req, res) => {
 // @private private
 
 const updateUserProfile = async (req, res) => {
-  const user = await userModel.findById(req.user._id);
+  const user = await userModel.findById(req.body.id);
 
   if (user) {
-    user.name = req.body.name || user.name;
+    user.firstname = req.body.firstname || user.firstname;
+    user.lastname = req.body.lastname || user.lastname;
     user.email = req.body.email || user.email;
-
     if (req.body.password) {
-      user.password = req.body.password;
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      user.password = hashedPassword;
     }
 
-    // not check 
+    // not check
     const updatedUser = await user.save();
 
     res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
+      id: updatedUser._id,
+      firstname: updatedUser.firstname,
+      lastname: updatedUser.lastname,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      token: updatedUser.token,
     });
   } else {
     res.status(404);
     throw new Error("User not found");
   }
-}
+};
 // @des get users
 // @route Get/api/users
 // @private/Admin
@@ -146,15 +155,21 @@ const getUsers = async (req, res) => {
 const getUserByID = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id).select("-password");
-    if(user){
-   return res.status(200).json({ status: httpStatusText.SUCCESS, data: { user } });
-    }else{
-      return res.status(404).json({ status: httpStatusText.FAIL, data:null,msg:"User not found" });
-
-
+    if (user) {
+      return res
+        .status(200)
+        .json({ status: httpStatusText.SUCCESS, data: { user } });
+    } else {
+      return res.status(404).json({
+        status: httpStatusText.FAIL,
+        data: null,
+        msg: "User not found",
+      });
     }
   } catch (err) {
-   return res.status(404).json({ status: httpStatusText.FAIL, msg: err.message });
+    return res
+      .status(404)
+      .json({ status: httpStatusText.FAIL, msg: err.message });
   }
 };
 
@@ -162,28 +177,33 @@ const getUserByID = async (req, res) => {
 // @route Delete/api/users/:id
 // @private/Admin
 
-
 //not check
 const deleteUser = async (req, res) => {
-  try{
-  const user = await userModel.findById(req.params.id);
+  try {
+    const user = await userModel.findById(req.params.id);
 
-  if (user) {
-    if (user.role==userRoles.ADMIN) {
-     return res.status(400).json({status:httpStatusText.FAIL,msg:"Can not delete admin user"})
-     
+    if (user) {
+      if (user.role == userRoles.ADMIN) {
+        return res.status(400).json({
+          status: httpStatusText.FAIL,
+          msg: "Can not delete admin user",
+        });
+      }
+      await userModel.deleteOne({ _id: user._id });
+      res.status(200).json({ message: "User deleted successfully" });
+    } else {
+      return res.status(404).json({
+        status: httpStatusText.FAIL,
+        data: null,
+        msg: "User not found",
+      });
     }
-    await userModel.deleteOne({ _id: user._id });
-    res.status(200).json({ message: 'User deleted successfully' });
-  } else {
-    return res.status(404).json({status:httpStatusText.FAIL,data:null,msg:"User not found"})
-
-  }}
-  catch(err){
-   return res.status(404).json({ status: httpStatusText.FAIL, msg: err.message });
-
+  } catch (err) {
+    return res
+      .status(404)
+      .json({ status: httpStatusText.FAIL, msg: err.message });
   }
-}
+};
 
 // @des Update user
 // @route PUT/api/users/:id

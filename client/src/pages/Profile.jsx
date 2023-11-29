@@ -1,13 +1,21 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
-
+import { useProfileMutation } from "../slices/userApiSlice";
+import { setCredentials } from "../slices/authSlice";
+// import { useNavigate } from "react-router-dom";
+import CustomSpinner from "../components/CustomSpinner";
 export default function Profile() {
   const user = useSelector((store) => store.auth.userInfo);
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
-  console.log(shippingAddress);
+  const { userInfo } = useSelector((state) => state.auth);
+  const [updateProfile, { isLoading: loadingUpdateProfile }] =
+    useProfileMutation();
+
+  const dispatch = useDispatch();
+
   return (
     <div className="xs:min-w-max bg-gray-100 w-screen h-screen	dark:bg-[#151725]">
       <div className="min-w-fit container mx-auto  p-5 ">
@@ -19,7 +27,14 @@ export default function Profile() {
           </div>
           {/* <!-- Right Side --> */}
           <div className="w-full md:w-9/12 mx-2 h-64">
-            <About user={user} shippingAddress={shippingAddress} />
+            <About
+              user={user}
+              shippingAddress={shippingAddress}
+              updateProfile={updateProfile}
+              dispatch={dispatch}
+              userInfo={userInfo}
+              loadingUpdateProfile={loadingUpdateProfile}
+            />
           </div>
         </div>
       </div>
@@ -37,12 +52,7 @@ function ProfileCard({ user }) {
         />
       </div> */}
       <h1 className="text-gray-900 font-bold text-xl leading-8 my-1 dark:text-white">
-        {user.name
-          .split(" ")
-          .map(
-            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-          )
-          .join(" ")}
+        {user.firstname} {user.lastname}
       </h1>
       <h3 className="text-gray-600 font-lg text-semibold leading-6 dark:text-white">
         {/* Owner at Her Company Inc. */}
@@ -68,15 +78,22 @@ function ProfileCard({ user }) {
     </div>
   );
 }
-function About({ user, shippingAddress }) {
+function About({
+  user,
+  shippingAddress,
+  updateProfile,
+  dispatch,
+  userInfo,
+  loadingUpdateProfile,
+}) {
   const [isEdit, setIsEdit] = useState(false);
   const [editedUser, setEditedUser] = useState({
-    firstName: user.name.split(" ")[0],
-    lastName: user.name.split(" ")[1],
+    firstname: user.firstname,
+    lastname: user.lastname,
     password: "",
     confirmPassword: "",
   });
-
+  // const navigate = useNavigate();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedUser((prevUser) => ({ ...prevUser, [name]: value }));
@@ -87,7 +104,7 @@ function About({ user, shippingAddress }) {
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(editedUser.password);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Add logic to send a POST request to the backend with editedUser data
 
@@ -102,13 +119,22 @@ function About({ user, shippingAddress }) {
       );
       return;
     }
+    const { firstname, lastname, password } = editedUser;
 
-    const user = {
-      name: `${editedUser.firstName} ${editedUser.lastName}`,
-      password: editedUser.password,
-    };
+    try {
+      const res = await updateProfile({
+        id: userInfo.id,
+        firstname,
+        lastname,
+        password,
+        token: userInfo.token,
+      }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      toast.success("Profile updated successfully");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
 
-    console.log("User data submitted:", user);
     // Reset the edit mode after saving
     setIsEdit(false);
   };
@@ -127,8 +153,8 @@ function About({ user, shippingAddress }) {
                   </div>
                   <Input
                     type="text"
-                    name="firstName"
-                    value={editedUser.firstName}
+                    name="firstname"
+                    value={editedUser.firstname}
                     onChange={handleInputChange}
                     className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white dark:focus:!border-gray-700 "
                     labelProps={{
@@ -143,8 +169,8 @@ function About({ user, shippingAddress }) {
                   </div>
                   <Input
                     type="text"
-                    name="lastName"
-                    value={editedUser.lastName}
+                    name="lastname"
+                    value={editedUser.lastname}
                     onChange={handleInputChange}
                     className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white dark:focus:!border-gray-700 "
                     labelProps={{
@@ -194,6 +220,7 @@ function About({ user, shippingAddress }) {
               >
                 Save Information
               </button>
+              {loadingUpdateProfile && <CustomSpinner />}
             </form>
             <button
               className="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4 dark:hover:bg-[#151725] dark:focus:bg-[#151725]"
@@ -226,28 +253,14 @@ function About({ user, shippingAddress }) {
                   First Name:
                 </div>
                 <div className="px-4 py-2 dark:text-white">
-                  {
-                    [user.name.split(" ")[0]].map(
-                      (word) =>
-                        word.charAt(0).toUpperCase() +
-                        word.slice(1).toLowerCase()
-                    )[0]
-                  }
+                  {user.firstname}
                 </div>
               </div>
               <div className="grid grid-cols-2">
                 <div className="px-4 py-2 font-semibold dark:text-white">
                   Last Name:
                 </div>
-                <div className="px-4 py-2 dark:text-white">
-                  {
-                    [user.name.split(" ")[1]].map(
-                      (word) =>
-                        word.charAt(0).toUpperCase() +
-                        word.slice(1).toLowerCase()
-                    )[0]
-                  }
-                </div>
+                <div className="px-4 py-2 dark:text-white">{user.lastname}</div>
               </div>
               <div className="grid grid-cols-2">
                 {/* <div className="px-4 py-2 font-semibold">Gender</div>

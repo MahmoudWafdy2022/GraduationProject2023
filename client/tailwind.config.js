@@ -6,6 +6,9 @@ module.exports = withMT({
   darkMode: "class",
   theme: {
     extend: {
+      maxWidth: {
+        "1/2": "50%",
+      },
       colors: {
         primary: "#ffffff",
         secondary: "#00f6ff",

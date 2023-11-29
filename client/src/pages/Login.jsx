@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/userApiSlice";
 import { setCredentials } from "../slices/authSlice";
+import { toast } from "react-toastify";
 // import {CustomSpinner} from "../components/CustomSpinner"
 function Login() {
   const [email, setEmail] = useState("");
@@ -37,11 +38,15 @@ function Login() {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ ...res }));
+
+      const user = res.data;
+      console.log(user);
+      dispatch(setCredentials({ ...user }));
       navigate(redirect);
     } catch (err) {
       console.log(err);
-      // toast.error(err?.data?.message || err.error);
+      err?.data?.data?.map((er) => toast.error(er.msg));
+      toast.error(err?.data?.message);
     }
   };
 
