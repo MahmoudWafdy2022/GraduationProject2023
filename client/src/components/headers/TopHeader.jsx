@@ -7,6 +7,7 @@ import Search from "./Search";
 import CartButton from "./CartButton";
 import BottomHeader from "./BottomHeader";
 import UserHamburger from "./UserHamburger";
+import AdminDropDown from "../admin/AdminDropDown";
 export default function TopHeader({
   user,
   cart,
@@ -18,6 +19,7 @@ export default function TopHeader({
   logoutApiCall,
 }) {
   const navigate = useNavigate();
+
   useEffect(() => {
     // Apply or remove 'dark' class to #root based on darkMode state
     document.body.classList.toggle("dark", isDarkMode);
@@ -44,15 +46,19 @@ export default function TopHeader({
           <Logo />
 
           <Search />
-
           <div className="ml-2 flex">
             <CartButton cart={cart} />
-            <UserHamburger
-              user={user}
-              showProfile={showProfile}
-              setShowProfile={setShowProfile}
-              handleLogout={handleLogout}
-            />
+            {user?.role !== "ADMIN" && (
+              <UserHamburger
+                user={user}
+                showProfile={showProfile}
+                setShowProfile={setShowProfile}
+                handleLogout={handleLogout}
+              />
+            )}
+            {user?.role === "ADMIN" && (
+              <AdminDropDown user={user} handleLogout={handleLogout} />
+            )}
           </div>
         </div>
         <BottomHeader setIsDarkMode={setIsDarkMode} />

@@ -2,7 +2,7 @@ export default function ErrorComponent({ error }) {
   console.log(error);
   return (
     <>
-      <div className="grid h-screen px-4 bg-white place-content-center">
+      <div className="grid h-screen px-4 bg-white place-content-center dark:bg-[#1C1E2D]">
         <div className="text-center">
           <h1 className="font-black text-gray-200 text-5xl dark:text-white">
             {error?.status}

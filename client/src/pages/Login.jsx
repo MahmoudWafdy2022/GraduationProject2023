@@ -40,7 +40,7 @@ function Login() {
       const res = await login({ email, password }).unwrap();
 
       const user = res.data;
-      console.log(user);
+
       dispatch(setCredentials({ ...user }));
       navigate(redirect);
     } catch (err) {

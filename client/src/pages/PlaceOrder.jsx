@@ -271,13 +271,7 @@ function Customer({ user, subs }) {
           <div className=" flex justify-center text-gray-800 dark:text-white md:justify-start items-center space-x-4 py-4 border-b border-gray-200 w-full">
             <div className="flex flex-col">
               <p className="text-base dark:text-white font-semibold leading-4 text-left text-gray-800">
-                {user.name
-                  .split(" ")
-                  .map(
-                    (word) =>
-                      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-                  )
-                  .join(" ")}
+                {user.firstname} {user.lastname}
               </p>
               <p className="cursor-pointer text-sm leading-5 ">{user.email}</p>
             </div>

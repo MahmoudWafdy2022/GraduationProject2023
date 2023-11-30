@@ -1,6 +1,7 @@
 export default async function productDetailsLoader({ params }) {
   const url = `http://localhost:3001/products/${params.id}`;
   const res = await fetch(url);
+
   if (!res.ok) {
     throw {
       message: "Failed to fetch product",

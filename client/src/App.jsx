@@ -29,6 +29,9 @@ import Profile from "./pages/Profile";
 import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/products/ProductDetails";
+// admin
+import AdminRoute from "./components/AdminRoute";
+import OrderList from "./pages/admin/OrderList";
 // loaders
 import productsLoader from "./loaders/productsLoader";
 import productDetailsLoader from "./loaders/productDetailsLoader";
@@ -91,6 +94,13 @@ const router = createBrowserRouter(
         />
         <Route path="order/:id" element={<Order />} loader={async () => null} />
         <Route path="profile" element={<Profile />} loader={async () => null} />
+      </Route>
+      <Route element={<AdminRoute />} loader={async () => null}>
+        <Route
+          path="/admin/orderlist"
+          element={<OrderList />}
+          loader={async () => null}
+        />
       </Route>
       <Route path="*" element={<NotFound />} loader={async () => null} />
     </Route>

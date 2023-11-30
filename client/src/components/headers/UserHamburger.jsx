@@ -7,7 +7,7 @@ export default function UserHamburger({
   handleLogout,
 }) {
   const btnRef = useRef();
-  console.log(user);
+
   useEffect(() => {
     const closeDropDown = (e) => {
       if (!btnRef?.current?.contains(e.target)) {
@@ -45,7 +45,6 @@ export default function UserHamburger({
               <div className="absolute right-0 w-40 mt-2 py-2 bg-white border rounded shadow-xl">
                 <Link
                   to="/profile"
-                  onClick={() => setShowProfile(false)}
                   className="transition-colors duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-purple-500 hover:text-white"
                 >
                   Profile

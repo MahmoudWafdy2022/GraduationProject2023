@@ -67,11 +67,11 @@ const login = async (req, res) => {
       role: oldUser.role,
     });
 
-    const { firstname, lastname, email, id } = oldUser;
+    const { firstname, lastname, email, id, role } = oldUser;
 
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
-      data: { token, firstname, lastname, email, id },
+      data: { token, firstname, lastname, email, id, role },
     });
   }
   if (!matchedPassword) {
@@ -126,7 +126,7 @@ const updateUserProfile = async (req, res) => {
       firstname: updatedUser.firstname,
       lastname: updatedUser.lastname,
       email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
+      role: updatedUser.role,
       token: updatedUser.token,
     });
   } else {

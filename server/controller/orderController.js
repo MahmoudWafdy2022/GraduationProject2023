@@ -8,6 +8,7 @@ const httpStatusText = require("../utils/httpStatusText");
 // @route   POST /api/orders
 // @access  Private
 const addOrderItems = async (req, res) => {
+  console.log(req);
   try {
     const {
       orderItems,
@@ -32,7 +33,7 @@ const addOrderItems = async (req, res) => {
           product: x._id,
           _id: undefined,
         })),
-        user: req.currentUser.id,
+        user: req.currentUser,
         shippingAddress,
         paymentMethod,
         itemsPrice,
@@ -131,35 +132,38 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 });
 // not check
 const updateOrderToDeliverd = async (req, res) => {
- try{
-  const order = await orderModel.findById(req.params.id)
-  if(order){
-order.isDelivered = true
-order.deliveredAt = Date.now();
-const updatedOrder = await order.save();
-return res.status(200).json({status:httpStatusText.SUCCESS,data:{updatedOrder}})
-
-  }else{
-return res.status(404).json({status:httpStatusText.FAIL,data:null,msg:"order not found"})
-
+  try {
+    const order = await orderModel.findById(req.params.id);
+    if (order) {
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+      const updatedOrder = await order.save();
+      return res
+        .status(200)
+        .json({ status: httpStatusText.SUCCESS, data: { updatedOrder } });
+    } else {
+      return res.status(404).json({
+        status: httpStatusText.FAIL,
+        data: null,
+        msg: "order not found",
+      });
+    }
+  } catch (err) {
+    return res
+      .status(401)
+      .json({ status: httpStatusText.ERROR, data: null, msg: err.message });
   }
- }catch(err){
-  return res.status(401).json({status:httpStatusText.ERROR,data:null,msg:err.message})
-
- }
-
 };
 // not check
 const getOrders = async (req, res) => {
-try{
-const Orders = await orderModel.find({}).populate('user','id name')
-res.status(200).json({status:httpStatusText.SUCCESS,data:{Orders}})
-}catch(err){
-
-  res.status(401).json({status:httpStatusText.ERROR,data:null,msg:err.message})
-}
-
-
+  try {
+    const Orders = await orderModel.find({}).populate("user", "id name");
+    res.status(200).json({ status: httpStatusText.SUCCESS, data: { Orders } });
+  } catch (err) {
+    res
+      .status(401)
+      .json({ status: httpStatusText.ERROR, data: null, msg: err.message });
+  }
 };
 
 module.exports = {
