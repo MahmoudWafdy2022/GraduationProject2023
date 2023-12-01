@@ -29,7 +29,7 @@ const jwt = require("jsonwebtoken");
 const verifyToken = (req, res, next) => {
   const authHeader =
     req.headers["Authorization"] || req.headers["authorization"];
-  console.log(req.headers["Authorization"]);
+
   if (!authHeader) {
     return res.status(401).json("token is required");
   }

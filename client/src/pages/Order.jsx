@@ -13,17 +13,41 @@ import { toast } from "react-toastify";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 export default function PlaceOrder() {
-  const cart = useSelector((store) => store.cart.cardItems);
-  const subs = useSelector((store) => store.cart);
-  const user = useSelector((store) => store.auth.userInfo);
+  let cart = useSelector((store) => store.cart.cardItems);
+  let subs = useSelector((store) => store.cart);
+  let user = useSelector((store) => store.auth.userInfo);
+  const currentUser = useSelector((store) => store.auth.userInfo);
   const { id } = useParams();
 
   //   let token = user.token;
   // { isLoading, error }
 
   const { data, refetch, isLoading, error } = useGetOrderDetailsQuery(id);
+  console.log(data);
   //   console.log(data.data.order);
   const order = data?.data?.order;
+  if (currentUser.role === "ADMIN") {
+    const {
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      totalPrice,
+      taxPrice,
+      shippingPrice,
+      itemsPrice,
+    } = order;
+    subs = {
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      totalPrice,
+      taxPrice,
+      shippingPrice,
+      itemsPrice,
+    };
+    user = order?.user;
+    cart = orderItems;
+  }
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
@@ -104,6 +128,7 @@ export default function PlaceOrder() {
         <ShippingSteps />
         <Summary
           // onApproveTest={onApproveTest}
+          currentUser={currentUser}
           createOrder={createOrder}
           onApprove={onApprove}
           onError={onError}
@@ -225,8 +250,10 @@ function Summary({
   createOrder,
   onApprove,
   onError,
+  currentUser,
   // onApproveTest,
 }) {
+  console.log(currentUser);
   return (
     <div className="bg-gray-100 min-w-full dark:bg-[#1C1E2D] ">
       <div className=" min-w-full justify-center px-6 md:flex md:space-x-6 xl:px-0">
@@ -246,7 +273,7 @@ function Summary({
               <Customer user={user} subs={subs} order={order} />
               <Shipping subs={subs} />
 
-              {!order.isPaid && (
+              {!order.isPaid && currentUser.role !== "ADMIN" && (
                 <>
                   {loadingPay && <CustomSpinner />}
                   {isPending ? (
@@ -348,8 +375,8 @@ function Customer({ user, subs, order }) {
             </p>
             <p className="w-50 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600 ">
               {subs.shippingAddress.address} /{" "}
-              {subs.shippingAddress.selectedCity.label} /{" "}
-              {subs.shippingAddress.selectedCountry.label}
+              {subs.shippingAddress.selectedCity?.label} /{" "}
+              {subs.shippingAddress.selectedCountry?.label}
             </p>
             {order.isDelivered ? (
               <div className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">

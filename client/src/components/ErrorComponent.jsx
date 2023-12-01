@@ -1,5 +1,4 @@
 export default function ErrorComponent({ error }) {
-  console.log(error);
   return (
     <>
       <div className="grid h-screen px-4 bg-white place-content-center dark:bg-[#1C1E2D]">
@@ -13,7 +12,7 @@ export default function ErrorComponent({ error }) {
           </p>
 
           <p className="mt-4 text-gray-500 ">
-            {error.status === 400
+            {error?.status === 400
               ? "Please re-connect to the internet"
               : error?.data?.message || error.error}
           </p>

@@ -2,8 +2,10 @@ import { format } from "date-fns";
 import { useGetOrdersQuery } from "../../slices/orderApiSlice";
 import CustomSpinner from "../../components/CustomSpinner";
 import ErrorComponent from "../../components/ErrorComponent";
+import { Link } from "react-router-dom";
 export default function OrderList() {
   const { data, isLoading, error } = useGetOrdersQuery();
+
   const orders = data?.data?.Orders;
   console.log(orders);
   return (
@@ -90,11 +92,11 @@ export default function OrderList() {
                     </td>
                     <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
                       <div className="text-sm leading-5 text-blue-900">
-                        Damilare Anjorin
+                        {info.user.firstname} {info.user.lastname}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
-                      damilareanjorin1@gmail.com
+                      {info.user.email}
                     </td>
 
                     <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
@@ -141,9 +143,12 @@ export default function OrderList() {
                         format(new Date(info.paidAt), "yyyy-MM-dd")}
                     </td>
                     <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                      <button className="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">
+                      <Link
+                        to={`/order/${info._id}`}
+                        className="px-5 flex flex-col items-center justify-center py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+                      >
                         View Details
-                      </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}

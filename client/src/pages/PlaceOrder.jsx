@@ -14,7 +14,6 @@ export default function PlaceOrder() {
 
   let token = user.token;
   // { isLoading, error }
-
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,15 +46,17 @@ export default function PlaceOrder() {
           shippingPrice: subs.shippingPrice,
           taxPrice: subs.taxPrice,
           totalPrice: subs.totalPrice,
+          user: user,
         },
         token
       ).unwrap();
       dispatch(clearCartItems());
       // console.log(res.data.createdOrder._id);
+
       navigate(`/order/${res.data.createdOrder._id}`);
     } catch (err) {
       console.log(error);
-      if (error.data === "Invalid Token") {
+      if (error?.data === "Invalid Token") {
         toast.error("Please Login again", {
           position: "top-right",
           autoClose: 5000,

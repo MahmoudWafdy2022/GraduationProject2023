@@ -8,7 +8,6 @@ const httpStatusText = require("../utils/httpStatusText");
 // @route   POST /api/orders
 // @access  Private
 const addOrderItems = async (req, res) => {
-  console.log(req);
   try {
     const {
       orderItems,
@@ -18,6 +17,7 @@ const addOrderItems = async (req, res) => {
       taxPrice,
       shippingPrice,
       totalPrice,
+      user,
     } = req.body;
 
     if (orderItems && orderItems.length === 0) {
@@ -33,7 +33,7 @@ const addOrderItems = async (req, res) => {
           product: x._id,
           _id: undefined,
         })),
-        user: req.currentUser,
+        user,
         shippingAddress,
         paymentMethod,
         itemsPrice,
@@ -76,11 +76,12 @@ const getOrderById = async (req, res) => {
   try {
     const order = await orderModel
       .findById(req.params.id)
-      .populate("user", "name email");
+      .populate("user.id", "name email");
+    console.log(order);
     if (order) {
       return res
         .status(200)
-        .json({ status: httpStatusText.FAIL, data: { order } });
+        .json({ status: httpStatusText.SUCCESS, data: { order } });
     } else {
       return res.status(404).json({
         status: httpStatusText.FAIL,
@@ -157,7 +158,8 @@ const updateOrderToDeliverd = async (req, res) => {
 // not check
 const getOrders = async (req, res) => {
   try {
-    const Orders = await orderModel.find({}).populate("user", "id name");
+    const Orders = await orderModel.find({}).populate("user.id", "id name");
+
     res.status(200).json({ status: httpStatusText.SUCCESS, data: { Orders } });
   } catch (err) {
     res
