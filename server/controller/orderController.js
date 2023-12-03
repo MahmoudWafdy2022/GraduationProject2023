@@ -61,7 +61,8 @@ const addOrderItems = async (req, res) => {
 
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({ user: req.user._id });
+    // const id = req.currentUser.id;
+    const orders = await orderModel.find({ "user.id": req.currentUser.id });
     return res
       .status(200)
       .json({ status: httpStatusText.SUCCESS, data: { orders } });
@@ -73,6 +74,7 @@ const getMyOrders = async (req, res) => {
 };
 
 const getOrderById = async (req, res) => {
+  console.log("test");
   try {
     const order = await orderModel
       .findById(req.params.id)

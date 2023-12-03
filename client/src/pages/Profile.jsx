@@ -1,11 +1,15 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
+import { format } from "date-fns";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import { useProfileMutation } from "../slices/userApiSlice";
+import { useGetMyOrdersQuery } from "../slices/orderApiSlice";
+
 import { setCredentials } from "../slices/authSlice";
 // import { useNavigate } from "react-router-dom";
 import CustomSpinner from "../components/CustomSpinner";
+import ErrorComponent from "../components/ErrorComponent";
 export default function Profile() {
   const user = useSelector((store) => store.auth.userInfo);
   const cart = useSelector((state) => state.cart);
@@ -13,7 +17,10 @@ export default function Profile() {
   const { userInfo } = useSelector((state) => state.auth);
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
-
+  const { data: orders, isLoading, error } = useGetMyOrdersQuery();
+  const order = orders?.data?.orders;
+  console.log(orders?.data?.orders);
+  // const orders = data.data.orders;
   const dispatch = useDispatch();
 
   return (
@@ -35,6 +42,7 @@ export default function Profile() {
               userInfo={userInfo}
               loadingUpdateProfile={loadingUpdateProfile}
             />
+            <OrderHistory order={order} isLoading={isLoading} error={error} />
           </div>
         </div>
       </div>
@@ -140,7 +148,7 @@ function About({
   };
 
   return (
-    <div className="bg-white p-3 shadow-sm rounded-sm  dark:bg-[#1C1E2D]">
+    <div className="bg-white p-3 pb-0 shadow-sm rounded-sm  dark:bg-[#1C1E2D]">
       {isEdit ? (
         <>
           <div className="bg-white p-3 shadow-sm rounded-sm  dark:bg-[#1C1E2D]">
@@ -312,6 +320,119 @@ function About({
           >
             Edit Information
           </button>
+        </>
+      )}
+    </div>
+  );
+}
+function OrderHistory({ order, isLoading, error }) {
+  return (
+    <div className="overflow-y-auto overflow-x-auto h-fit pb-3 dark:bg-[#1C1E2D]">
+      {isLoading ? (
+        <CustomSpinner />
+      ) : error ? (
+        <ErrorComponent />
+      ) : (
+        <>
+          <div className="align-middle rounded-tl-lg rounded-tr-lg inline-block w-full py-4 overflow-hidden bg-white shadow-lg px-5 dark:bg-[#1C1E2D]">
+            <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
+              <span className="text-green-500">
+                <svg
+                  className="h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </span>
+              <span className="tracking-wide dark:text-white">
+                Order History
+              </span>
+            </div>
+          </div>
+          <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg dark:bg-[#1C1E2D]">
+            <table className="min-w-full dark:bg-[#151725] ">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
+                    Order ID
+                  </th>
+                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+                    Paid
+                  </th>
+                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+                    Delivered
+                  </th>
+                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+                    Created At
+                  </th>
+                  <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+                    Paid At
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-[#151725]">
+                {order?.map((info) => (
+                  <tr key={info._id}>
+                    <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
+                      <div className="flex items-center">
+                        <div>
+                          <div className="text-sm leading-5 text-gray-800 dark:text-white">
+                            {info._id}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                      <span
+                        className={`relative inline-block px-3 py-1 font-semibold ${
+                          info.isPaid ? "text-green-900" : "text-red-900"
+                        } leading-tight`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`absolute inset-0 ${
+                            info.isPaid ? "bg-green-200" : "bg-red-200"
+                          } opacity-50 rounded-full`}
+                        ></span>
+                        <span className="relative text-xs">
+                          {info.isPaid ? "paid" : "not paid"}
+                        </span>
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                      <span
+                        className={`relative inline-block px-3 py-1 font-semibold ${
+                          info.isDelivered ? "text-green-900" : "text-red-900"
+                        } leading-tight`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`absolute inset-0 ${
+                            info.isDelivered ? "bg-green-200" : "bg-red-200"
+                          } opacity-50 rounded-full`}
+                        ></span>
+                        <span className="relative text-xs">
+                          {info.isDelivered ? "delivered" : "not delivered"}
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
+                      {info.createdAt &&
+                        format(new Date(info.createdAt), "yyyy-MM-dd")}
+                    </td>
+                    <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
+                      {info.paidAt &&
+                        format(new Date(info.paidAt), "yyyy-MM-dd")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </div>

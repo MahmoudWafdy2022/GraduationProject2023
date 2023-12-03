@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetPaypalClientIdQuery,
+  useDeliverOrderMutation,
 } from "../slices/orderApiSlice";
 import CustomSpinner from "../components/CustomSpinner";
 import ErrorComponent from "../components/ErrorComponent";
@@ -16,16 +17,23 @@ export default function PlaceOrder() {
   let cart = useSelector((store) => store.cart.cardItems);
   let subs = useSelector((store) => store.cart);
   let user = useSelector((store) => store.auth.userInfo);
+  // const token = user.token;
   const currentUser = useSelector((store) => store.auth.userInfo);
+  let token = user.token;
+
   const { id } = useParams();
-
-  //   let token = user.token;
+  const { data, refetch, isLoading, error } = useGetOrderDetailsQuery(
+    id,
+    token
+  );
+  const [deliverOrder, { isLoading: loadingDeliver }] =
+    useDeliverOrderMutation();
   // { isLoading, error }
+  const location = useLocation();
 
-  const { data, refetch, isLoading, error } = useGetOrderDetailsQuery(id);
-  console.log(data);
   //   console.log(data.data.order);
-  const order = data?.data?.order;
+  const order = data?.data?.order || location?.state?.order;
+
   if (currentUser.role === "ADMIN") {
     const {
       orderItems,
@@ -115,6 +123,11 @@ export default function PlaceOrder() {
         return orderID;
       });
   }
+  const deliverHandler = async () => {
+    await deliverOrder(id);
+    refetch();
+  };
+
   return isLoading ? (
     <CustomSpinner />
   ) : error ? (
@@ -125,9 +138,11 @@ export default function PlaceOrder() {
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 p-5">
           Order: {id}
         </h1>
-        <ShippingSteps />
+        {currentUser.role !== "ADMIN" && <ShippingSteps />}
         <Summary
           // onApproveTest={onApproveTest}
+          deliverHandler={deliverHandler}
+          loadingDeliver={loadingDeliver}
           currentUser={currentUser}
           createOrder={createOrder}
           onApprove={onApprove}
@@ -251,9 +266,10 @@ function Summary({
   onApprove,
   onError,
   currentUser,
+  loadingDeliver,
+  deliverHandler,
   // onApproveTest,
 }) {
-  console.log(currentUser);
   return (
     <div className="bg-gray-100 min-w-full dark:bg-[#1C1E2D] ">
       <div className=" min-w-full justify-center px-6 md:flex md:space-x-6 xl:px-0">
@@ -301,6 +317,18 @@ function Summary({
                   )}
                 </>
               )}
+              {loadingDeliver && <CustomSpinner />}
+              {currentUser.role === "ADMIN" &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <button
+                    type="button"
+                    className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200"
+                    onClick={deliverHandler}
+                  >
+                    Mark As Delivered
+                  </button>
+                )}
             </div>
           </div>
         </div>
@@ -380,7 +408,7 @@ function Customer({ user, subs, order }) {
             </p>
             {order.isDelivered ? (
               <div className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
-                Delivered
+                Delivered on {order?.deliveredAt}
               </div>
             ) : (
               <div className="font-regular relative block w-full rounded-lg bg-red-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
@@ -398,7 +426,7 @@ function Customer({ user, subs, order }) {
             </p>
             {order.isPaid ? (
               <div className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
-                Paid on {order.paidAt}
+                Paid on {order?.paidAt}
               </div>
             ) : (
               <div className="font-regular relative  block w-full rounded-lg bg-red-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">

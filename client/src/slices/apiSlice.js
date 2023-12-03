@@ -6,10 +6,13 @@ export const apiSlice = createApi({
     prepareHeaders: (headers, { getState, endpoint }) => {
       // Add your logic to get the user token from the Redux state
       // Replace 'user.token.access' with the correct path to your token
+      console.log("Preparing headers...");
       if (getState().auth.userInfo) {
         const user = getState().auth.userInfo;
         const token = user.token;
-        if (user && endpoint !== "refresh") {
+        if (user.role === "ADMIN") {
+          headers.set("Authorization", `Bearer ${token}`);
+        } else if (user && endpoint !== "refresh") {
           headers.set("Authorization", `Bearer ${token}`);
         }
         return headers;

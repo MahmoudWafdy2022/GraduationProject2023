@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 export default function AdminDropDown({ user, handleLogout }) {
   const btnRef = useRef();
   const [showAdmin, setShowAdmin] = useState(false);
-  console.log(user);
   useEffect(() => {
     const closeDropDown = (e) => {
       if (!btnRef?.current?.contains(e.target)) {
@@ -31,7 +30,7 @@ export default function AdminDropDown({ user, handleLogout }) {
             <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
           <span className="text-sm font-medium dark:text-white ml-1">
-            Admin
+            {user?.role}
           </span>
         </button>
 

@@ -1,13 +1,34 @@
+import axios from "axios";
 import { format } from "date-fns";
 import { useGetOrdersQuery } from "../../slices/orderApiSlice";
 import CustomSpinner from "../../components/CustomSpinner";
 import ErrorComponent from "../../components/ErrorComponent";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 export default function OrderList() {
   const { data, isLoading, error } = useGetOrdersQuery();
-
+  const user = useSelector((store) => store.auth.userInfo);
+  const token = user.token;
+  const navigate = useNavigate();
   const orders = data?.data?.Orders;
-  console.log(orders);
+  function handleClick(id) {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      authorization: `Bearer ${token}`,
+    };
+    async function order() {
+      console.log(headers);
+      const res = await axios.get(`http://localhost:3001/orders/${id}`, {
+        headers: headers,
+      });
+      const order = res.data.data;
+      if (res.data.status == "success") {
+        navigate(`/order/${id}`, { state: { order } });
+      }
+    }
+    order();
+    // navigate(`/order/${id}`);
+  }
   return (
     <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8 dark:bg-[#1C1E2D]">
       {isLoading ? (
@@ -143,12 +164,12 @@ export default function OrderList() {
                         format(new Date(info.paidAt), "yyyy-MM-dd")}
                     </td>
                     <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                      <Link
-                        to={`/order/${info._id}`}
+                      <button
+                        onClick={() => handleClick(info._id)}
                         className="px-5 flex flex-col items-center justify-center py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
                       >
                         View Details
-                      </Link>
+                      </button>
                     </td>
                   </tr>
                 ))}

@@ -14,7 +14,7 @@ router.get("/orders/myorders", verifyToken, orderController.getMyOrders);
 router.post("/orders", verifyToken, orderController.addOrderItems);
 router.get("/orders/:id", verifyToken, orderController.getOrderById);
 router.post("/orders/:id/pay", verifyToken, orderController.updateOrderToPaid);
-router.get(
+router.put(
   "/orders/:id/deliver",
   verifyToken,
   allowdTo(userRole.ADMIN),
