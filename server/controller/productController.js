@@ -47,7 +47,7 @@ const createProduct = async (req, res) => {
       numReviews: 0,
       description: "Sample description",
     });
-
+    console.log(product);
     const createdProduct = await createProduct.save();
     return res
       .status(201)

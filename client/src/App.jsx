@@ -32,6 +32,7 @@ import ProductDetails from "./pages/products/ProductDetails";
 // admin
 import AdminRoute from "./components/AdminRoute";
 import OrderList from "./pages/admin/OrderList";
+import ProductList from "./pages/admin/ProductList";
 // loaders
 import productsLoader from "./loaders/productsLoader";
 import productDetailsLoader from "./loaders/productDetailsLoader";
@@ -99,6 +100,11 @@ const router = createBrowserRouter(
         <Route
           path="/admin/orderlist"
           element={<OrderList />}
+          loader={async () => null}
+        />
+        <Route
+          path="/admin/productlist"
+          element={<ProductList />}
           loader={async () => null}
         />
       </Route>
