@@ -39,7 +39,7 @@ const createProduct = async (req, res) => {
     const product = new productModel({
       name: "Sample name",
       price: 0,
-      user: req.user._id,
+      user: req.currentUser.id,
       image: "/images/sample.jpg",
       brand: "Sample brand",
       category: "Sample category",
@@ -48,7 +48,7 @@ const createProduct = async (req, res) => {
       description: "Sample description",
     });
     console.log(product);
-    const createdProduct = await createProduct.save();
+    const createdProduct = await product.save();
     return res
       .status(201)
       .json({ status: httpStatusText.SUCCESS, data: { createdProduct } });
