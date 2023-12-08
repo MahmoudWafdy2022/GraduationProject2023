@@ -2,7 +2,7 @@
 // const products = require("./data/products");
 const productRoute = require("./routes/productRoute");
 const userRoute = require("./routes/userRoute");
-
+const uploadRoute = require("./routes/uploadRoutes")
 const orderRoute = require("./routes/orderRoute");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -38,6 +38,8 @@ app.use("/", userRoute);
 
 app.use("/", productRoute);
 app.use("/", orderRoute);
+app.use("/", uploadRoute);
+
 
 app.get("/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
