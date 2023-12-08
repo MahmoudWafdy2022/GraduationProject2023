@@ -11,18 +11,35 @@ export default function ProductList() {
 
   const user = useSelector((store) => store.auth.userInfo);
   const token = user.token;
-
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    authorization: `Bearer ${token}`,
+  };
   const createProductHandler = async () => {
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      authorization: `Bearer ${token}`,
-    };
     if (window.confirm("Are you sure you want to create a new product?")) {
       try {
         const res = await axios.post("http://localhost:3001/products", null, {
           headers: headers,
         });
         console.log(res);
+        refetch();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
+  };
+  const deleteProductHandler = async (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        // Use the product ID to construct the URL
+        const url = `http://localhost:3001/products/${id}`;
+
+        // Send the DELETE request
+        const res = await axios.delete(url, { headers });
+
+        console.log(res);
+
+        // Refetch the products after deletion
         refetch();
       } catch (err) {
         toast.error(err?.data?.message || err.error);
@@ -153,9 +170,12 @@ export default function ProductList() {
                       </a>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <a className="font-medium text-red-600 dark:text-blue-red hover:underline">
+                      <button
+                        onClick={() => deleteProductHandler(p._id)}
+                        className="pointer font-medium text-red-600 dark:text-blue-red hover:underline"
+                      >
                         Delete
-                      </a>
+                      </button>
                     </td>
                   </tr>
                 ))}
