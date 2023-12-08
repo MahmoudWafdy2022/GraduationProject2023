@@ -10,6 +10,7 @@ router.get("/products/:id",productController.get_single_product)
 router.post("/products",verifyToken,allowdTo(userRole.ADMIN),productController.createProduct)
 router.put("/products/:id",verifyToken,allowdTo(userRole.ADMIN),productController.updateProduct)
 router.delete("/products/:id",verifyToken,allowdTo(userRole.ADMIN),productController.deleteProduct)
+router.post("/products/:id/reviews",verifyToken,productController.CreateProductReview)
 
 
 
