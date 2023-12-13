@@ -22,9 +22,18 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Product"],
     }),
+    updateProduct: builder.mutation({
+      query: (data) => ({
+        url: `http://localhost:3001/products/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
     deleteProduct: builder.mutation({
-      query: () => ({
-        url: `http://localhost:3001/products/:id`,
+      query: (id) => ({
+        url: `http://localhost:3001/products/${id}`,
         method: "DELETE",
       }),
     }),

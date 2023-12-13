@@ -1,10 +1,12 @@
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useGetProductsQuery } from "../../slices/productsApiSlice";
 import CustomSpinner from "../../components/CustomSpinner";
 import ErrorComponent from "../../components/ErrorComponent";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { Card } from "@material-tailwind/react";
+
 export default function ProductList() {
   const { data: products, isLoading, error, refetch } = useGetProductsQuery();
   const product = products?.data?.products;
@@ -54,7 +56,7 @@ export default function ProductList() {
         <ErrorComponent />
       ) : (
         <>
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg flex justify-start items-end flex-col">
+          <div className="relative  shadow-md sm:rounded-lg flex justify-start items-end flex-col">
             <button
               type="button"
               onClick={createProductHandler}
@@ -95,10 +97,11 @@ export default function ProductList() {
               />
             </div>
           </div> */}
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  {/* <th scope="col" className="p-4">
+            <Card className="h-full w-full xs:overflow-scroll sm:overflow-scroll md:overflow-auto">
+              <table className="w-full min-w-max table-auto text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    {/* <th scope="col" className="p-4">
                   <div className="flex items-center">
                     <input
                       id="checkbox-all-search"
@@ -110,31 +113,31 @@ export default function ProductList() {
                     </label>
                   </div>
                 </th> */}
-                  <th scope="col" className="px-6 py-3">
-                    ID
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Product name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Brand
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Category
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Price
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">Edit</span>
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">Delete</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* <td className="w-4 p-4">
+                    <th scope="col" className="px-6 py-3">
+                      ID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Product name
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Brand
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Category
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Price
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      <span className="sr-only">Edit</span>
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      <span className="sr-only">Delete</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* <td className="w-4 p-4">
                   <div className="flex items-center">
                   <input
                   id="checkbox-table-search-1"
@@ -149,38 +152,42 @@ export default function ProductList() {
                     </label>
                     </div>
                 </td> */}
-                {product.map((p) => (
-                  <tr
-                    key={p._id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  >
-                    <td className="px-6 py-4">{p._id}</td>
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+                  {product.map((p) => (
+                    <tr
+                      key={p._id}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
-                      {p.name}
-                    </th>
-                    <td className="px-6 py-4">{p.brand}</td>
-                    <td className="px-6 py-4">{p.category}</td>
-                    <td className="px-6 py-4">${p.price}</td>
-                    <td className="px-6 py-4 text-right">
-                      <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        Edit
-                      </a>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => deleteProductHandler(p._id)}
-                        className="pointer font-medium text-red-600 dark:text-blue-red hover:underline"
+                      <td className="px-6 py-4">{p._id}</td>
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
                       >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        {p.name}
+                      </th>
+                      <td className="px-6 py-4">{p.brand}</td>
+                      <td className="px-6 py-4">{p.category}</td>
+                      <td className="px-6 py-4">${p.price}</td>
+                      <td className="px-6 py-4 text-right">
+                        <Link
+                          to={`/admin/product/${p._id}/edit`}
+                          className="font-medium text-blue-500 hover:underline"
+                        >
+                          Edit
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => deleteProductHandler(p._id)}
+                          className="pointer font-medium text-red-600 dark:text-blue-red hover:underline"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
           </div>
         </>
       )}

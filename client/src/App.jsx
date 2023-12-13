@@ -33,6 +33,7 @@ import ProductDetails from "./pages/products/ProductDetails";
 import AdminRoute from "./components/AdminRoute";
 import OrderList from "./pages/admin/OrderList";
 import ProductList from "./pages/admin/ProductList";
+import ProductEdit from "./pages/admin/ProductEdit";
 // loaders
 import productsLoader from "./loaders/productsLoader";
 import productDetailsLoader from "./loaders/productDetailsLoader";
@@ -107,6 +108,7 @@ const router = createBrowserRouter(
           element={<ProductList />}
           loader={async () => null}
         />
+        <Route path="/admin/product/:id/edit" element={<ProductEdit />} />
       </Route>
       <Route path="*" element={<NotFound />} loader={async () => null} />
     </Route>
