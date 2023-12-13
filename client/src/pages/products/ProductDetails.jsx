@@ -16,8 +16,8 @@ export default function VanDetail() {
   const hideReviewsText = false;
   const search = location.state?.search || "";
   const headers = {
-    Authorization: `Bearer ${userInfo.token}`,
-    authorization: `Bearer ${userInfo.token}`,
+    Authorization: `Bearer ${userInfo?.token}`,
+    authorization: `Bearer ${userInfo?.token}`,
   };
   const addedSuccessfully = () =>
     toast.success("Added Successfully", {
@@ -78,13 +78,13 @@ export default function VanDetail() {
   useEffect(() => {
     const isReviewed = product.reviews.some((i) => {
       console.log("_id:" + i.user);
-      console.log("userInfo:" + userInfo.id);
+      console.log("userInfo:" + userInfo?.id);
 
-      return i.user.toString() === userInfo.id.toString();
+      return i.user.toString() === userInfo?.id.toString();
     });
     setIsUserAlreadyReviewd(isReviewed);
     console.log(isReviewed);
-  }, [product.reviews, userInfo.id]);
+  }, [product.reviews, userInfo?.id]);
   return (
     <div>
       <Link

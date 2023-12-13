@@ -1,6 +1,12 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useNavigate, Link, useNavigation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {
+  useLocation,
+  useNavigate,
+  Link,
+  useNavigation,
+} from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
 // import { toast } from "react-toastify";
 import axios from "axios";
@@ -14,6 +20,15 @@ function Register() {
     register,
     formState: { errors },
   } = useForm();
+  const { userInfo } = useSelector((state) => state.auth);
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const redirect = sp.get("redirect") || "/";
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
+    }
+  }, [navigate, redirect, userInfo]);
 
   const validateName = (value) => {
     // Validate that the input contains only letters and no whitespace

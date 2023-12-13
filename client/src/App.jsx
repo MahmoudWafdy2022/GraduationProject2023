@@ -10,8 +10,6 @@ import { store } from "./store";
 import { Provider } from "react-redux";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
-// requireAuth
-import requireAuth from "./utils/requireAuth";
 // Layouts
 import Layout from "./components/Layout";
 // Pages
@@ -45,28 +43,17 @@ const Products = React.lazy(() => import("./pages/products/Products"));
 // loading spinner
 import CustomSpinner from "./components/CustomSpinner";
 
-//
-
-// ... (Your other imports)
-
-// Function to check if the user is logged in
-// Helper function to get the display name of a component
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />} errorElement={<Error />}>
       <Route index element={<HomePage />} loader={async () => null} />
       <Route
         path="login"
-        element={React.createElement(requireAuth(Login))}
+        element={<Login />}
         loader={async () => null}
         // action={loginAction}
       />
-      <Route
-        path="register"
-        element={React.createElement(requireAuth(Register))}
-        loader={async () => null}
-      />
+      <Route path="register" element={<Register />} loader={async () => null} />
       <Route
         path="products"
         element={
