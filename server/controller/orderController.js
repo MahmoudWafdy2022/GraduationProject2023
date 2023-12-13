@@ -138,10 +138,10 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 const updateOrderToDeliverd = async (req, res) => {
   try {
     const order = await orderModel.findById(req.params.id);
-    console.log(order);
+
     for (const item of order.orderItems) {
       const product = await productModel.findById(item.product);
-      console.log(product);
+
       if (product) {
         const requestedQty = item.qty;
         const availableQty = product.countInStock;
