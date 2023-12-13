@@ -1,5 +1,6 @@
 const asyncHandler = require("../middleware/asyncHandler.js");
 const orderModel = require("../models/orderModel");
+const productModel = require("../models/productModel");
 const httpStatusText = require("../utils/httpStatusText");
 // const PayPalUtils = require("../utils/paypal");
 // const { getPayPalAccessToken, checkIfNewTransaction, verifyPayPalPayment } =
@@ -137,6 +138,24 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 const updateOrderToDeliverd = async (req, res) => {
   try {
     const order = await orderModel.findById(req.params.id);
+    console.log(order);
+    for (const item of order.orderItems) {
+      const product = await productModel.findById(item.product);
+      console.log(product);
+      if (product) {
+        const requestedQty = item.qty;
+        const availableQty = product.countInStock;
+
+        if (requestedQty > availableQty) {
+          // Handle insufficient stock (throw an error, etc.)
+          throw new Error(`Insufficient stock for product: ${product.name}`);
+        }
+
+        // Update product quantity
+        product.countInStock -= requestedQty;
+        await product.save();
+      }
+    }
     if (order) {
       order.isDelivered = true;
       order.deliveredAt = Date.now();

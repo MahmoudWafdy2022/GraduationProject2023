@@ -51,9 +51,12 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
     }),
     deliverOrder: builder.mutation({
-      query: (id) => ({
+      query: (id, token) => ({
         url: `http://localhost:3001/orders/${id}/deliver`,
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }),
     }),
   }),

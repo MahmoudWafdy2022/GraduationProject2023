@@ -6,11 +6,12 @@ import {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetPaypalClientIdQuery,
-  useDeliverOrderMutation,
+  // useDeliverOrderMutation,
 } from "../slices/orderApiSlice";
 import CustomSpinner from "../components/CustomSpinner";
 import ErrorComponent from "../components/ErrorComponent";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 export default function PlaceOrder() {
@@ -26,8 +27,10 @@ export default function PlaceOrder() {
     id,
     token
   );
-  const [deliverOrder, { isLoading: loadingDeliver }] =
-    useDeliverOrderMutation();
+  // const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation(
+  //   id,
+  //   token
+  // );
   // { isLoading, error }
   const location = useLocation();
 
@@ -124,7 +127,23 @@ export default function PlaceOrder() {
       });
   }
   const deliverHandler = async () => {
-    await deliverOrder(id);
+    console.log(currentUser.token);
+    const headers = {
+      Authorization: `Bearer ${currentUser.token}`,
+      authorization: `Bearer ${currentUser.token}`,
+    };
+    try {
+      const res = await axios.put(
+        `http://localhost:3001/orders/${id}/deliver`,
+        null,
+        {
+          headers: headers,
+        }
+      );
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
     refetch();
   };
 
@@ -142,7 +161,7 @@ export default function PlaceOrder() {
         <Summary
           // onApproveTest={onApproveTest}
           deliverHandler={deliverHandler}
-          loadingDeliver={loadingDeliver}
+          // loadingDeliver={loadingDeliver}
           currentUser={currentUser}
           createOrder={createOrder}
           onApprove={onApprove}
@@ -266,7 +285,7 @@ function Summary({
   onApprove,
   onError,
   currentUser,
-  loadingDeliver,
+  // loadingDeliver,
   deliverHandler,
   // onApproveTest,
 }) {
@@ -317,7 +336,7 @@ function Summary({
                   )}
                 </>
               )}
-              {loadingDeliver && <CustomSpinner />}
+              {/* {loadingDeliver && <CustomSpinner />} */}
               {currentUser.role === "ADMIN" &&
                 order.isPaid &&
                 !order.isDelivered && (
