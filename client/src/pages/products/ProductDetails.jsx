@@ -1,17 +1,24 @@
-import { Link, useLocation, useLoaderData } from "react-router-dom";
+import { Link, useLocation, useLoaderData, useParams } from "react-router-dom";
 import { RatingWithText } from "../../components/RatingWithText";
 import ProductsNavbar from "../../components/ProductsNavbar";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { addToCart } from "../../slices/cartSlice";
 import { toast } from "react-toastify";
+import axios from "axios";
+import Reviews from "../../components/Reviews";
 export default function VanDetail() {
+  const [rating, setRating] = useState(0);
   const location = useLocation();
   const product = useLoaderData();
-
+  const { id } = useParams();
+  const { userInfo } = useSelector((state) => state.auth);
   const hideReviewsText = false;
   const search = location.state?.search || "";
-
+  const headers = {
+    Authorization: `Bearer ${userInfo.token}`,
+    authorization: `Bearer ${userInfo.token}`,
+  };
   const addedSuccessfully = () =>
     toast.success("Added Successfully", {
       position: "top-right",
@@ -25,6 +32,8 @@ export default function VanDetail() {
     });
 
   const [qty, setQty] = useState(1);
+
+  const [isUserAlreadyReviewd, setIsUserAlreadyReviewd] = useState(false);
   const dispatch = useDispatch();
 
   // const type = location.state?.type || "all";
@@ -38,6 +47,44 @@ export default function VanDetail() {
     dispatch(addToCart({ product, qty }));
     addedSuccessfully();
   }
+  const handleRatingChange = (e) => {
+    const value = Math.max(0, Math.min(5, Number(e.target.value)));
+    setRating(value);
+  };
+  const submitReview = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.post(
+        `http://localhost:3001/products/${id}/reviews`,
+        {
+          rating,
+          comment: e.target.feedback.value,
+          userInfo,
+        },
+        {
+          headers: headers,
+        }
+      );
+      console.log(res);
+      toast.success("Added successfully");
+      window.location.reload();
+    } catch (error) {
+      // Handle error (you may want to show an error message)
+
+      toast.error(error?.response?.data?.message);
+    }
+  };
+  useEffect(() => {
+    const isReviewed = product.reviews.some((i) => {
+      console.log("_id:" + i.user);
+      console.log("userInfo:" + userInfo.id);
+
+      return i.user.toString() === userInfo.id.toString();
+    });
+    setIsUserAlreadyReviewd(isReviewed);
+    console.log(isReviewed);
+  }, [product.reviews, userInfo.id]);
   return (
     <div>
       <Link
@@ -203,18 +250,69 @@ export default function VanDetail() {
           </div>
         </div>
       </div>
+      {userInfo?.token ? (
+        <>
+          <Reviews product={product} />
+          {!isUserAlreadyReviewd && (
+            <form
+              onSubmit={submitReview}
+              className="w-full p-10 flex flex-col ml-5"
+              id="feedbackForm"
+            >
+              <div className="relative  mb-3">
+                <label
+                  className="block uppercase dark:text-gray-200 text-xs font-bold mb-2"
+                  htmlFor="rating"
+                >
+                  Rating
+                </label>
+                <input
+                  type="number"
+                  name="rating"
+                  id="rating"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={rating}
+                  onChange={handleRatingChange}
+                  required
+                  className="border-0 px-3 py-3 rounded text-sm shadow 
+                    bg-gray-300 placeholder-black text-gray-800 outline-none focus:bg-gray-400"
+                  placeholder="Write a number between 0 - 5"
+                />
+              </div>
+              <div className="relative  mb-3">
+                <label
+                  className="block uppercase dark:text-gray-200 text-xs font-bold mb-2"
+                  htmlFor="message"
+                >
+                  Message
+                </label>
+                <textarea
+                  name="feedback"
+                  id="feedback"
+                  rows="4"
+                  cols="80"
+                  className="border-0 px-3 py-3 bg-gray-300 placeholder-black text-gray-800 rounded text-sm shadow focus:outline-none "
+                  placeholder=""
+                  required
+                ></textarea>
+              </div>
+              <div className="mt-6">
+                <button
+                  id="feedbackBtn"
+                  className="bg-[#FBC02D] text-black text-center mx-auto active:bg-yellow-400 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                  type="submit"
+                >
+                  Write a review
+                </button>
+              </div>
+            </form>
+          )}
+        </>
+      ) : (
+        <Reviews product={product} />
+      )}
     </div>
   );
 }
-
-// <div>
-//   <img src={product.image} />
-//   <p>{product.name}</p>
-//   <p>{product.brand}</p>
-//   <p>{product.category}</p>
-//   <p>{product.price}</p>
-//   <p>{product.countInStock}</p>
-//   <p>{product.rating}</p>
-//   <p>{product.numReviews}</p>
-//   <p>{product.description}</p>
-// </div>

@@ -120,24 +120,26 @@ const deleteProduct = async (req, res) => {
 
 const CreateProductReview = async (req, res) => {
   try {
-    const { rating, comment } = req.body;
+    const { rating, comment, userInfo } = req.body;
+
     const product = await productModel.findById(req.params.id);
 
     if (product) {
       const alreadyReviewed = product.reviews.find(
-        (r) => r.user.toString() === req.user._id.toString()
+        (r) => r.user.toString() === userInfo.id.toString()
       );
 
       if (alreadyReviewed) {
         res.status(400);
         throw new Error("Product already reviewed");
       }
-
+      const name = userInfo?.firstname + " " + userInfo?.lastname;
+      const roundedRating = Number(rating).toFixed(2);
       const review = {
-        name: req.user.name,
-        rating: Number(rating),
+        name,
+        rating: Number(roundedRating),
         comment,
-        user: req.user._id,
+        user: userInfo.id,
       };
 
       product.reviews.push(review);
@@ -148,7 +150,8 @@ const CreateProductReview = async (req, res) => {
         product.reviews.reduce((acc, item) => item.rating + acc, 0) /
         product.reviews.length;
 
-      await product.save();
+      const savedProduct = await product.save();
+
       res.status(201).json({ message: "Review added" });
     } else {
       res.status(404);
