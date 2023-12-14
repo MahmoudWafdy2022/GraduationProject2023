@@ -30,14 +30,14 @@ export default function OrderList() {
     // navigate(`/order/${id}`);
   }
   return (
-    <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8 dark:bg-[#1C1E2D]">
+    <div className="h-[calc(100vh-2rem)] sm:w-32 md:w-48 lg:w-64  dark:bg-[#1C1E2D]">
       {isLoading ? (
         <CustomSpinner />
       ) : error ? (
         <ErrorComponent />
       ) : (
         <>
-          <div className="align-middle rounded-tl-lg rounded-tr-lg inline-block w-full py-4 overflow-hidden bg-white shadow-lg px-12 dark:bg-[#1C1E2D]">
+          <div className="align-left rounded-tl-lg rounded-tr-lg inline-block w-100  overflow-hidden bg-white shadow-lg  dark:bg-[#1C1E2D]">
             {/* <div className="flex justify-between">
             <div className="inline-flex border rounded w-7/12 px-2 lg:px-6 h-12 bg-transparent">
               <div className="flex flex-wrap items-stretch w-full h-full mb-6 relative">
@@ -71,8 +71,8 @@ export default function OrderList() {
             </div>
           </div> */}
           </div>
-          <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg dark:bg-[#1C1E2D]">
-            <table className="min-w-full dark:bg-[#151725]">
+          <div className="align-left inline-block max-w-100 shadow  bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg dark:bg-[#1C1E2D]">
+            <table className="w-100 dark:bg-[#151725]">
               <thead>
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">

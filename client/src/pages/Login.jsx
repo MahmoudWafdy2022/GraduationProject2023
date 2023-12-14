@@ -42,6 +42,9 @@ function Login() {
       const user = res.data;
 
       dispatch(setCredentials({ ...user }));
+      if (userInfo?.role === "ADMIN") {
+        navigate("/admin");
+      }
       navigate(redirect);
     } catch (err) {
       console.log(err);

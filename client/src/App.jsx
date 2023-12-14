@@ -29,6 +29,7 @@ import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/products/ProductDetails";
 // admin
 import AdminRoute from "./components/AdminRoute";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import OrderList from "./pages/admin/OrderList";
 import ProductList from "./pages/admin/ProductList";
 import ProductEdit from "./pages/admin/ProductEdit";
@@ -84,18 +85,19 @@ const router = createBrowserRouter(
         <Route path="order/:id" element={<Order />} loader={async () => null} />
         <Route path="profile" element={<Profile />} loader={async () => null} />
       </Route>
-      <Route element={<AdminRoute />} loader={async () => null}>
+      <Route path="admin" element={<AdminRoute />} loader={async () => null}>
+        <Route index element={<AdminDashboard />} loader={async () => null} />
         <Route
-          path="/admin/orderlist"
+          path="orderlist"
           element={<OrderList />}
           loader={async () => null}
         />
         <Route
-          path="/admin/productlist"
+          path="productlist"
           element={<ProductList />}
           loader={async () => null}
         />
-        <Route path="/admin/product/:id/edit" element={<ProductEdit />} />
+        <Route path="product/:id/edit" element={<ProductEdit />} />
       </Route>
       <Route path="*" element={<NotFound />} loader={async () => null} />
     </Route>

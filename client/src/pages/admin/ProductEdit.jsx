@@ -109,9 +109,10 @@ export default function ProductEdit() {
       <Link
         to="/admin/productlist"
         relative="path"
-        className="text-white mx-auto flex max-w-2xl items-center space-x-2 px-4 pt-5 sm:px-6 lg:max-w-7xl lg:px-8"
+        className="dark:text-white mx-auto flex max-w-2xl items-center space-x-2 px-4 pt-5 sm:px-6 lg:max-w-7xl lg:px-8"
       >
-        &larr; <span className="ml-2 text-white">Back to Product List</span>
+        &larr;{" "}
+        <span className="ml-2 dark:text-white">Back to Product List</span>
       </Link>
       <Card
         color="transparent"
@@ -123,7 +124,7 @@ export default function ProductEdit() {
             <Typography
               variant="h6"
               color="blue-gray"
-              className="text-white -mb-3"
+              className="dark:text-white -mb-3"
             >
               Product Name
             </Typography>
@@ -135,7 +136,7 @@ export default function ProductEdit() {
               id="name"
               size="lg"
               placeholder="Airpods"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 text-white  focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -143,7 +144,7 @@ export default function ProductEdit() {
             <Typography
               variant="h6"
               color="blue-gray"
-              className="text-white -mb-3"
+              className="dark:text-white -mb-3"
             >
               Product Price
             </Typography>
@@ -156,7 +157,7 @@ export default function ProductEdit() {
               id="price"
               size="lg"
               placeholder="20$"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 text-white  focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -165,7 +166,7 @@ export default function ProductEdit() {
             <Typography
               variant="h6"
               color="blue-gray"
-              className="text-white -mb-3"
+              className="dark:text-white -mb-3"
             >
               Product Brand
             </Typography>
@@ -177,7 +178,7 @@ export default function ProductEdit() {
               id="brand"
               size="lg"
               placeholder="brand"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 text-white  focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -185,7 +186,7 @@ export default function ProductEdit() {
             <Typography
               variant="h6"
               color="blue-gray"
-              className="text-white -mb-3"
+              className="dark:text-white -mb-3"
             >
               Product Category
             </Typography>
@@ -197,7 +198,7 @@ export default function ProductEdit() {
               id="category"
               size="lg"
               placeholder="category"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 text-white  focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -205,7 +206,7 @@ export default function ProductEdit() {
             <Typography
               variant="h6"
               color="blue-gray"
-              className="text-white -mb-3"
+              className="dark:text-white -mb-3"
             >
               Product Count in Stock
             </Typography>
@@ -218,7 +219,7 @@ export default function ProductEdit() {
               size="lg"
               min={0}
               placeholder="13"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 text-white  focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -226,7 +227,7 @@ export default function ProductEdit() {
             <Typography
               variant="h6"
               color="blue-gray"
-              className="text-white -mb-3"
+              className="dark:text-white -mb-3"
             >
               Product Description
             </Typography>
@@ -237,7 +238,7 @@ export default function ProductEdit() {
               id="description"
               size="lg"
               placeholder="Product description"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 text-white focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
