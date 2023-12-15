@@ -4,13 +4,13 @@ import { useState } from "react";
 
 import CartSummary from "../components/cart/CartSummary";
 import CartCheckout from "../components/cart/CartCheckout";
-
+import useRedirect from "../utils/useRedirect";
 export default function Cart() {
   const cart = useSelector((store) => store.cart.cardItems);
   const subs = useSelector((store) => store.cart);
   const [current, setCurrent] = useState(0);
   const [qt] = useState(cart[current]?.qty || 1);
-
+  useRedirect();
   if (subs.cardItems.length <= 0) {
     return (
       <div className="grid h-screen px-4 bg-white dark:bg-[#1C1E2D] place-content-center ">

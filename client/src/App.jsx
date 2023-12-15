@@ -39,6 +39,7 @@ import UserEdit from "./pages/admin/UserEdit";
 // seller
 import SellerRoute from "./components/seller/SellerRoute";
 import SellerProduct from "./pages/seller/SellerProduct";
+import SellerProfile from "./pages/seller/SellerProfile";
 import ProductPost from "./pages/seller/ProductPost";
 
 // loaders
@@ -122,6 +123,11 @@ const router = createBrowserRouter(
         <Route
           path="productlist"
           element={<SellerProduct />}
+          loader={async () => null}
+        />
+        <Route
+          path="profile"
+          element={<SellerProfile />}
           loader={async () => null}
         />
         <Route

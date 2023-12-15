@@ -1,17 +1,9 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Typography } from "@material-tailwind/react";
 import HomePageHeader from "../components/homePage/HomePageHeader";
 import HomePageBody from "../components/homePage/HomePageBody";
-import { useSelector } from "react-redux";
+import useRedirect from "../utils/useRedirect";
 export default function HomePage() {
-  const { userInfo } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (userInfo?.role === "ADMIN") {
-      navigate("/admin");
-    }
-  }, [navigate, userInfo]);
+  useRedirect();
   return (
     <header>
       <HomePageHeader />

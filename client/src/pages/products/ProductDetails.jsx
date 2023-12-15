@@ -19,6 +19,7 @@ export default function VanDetail() {
     Authorization: `Bearer ${userInfo?.token}`,
     authorization: `Bearer ${userInfo?.token}`,
   };
+
   const addedSuccessfully = () =>
     toast.success("Added Successfully", {
       position: "top-right",
@@ -39,6 +40,10 @@ export default function VanDetail() {
   // const type = location.state?.type || "all";
   const min = 1;
   const max = product.countInStock;
+  let disableCart = true;
+  if (userInfo?.role === "ADMIN" || userInfo?.role === "SELLER") {
+    disableCart = false;
+  }
   function handleChange(e) {
     const value = Math.max(min, Math.min(max, Number(e.target.value)));
     setQty(value);
@@ -176,16 +181,17 @@ export default function VanDetail() {
                   </div>
                 </div>
 
-                {product.countInStock > 0 && (
-                  <button
-                    type="button"
-                    className="mt-20 flex w-full items-center justify-center rounded-md border border-transparent bg-[#FBC02D] px-8 py-3 text-base font-medium text-white hover:bg-[#FBC03D] focus:outline-none focus:ring-2 focus:bg-[#FBC03D] focus:ring-offset-2"
-                    disabled={product.countInStock === 0}
-                    onClick={addToCardHandler}
-                  >
-                    Add to bag
-                  </button>
-                )}
+                {product.countInStock > 0 ||
+                  (disableCart && (
+                    <button
+                      type="button"
+                      className="mt-20 flex w-full items-center justify-center rounded-md border border-transparent bg-[#FBC02D] px-8 py-3 text-base font-medium text-white hover:bg-[#FBC03D] focus:outline-none focus:ring-2 focus:bg-[#FBC03D] focus:ring-offset-2"
+                      disabled={product.countInStock === 0}
+                      onClick={addToCardHandler}
+                    >
+                      Add to bag
+                    </button>
+                  ))}
               </div>
 
               <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
@@ -250,7 +256,7 @@ export default function VanDetail() {
           </div>
         </div>
       </div>
-      {userInfo?.token ? (
+      {disableCart && userInfo?.token ? (
         <>
           <Reviews product={product} />
           {!isUserAlreadyReviewd && (

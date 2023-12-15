@@ -48,7 +48,9 @@ export default function TopHeader({
 
           <Search />
           <div className="ml-2 flex">
-            <CartButton cart={cart} />
+            {(user?.role === "USER" || !user?.token) && (
+              <CartButton cart={cart} />
+            )}
             {(!user?.token || user?.role === "USER") && (
               <UserHamburger
                 user={user}

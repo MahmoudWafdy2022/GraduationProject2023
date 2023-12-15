@@ -10,7 +10,9 @@ import { setCredentials } from "../slices/authSlice";
 // import { useNavigate } from "react-router-dom";
 import CustomSpinner from "../components/CustomSpinner";
 import ErrorComponent from "../components/ErrorComponent";
+import useRedirect from "../utils/useRedirect";
 export default function Profile() {
+  useRedirect();
   const user = useSelector((store) => store.auth.userInfo);
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
@@ -60,7 +62,7 @@ function ProfileCard({ user }) {
         />
       </div> */}
       <h1 className="text-gray-900 font-bold text-xl leading-8 my-1 dark:text-white">
-        {user.firstname} {user.lastname}
+        {user?.firstname} {user?.lastname}
       </h1>
       <h3 className="text-gray-600 font-lg text-semibold leading-6 dark:text-white">
         {/* Owner at Her Company Inc. */}

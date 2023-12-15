@@ -5,9 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCreateOrderMutation } from "../slices/orderApiSlice";
 import { clearCartItems } from "../slices/cartSlice";
 import CustomSpinner from "../components/CustomSpinner";
+import useRedirect from "../utils/useRedirect";
 import { toast } from "react-toastify";
 
 export default function PlaceOrder() {
+  useRedirect();
   const cart = useSelector((store) => store.cart.cardItems);
   const subs = useSelector((store) => store.cart);
   const user = useSelector((store) => store.auth.userInfo);

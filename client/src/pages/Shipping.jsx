@@ -4,7 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { saveShippingAddress } from "../slices/cartSlice";
+import useRedirect from "../utils/useRedirect";
 export default function Shipping() {
+  useRedirect();
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 

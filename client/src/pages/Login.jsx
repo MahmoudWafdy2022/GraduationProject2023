@@ -44,6 +44,11 @@ function Login() {
       dispatch(setCredentials({ ...user }));
       if (userInfo?.role === "ADMIN") {
         navigate("/admin");
+        return;
+      }
+      if (userInfo?.role === "SELLER") {
+        navigate("/seller/productlist");
+        return;
       }
       navigate(redirect);
     } catch (err) {

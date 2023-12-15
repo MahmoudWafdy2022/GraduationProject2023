@@ -176,7 +176,15 @@ export default function SellerProduct() {
                       <td className="px-6 py-4">{p.brand}</td>
                       <td className="px-6 py-4">{p.category}</td>
                       <td className="px-6 py-4">${p.price}</td>
-                      <td className="px-6 py-4 text-right">{p?.status}</td>
+                      <td
+                        className={`px-6 py-4 text-right ${
+                          p?.status === "pending"
+                            ? " text-blue-500"
+                            : " text-green-500"
+                        }`}
+                      >
+                        {p?.status}
+                      </td>
                       {/* <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => deleteProductHandler(p._id)}
