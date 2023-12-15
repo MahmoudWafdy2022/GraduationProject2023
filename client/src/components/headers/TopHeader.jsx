@@ -8,6 +8,7 @@ import CartButton from "./CartButton";
 import BottomHeader from "./BottomHeader";
 import UserHamburger from "./UserHamburger";
 import AdminDropDown from "../admin/AdminDropDown";
+import SellerDropDown from "../seller/SellerDropDown";
 export default function TopHeader({
   user,
   cart,
@@ -48,7 +49,7 @@ export default function TopHeader({
           <Search />
           <div className="ml-2 flex">
             <CartButton cart={cart} />
-            {user?.role !== "ADMIN" && (
+            {(!user?.token || user?.role === "USER") && (
               <UserHamburger
                 user={user}
                 showProfile={showProfile}
@@ -58,6 +59,9 @@ export default function TopHeader({
             )}
             {user?.role === "ADMIN" && (
               <AdminDropDown user={user} handleLogout={handleLogout} />
+            )}
+            {user?.role === "SELLER" && (
+              <SellerDropDown user={user} handleLogout={handleLogout} />
             )}
           </div>
         </div>

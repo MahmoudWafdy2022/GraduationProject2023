@@ -28,13 +28,19 @@ import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/products/ProductDetails";
 // admin
-import AdminRoute from "./components/AdminRoute";
+import AdminRoute from "./components/admin/AdminRoute";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import OrderList from "./pages/admin/OrderList";
 import ProductList from "./pages/admin/ProductList";
+import PendingProduct from "./pages/admin/PendingProduct";
 import ProductEdit from "./pages/admin/ProductEdit";
 import UserList from "./pages/admin/UserList";
 import UserEdit from "./pages/admin/UserEdit";
+// seller
+import SellerRoute from "./components/seller/SellerRoute";
+import SellerProduct from "./pages/seller/SellerProduct";
+import ProductPost from "./pages/seller/ProductPost";
+
 // loaders
 import productsLoader from "./loaders/productsLoader";
 import productDetailsLoader from "./loaders/productDetailsLoader";
@@ -100,12 +106,29 @@ const router = createBrowserRouter(
           loader={async () => null}
         />
         <Route
+          path="pendingproduct"
+          element={<PendingProduct />}
+          loader={async () => null}
+        />
+        <Route
           path="userlist"
           element={<UserList />}
           loader={async () => null}
         />
         <Route path="user/:id/edit" element={<UserEdit />} />
         <Route path="product/:id/edit" element={<ProductEdit />} />
+      </Route>
+      <Route path="seller" element={<SellerRoute />} loader={async () => null}>
+        <Route
+          path="productlist"
+          element={<SellerProduct />}
+          loader={async () => null}
+        />
+        <Route
+          path="productpost"
+          element={<ProductPost />}
+          loader={async () => null}
+        />
       </Route>
       <Route path="*" element={<NotFound />} loader={async () => null} />
     </Route>

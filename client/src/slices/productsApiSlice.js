@@ -37,6 +37,27 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    getSellerProducts: builder.query({
+      query: () => ({
+        url: `http://localhost:3001/products/seller/all`,
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    getSellerAcceptedProducts: builder.query({
+      query: (id) => ({
+        url: `http://localhost:3001/products/seller/${id}`,
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    getSellerPendingProducts: builder.query({
+      query: (id) => ({
+        url: `http://localhost:3001/products/seller/pending/${id}`,
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
@@ -45,4 +66,7 @@ export const {
   useGetProductDetailsQuery,
   useCreateProductMutation,
   useDeleteProductMutation,
+  useGetSellerAcceptedProductsQuery,
+  useGetSellerPendingProductsQuery,
+  useGetSellerProductsQuery,
 } = productsApiSlice;

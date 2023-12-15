@@ -15,6 +15,8 @@ function Register() {
   const navigation = useNavigation();
   const navigate = useNavigate();
   const [err, setErr] = useState("");
+  const [selectedRole, setSelectedRole] = useState("USER");
+
   const {
     handleSubmit,
     register,
@@ -52,7 +54,7 @@ function Register() {
 
       return navigate("/login");
     } catch (err) {
-      setErr(err?.response?.data);
+      setErr(err?.response?.data?.message);
       console.log(err);
     }
   };
@@ -252,7 +254,34 @@ function Register() {
             )}
           </div>
         </div>
-
+        <div className="mb-3 flex flex-col gap-6">
+          <div>
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
+            >
+              Select Role
+            </Typography>
+            <select
+              {...register("role", { required: "Required" })}
+              className="w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D] "
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+            >
+              <option value="USER">Buyer</option>
+              <option value="SELLER">Seller</option>
+            </select>
+            {errors.role && (
+              <p
+                className="m-0 visible peer-invalid:visible text-pink-600 text-sm"
+                role="alert"
+              >
+                {errors.role.message}
+              </p>
+            )}
+          </div>
+        </div>
         <Button
           className="mt-6 dark:bg-[#151725] dark:hover:bg-[#151729]"
           fullWidth

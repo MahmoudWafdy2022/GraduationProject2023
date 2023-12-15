@@ -1,7 +1,7 @@
 const httpStatusText = require("../utils/httpStatusText");
 const { validationResult } = require("express-validator");
 const productModel = require("../models/productModel");
-
+const sellerProductModel = require("../models/sellerProductModel");
 const get_single_product = async (req, res) => {
   try {
     const product = await productModel.findById(req.params.id);
@@ -33,21 +33,31 @@ const get_all_products = async (req, res) => {
 // @desc    Create a product
 // @route   POST /api/products
 // @access  Private/Admin
-// not check
+
 const createProduct = async (req, res) => {
+  const {
+    name,
+    price,
+    user,
+    image,
+    brand,
+    category,
+    countInStock,
+    description,
+  } = req.body;
   try {
     const product = new productModel({
-      name: "Sample name",
-      price: 0,
-      user: req.currentUser.id,
-      image: "/images/sample.jpg",
-      brand: "Sample brand",
-      category: "Sample category",
-      countInStock: 0,
+      name: name || "Sample name",
+      price: price || 0,
+      user: user || req.currentUser.id,
+      image: image || "/images/sample.jpg",
+      brand: brand || "Sample brand",
+      category: category || "Sample category",
+      countInStock: countInStock || 0,
       numReviews: 0,
-      description: "Sample description",
+      description: description || "Sample description",
     });
-    console.log(product);
+
     const createdProduct = await product.save();
     return res
       .status(201)
@@ -164,6 +174,92 @@ const CreateProductReview = async (req, res) => {
   }
 };
 
+const createSellerProduct = async (req, res) => {
+  const { name, brand, category, description, countInStock, price } = req.body;
+
+  try {
+    const product = new sellerProductModel({
+      name,
+      price,
+      user: req.currentUser.id,
+      image: "/images/sample.jpg",
+      brand,
+      category,
+      countInStock,
+      numReviews: 0,
+      description,
+    });
+
+    const createdProduct = await product.save();
+
+    return res
+      .status(201)
+      .json({ status: httpStatusText.SUCCESS, data: { createdProduct } });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+};
+
+const get_seller_accepted_products = async (req, res) => {
+  const id = req.params.id;
+  // Find all products where the user field matches the provided userId
+  try {
+    const products = await productModel.find({ user: id });
+    res
+      .status(200)
+      .json({ status: httpStatusText.SUCCESS, data: { products } });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ status: httpStatusText.ERROR, message: err.message });
+  }
+};
+
+const get_seller_pending_products = async (req, res) => {
+  const id = req.params.id;
+  // Find all products where the user field matches the provided userId
+  try {
+    const products = await sellerProductModel.find({ user: id });
+    res
+      .status(200)
+      .json({ status: httpStatusText.SUCCESS, data: { products } });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ status: httpStatusText.ERROR, message: err.message });
+  }
+};
+const get_all_seller_products = async (req, res) => {
+  try {
+    const products = await sellerProductModel.find();
+    console.log(products);
+    res
+      .status(200)
+      .json({ status: httpStatusText.SUCCESS, data: { products } });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+};
+const reject_seller_product = async (req, res) => {
+  try {
+    const product = await sellerProductModel.findById(req.params.id);
+
+    if (product) {
+      await sellerProductModel.deleteOne({ _id: product._id });
+      res.status(200).json({ message: "Product removed" });
+    } else {
+      res.status(404).json({
+        status: httpStatusText.FAIL,
+        data: null,
+        msg: "Product not found",
+      });
+    }
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ status: httpStatusText.ERROR, message: err.message });
+  }
+};
 module.exports = {
   get_single_product,
   get_all_products,
@@ -171,4 +267,9 @@ module.exports = {
   updateProduct,
   deleteProduct,
   CreateProductReview,
+  createSellerProduct,
+  get_seller_accepted_products,
+  get_seller_pending_products,
+  get_all_seller_products,
+  reject_seller_product,
 };

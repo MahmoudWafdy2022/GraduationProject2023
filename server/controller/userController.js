@@ -9,7 +9,12 @@ const allowedTo = require("../middleware/allowedTo");
 
 const register = async (req, res) => {
   try {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password, role } = req.body;
+    if (role === "ADMIN") {
+      return res
+        .status(400)
+        .json({ status: httpStatusText.FAIL, message: "Invalid role" });
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -27,6 +32,7 @@ const register = async (req, res) => {
       lastname,
       email,
       password: hashedPassword,
+      role,
     });
 
     const token = await JWTGenerateToken({
