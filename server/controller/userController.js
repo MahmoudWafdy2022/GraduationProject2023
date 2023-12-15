@@ -210,7 +210,21 @@ const deleteUser = async (req, res) => {
 // @private/Admin
 
 const UpdateUser = async (req, res) => {
-  res.send("update user");
+  const user = await userModel.findById(req.params.id);
+  if (user) {
+    user.firstname = req.body.firstname || user.firstname;
+    user.lastname = req.body.lastname || user.lastname;
+    user.email = req.body.email || user.email;
+    user.role = req.body.role || user.role;
+    console.log(user);
+    const updatedUser = await user.save();
+    res.status(200).json({
+      _id: updatedUser._id,
+      firstname: updatedUser.firstname,
+      lastname: updatedUser.lastname,
+      role: updatedUser.role,
+    });
+  }
 };
 
 module.exports = {

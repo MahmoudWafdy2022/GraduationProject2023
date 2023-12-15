@@ -33,6 +33,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import OrderList from "./pages/admin/OrderList";
 import ProductList from "./pages/admin/ProductList";
 import ProductEdit from "./pages/admin/ProductEdit";
+import UserList from "./pages/admin/UserList";
+import UserEdit from "./pages/admin/UserEdit";
 // loaders
 import productsLoader from "./loaders/productsLoader";
 import productDetailsLoader from "./loaders/productDetailsLoader";
@@ -97,6 +99,12 @@ const router = createBrowserRouter(
           element={<ProductList />}
           loader={async () => null}
         />
+        <Route
+          path="userlist"
+          element={<UserList />}
+          loader={async () => null}
+        />
+        <Route path="user/:id/edit" element={<UserEdit />} />
         <Route path="product/:id/edit" element={<ProductEdit />} />
       </Route>
       <Route path="*" element={<NotFound />} loader={async () => null} />
