@@ -21,10 +21,11 @@ const get_single_product = async (req, res) => {
 
 const get_all_products = async (req, res) => {
   try {
-    const products = await productModel.find();
-    res
-      .status(200)
-      .json({ status: httpStatusText.SUCCESS, data: { products } });
+  const page = req.query.page*1||1
+  const skip = (page-1)*limit
+
+    const products = await productModel.find({}).skip(skip).limit(limit);
+    res.status(200).json({ status: httpStatusText.SUCCESS,page,numOfProducts:products.length, data: { products } });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
