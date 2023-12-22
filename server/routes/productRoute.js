@@ -33,6 +33,8 @@ router.delete(
   allowdTo(userRole.ADMIN),
   productController.deleteProduct
 );
+router.get("/products/top",productController.getTopProducts);
+
 router.get("/products/seller/all", productController.get_all_seller_products);
 router.delete(
   "/products/seller/:id",
