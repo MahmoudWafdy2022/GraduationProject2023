@@ -64,8 +64,9 @@ const router = createBrowserRouter(
         // action={loginAction}
       />
       <Route path="register" element={<Register />} loader={async () => null} />
+
       <Route
-        path="products"
+        path="products/page/:pageNumber"
         element={
           <React.Suspense fallback={<CustomSpinner />}>
             <Products />

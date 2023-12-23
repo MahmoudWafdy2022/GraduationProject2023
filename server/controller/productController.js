@@ -21,16 +21,28 @@ const get_single_product = async (req, res) => {
 
 const get_all_products = async (req, res) => {
   try {
-const limit = req.query.limit
-    // const limit = 2
-  const page = req.query.pageNumber*1||1
-  const skip = (page-1)*limit
-const keyword = req.query.keyword 
-? {name:{$regex:req.query.keyword,$options : 'i'}} : {}
-const count = await productModel.countDocuments(...keyword);
+    const limit = parseInt(req.query.limit) || 6;
 
-    const products = await productModel.find({...keyword}).skip(skip).limit(limit);
-    res.status(200).json({ status: httpStatusText.SUCCESS,page,pages:Math.ceil(count/limit),numOfProducts:products.length, data: { products } });
+    // const limit = 2
+    const page = parseInt(req.query.pageNumber) || 1;
+
+    const skip = (page - 1) * limit;
+
+    const keyword = req.query.keyword
+      ? { name: { $regex: req.query.keyword, $options: "i" } }
+      : {};
+
+    const count = await productModel.countDocuments(keyword);
+
+    const products = await productModel.find(keyword).skip(skip).limit(limit);
+
+    res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      page,
+      pages: Math.ceil(count / limit),
+      numOfProducts: products.length,
+      data: { products },
+    });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
@@ -267,22 +279,22 @@ const reject_seller_product = async (req, res) => {
   }
 };
 
-
 // @desc    Get top rated products
 // @route   GET /api/products/top
 // @access  Public
 const getTopProducts = async (req, res) => {
-  try{
-  const products = await productModel.find({}).sort({ rating: -1 }).limit(3);
+  try {
+    const products = await productModel.find({}).sort({ rating: -1 }).limit(3);
 
-  res.status(200).json({status:httpStatusText.SUCCESS,data:{products}});
-  }
-  catch (err) {
+    res
+      .status(200)
+      .json({ status: httpStatusText.SUCCESS, data: { products } });
+  } catch (err) {
     return res
       .status(400)
       .json({ status: httpStatusText.ERROR, message: err.message });
   }
-}
+};
 
 module.exports = {
   get_single_product,
@@ -296,5 +308,5 @@ module.exports = {
   get_seller_pending_products,
   get_all_seller_products,
   reject_seller_product,
-  getTopProducts
+  getTopProducts,
 };

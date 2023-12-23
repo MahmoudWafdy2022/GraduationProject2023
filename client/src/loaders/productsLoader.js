@@ -1,8 +1,15 @@
 import { defer } from "react-router-dom";
-export default async function productsLoader() {
+export default async function productsLoader({ params }) {
   // products
   try {
-    const res = await fetch("http://localhost:3001/products");
+    console.log(params);
+    const pageNumber = params.pageNumber;
+    console.log(pageNumber);
+    const limit = 6; // Set the same limit as in the backend
+    const res = await fetch(
+      `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}`
+    );
+
     if (!res.ok) {
       throw {
         message: "Failed to fetch products",
@@ -11,9 +18,18 @@ export default async function productsLoader() {
       };
     }
     const obj = await res.json();
+    console.log(obj);
     const { data } = obj;
+
     const products = data.products;
-    return defer({ products });
+    return defer({
+      products,
+      pageInfo: {
+        page: obj.page,
+        pages: obj.pages,
+        numOfProducts: obj.numOfProducts,
+      },
+    });
   } catch (err) {
     return {
       message: err.message,

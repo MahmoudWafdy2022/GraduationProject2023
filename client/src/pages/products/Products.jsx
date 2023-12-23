@@ -1,11 +1,20 @@
 import React from "react";
-import { useLoaderData, Await } from "react-router-dom";
+
+import { useLoaderData, Await, useParams, useNavigate } from "react-router-dom";
 import EcommerceCard from "../../components/EcommerceCard";
 import ProductsNavbar from "../../components/ProductsNavbar";
 import CustomSpinner from "../../components/CustomSpinner";
+import DefaultPagination from "../../components/DefaultPagination";
 export default function Products() {
-  const dataPromise = useLoaderData();
+  // const [pageNumber] = useState(1);
+  const { pageNumber } = useParams();
 
+  const dataPromise = useLoaderData(pageNumber);
+  const navigate = useNavigate();
+  const handlePageChange = (newPage) => {
+    // Update the URL with the new page number
+    navigate(`/products/page/${newPage}`);
+  };
   if (dataPromise.message === "Failed to fetch") {
     throw new Error("Please re-connect to the internet.");
   }
@@ -30,6 +39,13 @@ export default function Products() {
             }}
           </Await>
         </React.Suspense>
+      </div>
+      <div className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
+        <DefaultPagination
+          activePage={parseInt(dataPromise.pageInfo.page)}
+          totalPages={dataPromise.pageInfo.pages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </section>
   );
