@@ -15,7 +15,7 @@ export default function DefaultPagination({
   }, [activePage]);
   const getItemProps = (index) => ({
     variant: active === index ? "filled" : "text",
-    color: "white",
+    color: "white ",
     onClick: () => {
       setActive(index);
       onPageChange(index);
@@ -40,24 +40,28 @@ export default function DefaultPagination({
     <div className="flex items-center gap-4">
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 dark:text-white"
         onClick={prev}
         disabled={active === 1}
       >
-        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" /> Previous
+        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4 " /> Previous
       </Button>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ">
         {[...Array(totalPages).keys()].map((index) => (
-          <IconButton key={index} {...getItemProps(index + 1)}>
+          <IconButton
+            className="dark:text-white"
+            key={index}
+            {...getItemProps(index + 1)}
+          >
             {index + 1}
           </IconButton>
         ))}
       </div>
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 dark:text-white"
         onClick={next}
-        disabled={active === 5}
+        disabled={active === totalPages}
       >
         Next
         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
