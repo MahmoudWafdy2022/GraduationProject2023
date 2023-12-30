@@ -4,6 +4,7 @@ const productRoute = require("./routes/productRoute");
 const userRoute = require("./routes/userRoute");
 const uploadRoute = require("./routes/uploadRoutes")
 const orderRoute = require("./routes/orderRoute");
+const brandRoute = require('./routes/brandRoute')
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -39,6 +40,8 @@ app.use("/", userRoute);
 app.use("/", productRoute);
 app.use("/", orderRoute);
 app.use("/", uploadRoute);
+app.use("/", brandRoute);
+
 
 
 app.get("/config/paypal", (req, res) => {

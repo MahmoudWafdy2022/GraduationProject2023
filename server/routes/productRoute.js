@@ -4,6 +4,10 @@ const router = require("express").Router();
 const userRole = require("../utils/userRoles");
 const allowdTo = require("../middleware/allowedTo");
 const verifyToken = require("../middleware/VerifyToken");
+const ProductValidator = require("../Validator/productValidator")
+
+
+module.exports = router
 
 // for user
 router.get("/products", productController.get_all_products);
@@ -19,18 +23,21 @@ router.post(
   "/products",
   verifyToken,
   allowdTo(userRole.ADMIN),
+  ProductValidator.CreateproductValidator,
   productController.createProduct
 );
 router.put(
   "/products/:id",
   verifyToken,
   allowdTo(userRole.ADMIN),
+  ProductValidator.updateProductValidator,
   productController.updateProduct
 );
 router.delete(
   "/products/:id",
   verifyToken,
   allowdTo(userRole.ADMIN),
+  ProductValidator.deleteProductValidator,
   productController.deleteProduct
 );
 router.get("/products/top",productController.getTopProducts);
