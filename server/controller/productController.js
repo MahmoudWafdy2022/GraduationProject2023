@@ -49,9 +49,9 @@ if(req.query.sort){
 const sortBy = req.query.sort.split(',').join(' ')
 mongooseQuery = await productModel.find().skip(skip).limit(limit).sort(sortBy)
 
-}else{
-
-mongooseQuery = mongooseQuery.sort("-createAt")
+}
+else{
+  mongooseQuery = await productModel.find().skip(skip).limit(limit).sort("-createdAt")
 
 }
 
