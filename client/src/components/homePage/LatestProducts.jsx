@@ -1,4 +1,4 @@
-import { useGetProductsQuery } from "../../slices/productsApiSlice";
+import { useGetProductsPaginateQuery } from "../../slices/productsApiSlice";
 import EcommerceCard from "../EcommerceCard";
 import AliceCarousel from "react-alice-carousel";
 import CustomSpinner from "../CustomSpinner";
@@ -14,7 +14,8 @@ const responsive = {
 };
 
 export default function LatestProducts() {
-  const { data, isLoading, error } = useGetProductsQuery();
+  const { data, isLoading, error } = useGetProductsPaginateQuery();
+  const newArrival = true;
   const products = data?.data.products || [];
   return (
     <>
@@ -38,7 +39,11 @@ export default function LatestProducts() {
                 className="w-full min-h-full pb-5"
                 data-value={`${i}`}
               >
-                <EcommerceCard product={product} id={product._id} />
+                <EcommerceCard
+                  product={product}
+                  id={product._id}
+                  newArrival={newArrival}
+                />
               </div>
             ))}
           />

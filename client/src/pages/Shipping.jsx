@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { saveShippingAddress } from "../slices/cartSlice";
 import useRedirect from "../utils/useRedirect";
+import CustomSpinner from "../components/CustomSpinner";
 export default function Shipping() {
   useRedirect();
+  const [isLoadingCountry, setIsLoadingCountry] = useState(false);
+  const [isLoadingCity, setIsLoadingCity] = useState(false);
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 
@@ -49,17 +52,17 @@ export default function Shipping() {
   //   "UM",
   //   "XK",
   // ];
-
-  useEffect(() => {
+  function handleFetchCountry() {
     // Fetch countries from GeoNames API
     const fetchCountries = async () => {
       try {
+        setIsLoadingCountry(true);
         const response = await fetch(
           "http://api.geonames.org/countryInfoJSON?username=xxxatlas69"
         );
         const data = await response.json();
         // Extract relevant information from the API response
-        const countriesData = data.geonames.map((country) => ({
+        const countriesData = data?.geonames.map((country) => ({
           value: country.countryCode,
           label: country.countryName,
           // Add the country flag URL to each option
@@ -90,18 +93,20 @@ export default function Shipping() {
         }));
 
         setAllCountries(countriesData);
+        setIsLoadingCountry(false);
       } catch (error) {
         setCountryError(`Error fetching countries: ${error}`);
       }
     };
 
     fetchCountries();
-  }, []); // Run this effect only once on component mount
+  }
 
-  useEffect(() => {
+  function handleFetchCity() {
     const fetchCities = async () => {
       if (selectedCountry) {
         try {
+          setIsLoadingCity(true);
           const response = await fetch(
             `http://api.geonames.org/searchJSON?country=${selectedCountry.value}&username=xxxatlas69`
           );
@@ -116,6 +121,7 @@ export default function Shipping() {
           });
 
           setAllCities(citiesData);
+          setIsLoadingCity(false);
         } catch (error) {
           setCityError(`Error fetching cities: ${error}`);
         }
@@ -123,7 +129,7 @@ export default function Shipping() {
     };
 
     fetchCities();
-  }, [selectedCountry]);
+  }
 
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
@@ -235,6 +241,17 @@ export default function Shipping() {
       </div>
     );
   };
+  const handleCountryMenuOpen = () => {
+    if (allCountries.length === 0) {
+      handleFetchCountry();
+    }
+  };
+
+  const handleCityMenuOpen = () => {
+    if (selectedCountry && allCities.length === 0) {
+      handleFetchCity();
+    }
+  };
 
   return (
     <div className="bg-gray-100 dark:bg-[#1C1E2D] h-screen w-full">
@@ -274,6 +291,7 @@ export default function Shipping() {
               </div>
 
               <div className="mt-4">
+                {isLoadingCountry && <CustomSpinner />}
                 <label
                   htmlFor="country"
                   className="block text-gray-700 dark:text-white mb-1"
@@ -284,7 +302,10 @@ export default function Shipping() {
                 <Select
                   value={selectedCountry}
                   onChange={handleCountryChange}
+                  onMenuOpen={handleCountryMenuOpen}
+                  onClick={handleFetchCountry}
                   options={allCountries}
+                  isLoading={isLoadingCountry}
                   id="country"
                   styles={customStyles}
                   components={{ Option: countryOption }}
@@ -306,11 +327,15 @@ export default function Shipping() {
                   <Select
                     value={selectedCity}
                     onChange={handleCityChange}
+                    onMenuOpen={handleCityMenuOpen}
+                    onClick={handleFetchCity}
                     options={allCities}
+                    isLoading={isLoadingCity}
                     isDisabled={!selectedCountry}
                     id="city"
                     styles={customStyles}
                     components={{ Option: cityOption }}
+                    menuPortalTarget={document.body}
                   />
 
                   <p className="text-red-500">{cityError}</p>

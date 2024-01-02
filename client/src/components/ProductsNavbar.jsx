@@ -29,7 +29,7 @@ export default function ProductsNavbar({ product }) {
         <li>
           <div className="flex items-center">
             <Link
-              to="/products"
+              to="/products/page/1"
               className="mr-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Products

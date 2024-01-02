@@ -1,20 +1,24 @@
 import { Link, useLocation, useLoaderData, useParams } from "react-router-dom";
 import { RatingWithText } from "../../components/RatingWithText";
-import ProductsNavbar from "../../components/ProductsNavbar";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { addToCart } from "../../slices/cartSlice";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Reviews from "../../components/Reviews";
-export default function VanDetail() {
+import ProductsNavbar from "../../components/ProductsNavbar";
+import BackToAllProducts from "../../components/BackToAllProducts";
+export default function VanDetails() {
   const [rating, setRating] = useState(0);
   const location = useLocation();
   const product = useLoaderData();
   const { id } = useParams();
   const { userInfo } = useSelector((state) => state.auth);
   const hideReviewsText = false;
-  const search = location.state?.search || "";
+
+  const search = location?.state?.search || "";
+
+  console.log(search);
   const headers = {
     Authorization: `Bearer ${userInfo?.token}`,
     authorization: `Bearer ${userInfo?.token}`,
@@ -40,9 +44,9 @@ export default function VanDetail() {
   // const type = location.state?.type || "all";
   const min = 1;
   const max = product.countInStock;
-  let disableCart = true;
+  let enableCart = true;
   if (userInfo?.role === "ADMIN" || userInfo?.role === "SELLER") {
-    disableCart = false;
+    enableCart = false;
   }
   function handleChange(e) {
     const value = Math.max(min, Math.min(max, Number(e.target.value)));
@@ -92,14 +96,7 @@ export default function VanDetail() {
   }, [product.reviews, userInfo?.id]);
   return (
     <div>
-      <Link
-        to={`..${search}`}
-        relative="path"
-        className="dark:text-white mx-auto flex max-w-2xl items-center space-x-2 px-4 pt-5 sm:px-6 lg:max-w-7xl lg:px-8"
-      >
-        &larr;{" "}
-        <span className="ml-2 dark:text-white">Back to all products</span>
-      </Link>
+      <BackToAllProducts />
       <div className="bg-white dark:bg-[#1C1E2D]">
         <div className="pt-6">
           <ProductsNavbar product={product} />
@@ -181,17 +178,16 @@ export default function VanDetail() {
                   </div>
                 </div>
 
-                {product.countInStock > 0 ||
-                  (disableCart && (
-                    <button
-                      type="button"
-                      className="mt-20 flex w-full items-center justify-center rounded-md border border-transparent bg-[#FBC02D] px-8 py-3 text-base font-medium text-white hover:bg-[#FBC03D] focus:outline-none focus:ring-2 focus:bg-[#FBC03D] focus:ring-offset-2"
-                      disabled={product.countInStock === 0}
-                      onClick={addToCardHandler}
-                    >
-                      Add to bag
-                    </button>
-                  ))}
+                {product.countInStock > 0 && enableCart && (
+                  <button
+                    type="button"
+                    className="mt-20 flex w-full items-center justify-center rounded-md border border-transparent bg-[#FBC02D] px-8 py-3 text-base font-medium text-white hover:bg-[#FBC03D] focus:outline-none focus:ring-2 focus:bg-[#FBC03D] focus:ring-offset-2"
+                    disabled={product.countInStock === 0}
+                    onClick={addToCardHandler}
+                  >
+                    Add to bag
+                  </button>
+                )}
               </div>
 
               <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
@@ -256,7 +252,7 @@ export default function VanDetail() {
           </div>
         </div>
       </div>
-      {disableCart && userInfo?.token ? (
+      {enableCart && userInfo?.token ? (
         <>
           <Reviews product={product} />
           {!isUserAlreadyReviewd && (

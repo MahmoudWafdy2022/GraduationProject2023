@@ -49,7 +49,7 @@ export default function ProductList() {
     }
   };
   return (
-    <div className="max-w-2xl mx-auto min-w-fit min-h-screen my-3">
+    <div className="min-w-fit max-h-min my-3 ml-5">
       {isLoading ? (
         <CustomSpinner />
       ) : error ? (
@@ -97,8 +97,10 @@ export default function ProductList() {
               />
             </div>
           </div> */}
-            <Card className="h-full w-full xs:overflow-scroll sm:overflow-scroll md:overflow-auto">
-              <table className="w-full min-w-max table-auto text-sm text-left text-gray-500 dark:text-gray-400">
+            <Card className="h-full max-w-90 overflow-auto max-h-96">
+              {" "}
+              {/* Set max height here */}
+              <table className="max-w-90 table-auto text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     {/* <th scope="col" className="p-4">
@@ -152,7 +154,7 @@ export default function ProductList() {
                     </label>
                     </div>
                 </td> */}
-                  {product.map((p) => (
+                  {product?.map((p) => (
                     <tr
                       key={p._id}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"

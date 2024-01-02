@@ -3,6 +3,13 @@ export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder, token) => ({
     getProducts: builder.query({
       query: () => ({
+        url: "http://localhost:3001/products/all",
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    getProductsPaginate: builder.query({
+      query: () => ({
         url: "http://localhost:3001/products",
         headers: { Authorization: `Bearer ${token}` },
       }),
@@ -63,6 +70,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetProductsQuery,
+  useGetProductsPaginateQuery,
   useGetProductDetailsQuery,
   useCreateProductMutation,
   useDeleteProductMutation,

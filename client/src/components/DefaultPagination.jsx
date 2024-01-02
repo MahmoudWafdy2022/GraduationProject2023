@@ -37,7 +37,7 @@ export default function DefaultPagination({
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4 mx-auto">
       <Button
         variant="text"
         className="flex items-center gap-2 dark:text-white"
@@ -46,7 +46,7 @@ export default function DefaultPagination({
       >
         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4 " /> Previous
       </Button>
-      <div className="flex items-center gap-2 ">
+      <div className="flex items-center gap-2">
         {[...Array(totalPages).keys()].map((index) => (
           <IconButton
             className="dark:text-white"

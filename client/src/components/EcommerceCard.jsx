@@ -19,6 +19,7 @@ export default function EcommerceCard({
   id,
   disableCart = true,
   status = "",
+  newArrival = false,
 }) {
   const { image, name, price, description, rating, numReviews, countInStock } =
     product;
@@ -46,16 +47,6 @@ export default function EcommerceCard({
   return (
     <>
       <Card className="relative w-72 bg-white m-auto shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl dark:bg-[#151725]">
-        {status === "pending" && (
-          <div className="absolute top-[-5%] left-[-7%] bg-yellow-500 text-white px-2 py-1 rounded-tl-md rounded-br-md transform rotate-[-35deg] scale-110">
-            Pending
-          </div>
-        )}
-        {status === "accepted" && (
-          <div className="absolute top-[-5%] left-[-9%] bg-green-500 text-white px-2 py-1 rounded-tl-md rounded-br-md transform rotate-[-35deg] scale-110">
-            Accepted
-          </div>
-        )}
         <Link to={`/products/${id}`}>
           <CardHeader
             shadow={false}
@@ -68,6 +59,23 @@ export default function EcommerceCard({
               className="h-full w-full object-cover"
             />
           </CardHeader>
+          {status === "pending" && (
+            <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-yellow-500 text-center text-sm text-white z-1000">
+              Pending
+            </span>
+          )}
+          {status === "accepted" && (
+            <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-green-500 text-center text-sm text-white z-1000">
+              Accepted
+            </span>
+          )}
+
+          {newArrival && (
+            // text-1xl font-bold
+            <span className="absolute top-0 left-6 w-[55px] h-[55px] flex items-center justify-center rounded-full translate-y-2 -translate-x-6 -rotate-12 bg-black text-center text-1xl font-bold text-white z-1000">
+              NEW
+            </span>
+          )}
           <CardBody>
             <div className="mb-2 flex items-center justify-between">
               <Typography

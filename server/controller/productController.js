@@ -19,45 +19,66 @@ const get_single_product = async (req, res) => {
   }
 };
 
+const get_all_products_no_pagination = async (req, res) => {
+  try {
+    // Retrieve all products without any filtering or pagination
+    const products = await productModel.find();
+
+    return res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      data: { products },
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+};
+
 const get_all_products = async (req, res) => {
   try {
-//filter
-  const queryStringObject = {...req.query}
-  const excludeFields = ['pageNumber','limit','sort','fields']
-excludeFields.forEach((field)=>delete queryStringObject[field])
+    //filter
+    const queryStringObject = { ...req.query };
+    const excludeFields = ["pageNumber", "limit", "sort", "fields"];
+    excludeFields.forEach((field) => delete queryStringObject[field]);
 
-// apply filteration using [gte,gt,lte,lt]
-let queryStr = JSON.stringify(queryStringObject); 
-queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`)
-//
+    // apply filteration using [gte,gt,lte,lt]
+    let queryStr = JSON.stringify(queryStringObject);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    //
 
-//pagination
+    //pagination
     const limit = parseInt(req.query.limit) || 6;
     const page = parseInt(req.query.pageNumber) || 1;
     const skip = (page - 1) * limit;
-//
+    //
 
-//
-//build query
-  mongooseQuery = await productModel.find(JSON.parse(queryStr)).skip(skip).limit(limit);
+    //
+    //build query
+    mongooseQuery = await productModel
+      .find(JSON.parse(queryStr))
+      .skip(skip)
+      .limit(limit);
 
+    //
 
-//
+    //sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      mongooseQuery = await productModel
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .sort(sortBy);
+    } else {
+      mongooseQuery = await productModel
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .sort("-createdAt");
+    }
 
-//sorting
-if(req.query.sort){
-const sortBy = req.query.sort.split(',').join(' ')
-mongooseQuery = await productModel.find().skip(skip).limit(limit).sort(sortBy)
+    //
 
-}
-else{
-  mongooseQuery = await productModel.find().skip(skip).limit(limit).sort("-createdAt")
-
-}
-
-//
-
-//search
+    //search
     // const keyword = req.query.keyword
     //   ? { name: { $regex: req.query.keyword, $options: "i" } }
     //   : {};
@@ -65,27 +86,31 @@ else{
     //   mongooseQuery = await productModel.find(keyword).skip(skip).limit(limit);
 
     // }
-if(req.query.keyword){
-  const query = {}
-  query.$or = [
-{ name: { $regex: req.query.keyword, $options: "i" }},
-  ]
+    if (req.query.keyword) {
+      const query = {};
+      query.$or = [{ name: { $regex: req.query.keyword, $options: "i" } }];
 
-  mongooseQuery = await productModel.find(query).skip(skip).limit(limit)
+      mongooseQuery = await productModel.find(query).skip(skip).limit(limit);
+    }
 
-}
+    const count = await productModel.countDocuments(req.query.keyword);
 
-const count = await productModel.countDocuments(req.query.keyword);
+    //
 
-//
+    console.log(req.query);
+    //execute query
+    const products = await mongooseQuery;
+    //
 
-console.log(req.query)
-//execute query
-const products = await mongooseQuery
-//
-
-return res.status(200).json({status: httpStatusText.SUCCESS,page,pages: Math.ceil(count/ limit),numOfProducts: products.length,data: { products },
-    });
+    return res
+      .status(200)
+      .json({
+        status: httpStatusText.SUCCESS,
+        page,
+        pages: Math.ceil(count / limit),
+        numOfProducts: products.length,
+        data: { products },
+      });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
@@ -352,4 +377,5 @@ module.exports = {
   get_all_seller_products,
   reject_seller_product,
   getTopProducts,
+  get_all_products_no_pagination,
 };

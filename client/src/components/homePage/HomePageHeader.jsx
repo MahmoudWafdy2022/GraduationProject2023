@@ -2,8 +2,26 @@ import { Carousel, Typography, Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 export default function HomePageHeader() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const { userInfo } = useSelector((state) => state.auth);
+  const renderButtons = userInfo ? (
+    <></>
+  ) : (
+    <div className="flex gap-2 xs:hidden">
+      <Link to="/register">
+        <Button size="md" color="white">
+          Sign Up
+        </Button>
+      </Link>
+      <Link to="/login">
+        <Button size="md" color="white" variant="text">
+          Sign in
+        </Button>
+      </Link>
+    </div>
+  );
   return (
     <Carousel
       autoplay={true}
@@ -37,18 +55,7 @@ export default function HomePageHeader() {
               of air that emanation from old trees, that so wonderfully changes
               and renews a weary spirit.
             </Typography>
-            <div className="flex gap-2 xs:hidden">
-              <Link to="/register">
-                <Button size="md" color="white">
-                  Sign Up
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button size="md" color="white" variant="text">
-                  Sign in
-                </Button>
-              </Link>
-            </div>
+            {renderButtons}
           </div>
         </div>
       </div>
@@ -78,18 +85,7 @@ export default function HomePageHeader() {
               of air that emanation from old trees, that so wonderfully changes
               and renews a weary spirit.
             </Typography>
-            <div className="flex gap-2 xs:hidden">
-              <Link to="/register">
-                <Button size="md" color="white">
-                  Sign Up
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button size="md" color="white" variant="text">
-                  Sign in
-                </Button>
-              </Link>
-            </div>
+            {renderButtons}
           </div>
         </div>
       </div>
@@ -119,22 +115,7 @@ export default function HomePageHeader() {
               of air that emanation from old trees, that so wonderfully changes
               and renews a weary spirit.
             </Typography>
-            <div className="flex gap-2 xs:hidden">
-              {isLoaded && (
-                <>
-                  <Link to="/register">
-                    <Button size="md" color="white">
-                      Sign Up
-                    </Button>
-                  </Link>
-                  <Link to="/login">
-                    <Button size="md" color="white" variant="text">
-                      Sign in
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
+            {isLoaded && <>{renderButtons}</>}
           </div>
         </div>
       </div>

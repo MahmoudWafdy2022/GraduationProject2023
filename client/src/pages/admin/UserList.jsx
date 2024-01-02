@@ -39,7 +39,7 @@ export default function UserList() {
     }
   };
   return (
-    <div className="max-w-2xl mx-auto min-w-fit min-h-screen my-3">
+    <div className="min-w-fit max-h-min my-3 ml-5">
       {isLoading ? (
         <CustomSpinner />
       ) : error ? (
@@ -62,7 +62,7 @@ export default function UserList() {
 
               <span className="mx-1">Refresh</span>
             </button>
-            <Card className="h-full w-full xs:overflow-scroll sm:overflow-scroll md:overflow-auto">
+            <Card className="h-full w-full overflow-y-auto max-h-96">
               <table className="w-full min-w-max table-auto text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
