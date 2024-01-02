@@ -104,7 +104,10 @@ const get_all_products = async (req, res) => {
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
       page,
-      pages: Math.ceil(count / limit),
+      pages:
+        products.length < limit
+          ? Math.floor(count / limit)
+          : Math.ceil(count / limit),
       numOfProducts: products.length,
       data: { products },
     });

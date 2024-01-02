@@ -76,6 +76,15 @@ const router = createBrowserRouter(
         loader={productsLoader}
       />
       <Route
+        path="products/search/:keyword/page/:pageNumber"
+        element={
+          <React.Suspense fallback={<CustomSpinner />}>
+            <Products />
+          </React.Suspense>
+        }
+        loader={productsLoader}
+      />
+      <Route
         path="products/:id"
         element={<ProductDetails />}
         loader={productDetailsLoader}

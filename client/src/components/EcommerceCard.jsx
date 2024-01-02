@@ -27,7 +27,7 @@ export default function EcommerceCard({
   if (userInfo?.role === "ADMIN" || userInfo?.role === "SELLER")
     disableCart = false;
   const dispatch = useDispatch();
-  console.log(image);
+
   const addedSuccessfully = () =>
     toast.success("Added Successfully", {
       position: "top-right",

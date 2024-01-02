@@ -7,13 +7,19 @@ import CustomSpinner from "../../components/CustomSpinner";
 import DefaultPagination from "../../components/DefaultPagination";
 export default function Products() {
   // const [pageNumber] = useState(1);
-  const { pageNumber } = useParams();
+  const params = useParams();
+  const { pageNumber, keyword } = params;
 
-  const dataPromise = useLoaderData(pageNumber);
+  const dataPromise = useLoaderData(pageNumber, keyword);
   const navigate = useNavigate();
   const handlePageChange = (newPage) => {
     // Update the URL with the new page number
-    navigate(`/products/page/${newPage}`);
+    console.log(dataPromise);
+    if (!keyword) {
+      navigate(`/products/page/${newPage}`);
+    } else {
+      navigate(`/products/search/${keyword}/page/${newPage}`);
+    }
   };
   if (dataPromise.message === "Failed to fetch") {
     throw new Error("Please re-connect to the internet.");
