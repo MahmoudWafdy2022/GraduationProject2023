@@ -152,23 +152,15 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const {
-      id,
-      name,
-      price,
-      description,
-      image,
-      brand,
-      category,
-      countInStock,
-    } = req.body;
-    const product = await productModel.findById(id);
-
+    const { name, price, description, image, brand, category, countInStock } =
+      req.body;
+    const product = await productModel.findById(req.params.id);
+    console.log(image);
     if (product) {
       product.name = name;
       product.price = price;
       product.description = description;
-      // product.image = image;
+      product.image = image;
       product.brand = brand;
       product.category = category;
       product.countInStock = countInStock;
@@ -180,7 +172,7 @@ const updateProduct = async (req, res) => {
         .json({ status: httpStatusText.SUCCESS, data: { updatedProduct } });
     } else {
       return res.status(404).json({
-        statur: httpStatusText.FAIL,
+        status: httpStatusText.FAIL,
         data: null,
         msg: "Product not found",
       });

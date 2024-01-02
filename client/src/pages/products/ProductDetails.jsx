@@ -107,7 +107,11 @@ export default function VanDetails() {
             <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
               <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                 <img
-                  src={product.image}
+                  src={
+                    product.image.includes("/uploads")
+                      ? `http://localhost:3001${product.image}`
+                      : product.image
+                  }
                   alt={product.name}
                   className="h-50 w-50 object-cover object-center"
                 />

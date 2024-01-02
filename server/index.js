@@ -2,15 +2,18 @@
 // const products = require("./data/products");
 const productRoute = require("./routes/productRoute");
 const userRoute = require("./routes/userRoute");
-const uploadRoute = require("./routes/uploadRoutes")
+const uploadRoute = require("./routes/uploadRoutes");
 const orderRoute = require("./routes/orderRoute");
-const brandRoute = require('./routes/brandRoute')
+const brandRoute = require("./routes/brandRoute");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const httpStatusText = require("./utils/httpStatusText");
 const app = express();
+const path = require("path");
+
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const corsoptions = {
   //to allow requests from client
@@ -41,8 +44,6 @@ app.use("/", productRoute);
 app.use("/", orderRoute);
 app.use("/", uploadRoute);
 app.use("/", brandRoute);
-
-
 
 app.get("/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });

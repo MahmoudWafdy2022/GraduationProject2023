@@ -27,6 +27,7 @@ export default function EcommerceCard({
   if (userInfo?.role === "ADMIN" || userInfo?.role === "SELLER")
     disableCart = false;
   const dispatch = useDispatch();
+  console.log(image);
   const addedSuccessfully = () =>
     toast.success("Added Successfully", {
       position: "top-right",
@@ -54,7 +55,12 @@ export default function EcommerceCard({
             className="h-100 dark:bg-[#242635]"
           >
             <img
-              src={image}
+              // http://localhost:3001/uploads/image-1704202756669.png
+              src={
+                image.includes("/uploads")
+                  ? `http://localhost:3001${image}`
+                  : image
+              }
               alt={name}
               className="h-full w-full object-cover"
             />

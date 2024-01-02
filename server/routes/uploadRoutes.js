@@ -4,7 +4,7 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, "uploads/");
   },
   filename(req, file, cb) {
     cb(
@@ -24,24 +24,23 @@ function fileFilter(req, file, cb) {
   if (extname && mimetype) {
     cb(null, true);
   } else {
-    cb(new Error('Images only!'), false);
+    cb(new Error("Images only!"), false);
   }
 }
-
 const upload = multer({ storage, fileFilter });
-const uploadSingleImage = upload.single('image');
+const uploadSingleImage = upload.single("image");
 
-router.post('/uploads', (req, res) => {
+router.post("/uploads", (req, res) => {
   uploadSingleImage(req, res, function (err) {
     if (err) {
       return res.status(400).send({ message: err.message });
     }
 
     res.status(200).send({
-      message: 'Image uploaded successfully',
+      message: "Image uploaded successfully",
       image: `/${req.file.path}`,
     });
   });
 });
 
-module.exports =  router;
+module.exports = router;

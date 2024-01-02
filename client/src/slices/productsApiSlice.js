@@ -65,6 +65,13 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    uploadProductImage: builder.mutation({
+      query: (data) => ({
+        url: `http://localhost:3001/uploads`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -77,4 +84,5 @@ export const {
   useGetSellerAcceptedProductsQuery,
   useGetSellerPendingProductsQuery,
   useGetSellerProductsQuery,
+  useUploadProductImageMutation,
 } = productsApiSlice;

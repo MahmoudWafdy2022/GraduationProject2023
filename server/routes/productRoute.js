@@ -23,14 +23,14 @@ router.post(
   "/products",
   verifyToken,
   allowdTo(userRole.ADMIN),
-  ProductValidator.CreateproductValidator,
+  // ProductValidator.CreateproductValidator,
   productController.createProduct
 );
 router.put(
   "/products/:id",
   verifyToken,
   allowdTo(userRole.ADMIN),
-  ProductValidator.updateProductValidator,
+  // ProductValidator.updateProductValidator,
   productController.updateProduct
 );
 router.delete(
