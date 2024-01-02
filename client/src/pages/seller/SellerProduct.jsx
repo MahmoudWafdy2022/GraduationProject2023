@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import axios from "axios";
 import {
   useGetSellerAcceptedProductsQuery,
@@ -161,12 +161,19 @@ export default function SellerProduct() {
                     </label>
                     </div>
                 </td> */}
-                  {product.map((p) => (
+                  {product?.map((p) => (
                     <tr
                       key={p._id}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
-                      <td className="px-6 py-4">{p._id}</td>
+                      <td className="px-6 py-4">
+                        <Link
+                          className="text-blue-600"
+                          to={`/products/${p._id}`}
+                        >
+                          {p._id}
+                        </Link>
+                      </td>
                       <th
                         scope="row"
                         className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
