@@ -9,10 +9,12 @@ import Reviews from "../../components/Reviews";
 import ProductsNavbar from "../../components/ProductsNavbar";
 import BackToAllProducts from "../../components/BackToAllProducts";
 export default function VanDetails() {
+  const { id } = useParams();
   const [rating, setRating] = useState(0);
   const location = useLocation();
   const product = useLoaderData();
-  const { id } = useParams();
+  console.log(product);
+
   const { userInfo } = useSelector((state) => state.auth);
   const hideReviewsText = false;
 

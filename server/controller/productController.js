@@ -18,7 +18,6 @@ const get_single_product = async (req, res) => {
     return res.status(400).json({ message: err.message });
   }
 };
-
 const get_all_products_no_pagination = async (req, res) => {
   try {
     // Retrieve all products without any filtering or pagination
@@ -102,15 +101,13 @@ const get_all_products = async (req, res) => {
     const products = await mongooseQuery;
     //
 
-    return res
-      .status(200)
-      .json({
-        status: httpStatusText.SUCCESS,
-        page,
-        pages: Math.ceil(count / limit),
-        numOfProducts: products.length,
-        data: { products },
-      });
+    return res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      page,
+      pages: Math.ceil(count / limit),
+      numOfProducts: products.length,
+      data: { products },
+    });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
@@ -301,6 +298,23 @@ const get_seller_accepted_products = async (req, res) => {
   }
 };
 
+const get_seller_single_product_details = async (req, res) => {
+  try {
+    const product = await sellerProductModel.findById(req.params.id);
+
+    if (product) {
+      return res.json({ status: httpStatusText.SUCCESS, data: { product } });
+    }
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: null,
+      message: "product not found",
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+};
+
 const get_seller_pending_products = async (req, res) => {
   const id = req.params.id;
   // Find all products where the user field matches the provided userId
@@ -378,4 +392,5 @@ module.exports = {
   reject_seller_product,
   getTopProducts,
   get_all_products_no_pagination,
+  get_seller_single_product_details,
 };

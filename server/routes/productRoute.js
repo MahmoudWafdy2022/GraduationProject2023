@@ -56,6 +56,10 @@ router.get(
   productController.get_seller_accepted_products
 );
 router.get(
+  "/products/seller/product/:id",
+  productController.get_seller_single_product_details
+);
+router.get(
   "/products/seller/pending/:id",
   productController.get_seller_pending_products
 );
