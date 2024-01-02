@@ -6,6 +6,31 @@ const JWTGenerateToken = require("../utils//JWTGenerateToken");
 const userRoles = require("../utils/userRoles");
 const allowedTo = require("../middleware/allowedTo");
 // const asyncHandler = require("../middleware/asyncHandler");
+const checkUserExistence = async (req, res) => {
+  try {
+    // Get user ID from the request body
+    const { userId } = req.body;
+
+    // Check if the user exists in the database
+    const user = await userModel.findById(userId);
+
+    if (user) {
+      // User exists
+      return res
+        .status(200)
+        .json({ status: httpStatusText.SUCCESS, data: { exists: true } });
+    } else {
+      // User doesn't exist
+      return res
+        .status(404)
+        .json({ status: httpStatusText.FAIL, data: { exists: false } });
+    }
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: httpStatusText.ERROR, message: err.message });
+  }
+};
 
 const register = async (req, res) => {
   try {
@@ -243,4 +268,5 @@ module.exports = {
   updateUserProfile,
   UpdateUser,
   logoutUser,
+  checkUserExistence,
 };

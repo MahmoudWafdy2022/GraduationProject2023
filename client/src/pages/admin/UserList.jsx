@@ -48,7 +48,7 @@ export default function UserList() {
         <>
           <div className="relative  shadow-md sm:rounded-lg flex justify-start items-end flex-col">
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => refetch()}
               className="flex items-center m-2 text-white focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
             >
               <svg
@@ -128,22 +128,26 @@ export default function UserList() {
                       </th>
                       <td className="px-6 py-4">{p.email}</td>
                       <td className="px-6 py-4">{p.role}</td>
-                      <td className="px-6 py-4 text-right">
-                        <Link
-                          to={`/admin/user/${p._id}/edit`}
-                          className="font-medium text-blue-500 hover:underline"
-                        >
-                          Edit
-                        </Link>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => deleteUserHandler(p._id)}
-                          className="pointer font-medium text-red-600 dark:text-blue-red hover:underline"
-                        >
-                          Delete
-                        </button>
-                      </td>
+                      {p.role !== "ADMIN" && (
+                        <>
+                          <td className="px-6 py-4 text-right">
+                            <Link
+                              to={`/admin/user/${p._id}/edit`}
+                              className="font-medium text-blue-500 hover:underline"
+                            >
+                              Edit
+                            </Link>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              onClick={() => deleteUserHandler(p._id)}
+                              className="pointer font-medium text-red-600 dark:text-blue-red hover:underline"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </>
+                      )}
                     </tr>
                   ))}
                 </tbody>

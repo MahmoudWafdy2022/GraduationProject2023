@@ -2,8 +2,14 @@ const userController = require("../controller/userController");
 const { body } = require("express-validator");
 const router = require("express").Router();
 const verifyToken = require("../middleware/VerifyToken");
-const userRoles = require('../utils/userRoles');
-const allowedTo = require('../middleware/allowedTo');
+const userRoles = require("../utils/userRoles");
+const allowedTo = require("../middleware/allowedTo");
+
+router.post(
+  "/users/checkExistence",
+
+  userController.checkUserExistence
+);
 
 router.get("/users", verifyToken, userController.getUsers);
 router.post(
@@ -29,11 +35,19 @@ router.post("/users/logout", userController.logoutUser);
 router.get("/users/:id", userController.getUserByID);
 router.post("/users/register", userController.register);
 
-
 router.post("/users/profile", userController.getUserProfile);
 router.put("/users/profile", userController.updateUserProfile);
 
-
-router.put("/users/:id",verifyToken,allowedTo(userRoles.ADMIN),userController.UpdateUser);
-router.delete("/users/:id",verifyToken,allowedTo(userRoles.ADMIN), userController.deleteUser);
+router.put(
+  "/users/:id",
+  verifyToken,
+  allowedTo(userRoles.ADMIN),
+  userController.UpdateUser
+);
+router.delete(
+  "/users/:id",
+  verifyToken,
+  allowedTo(userRoles.ADMIN),
+  userController.deleteUser
+);
 module.exports = router;

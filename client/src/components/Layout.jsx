@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Footer from "./Footer";
 import Header from "./headers/Header";
 import Sidebar from "./admin/Sidebar";
+import { logout } from "../slices/authSlice";
+import { resetCart } from "../slices/cartSlice";
+import axios from "axios";
 export default function Layout() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Check if there's a saved dark mode preference in localStorage
@@ -13,7 +16,49 @@ export default function Layout() {
     return savedDarkMode ? JSON.parse(savedDarkMode) : false;
   });
   const { userInfo } = useSelector((state) => state.auth);
-  console.log(userInfo);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    function forceLogout() {
+      toast.error("This user doesn't exist anymore");
+      dispatch(logout());
+      dispatch(resetCart());
+      localStorage.removeItem("userInfo");
+    }
+    // Check if the user exists in the database
+    if (!userInfo?.token) return;
+    const checkUserExistence = async () => {
+      try {
+        // Make an API call to check user existence
+        // Replace 'apiEndpoint' with your actual API endpoint
+        const response = await axios.post(
+          "http://localhost:3001/users/checkExistence",
+          { userId: userInfo?.id },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${userInfo?.token}`, // Include the token in the headers
+            },
+          }
+        );
+        console.log(response);
+        if (response.status === 200) {
+          // User exists, do nothing
+        } else {
+          forceLogout();
+        }
+      } catch (error) {
+        console.log(error);
+        forceLogout();
+      }
+    };
+
+    if (userInfo?.role !== "ADMIN") {
+      checkUserExistence();
+    }
+  }, [dispatch, navigate, userInfo?.id, userInfo?.role, userInfo?.token]);
+
   if (userInfo?.role === "ADMIN") {
     return (
       <>
