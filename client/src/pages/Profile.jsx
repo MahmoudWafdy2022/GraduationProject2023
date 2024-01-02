@@ -35,7 +35,7 @@ export default function Profile() {
             <div className="my-4"></div>
           </div>
           {/* <!-- Right Side --> */}
-          <div className="w-full md:w-9/12 mx-2 h-64">
+          <div className="w-full md:w-9/12 mx-2 h-96">
             <About
               user={user}
               shippingAddress={shippingAddress}
@@ -329,14 +329,14 @@ function About({
 }
 function OrderHistory({ order, isLoading, error }) {
   return (
-    <div className="overflow-y-auto overflow-x-auto h-fit pb-3 dark:bg-[#1C1E2D]">
+    <div className="overflow-auto max-h-full pb-3 dark:bg-[#1C1E2D]">
       {isLoading ? (
         <CustomSpinner />
       ) : error ? (
         <ErrorComponent />
       ) : (
         <>
-          <div className="align-middle rounded-tl-lg rounded-tr-lg inline-block w-full py-4 overflow-hidden bg-white shadow-lg px-5 dark:bg-[#1C1E2D]">
+          <div className="align-middle rounded-tl-lg rounded-tr-lg inline-block w-full py-4  bg-white shadow-lg px-5 dark:bg-[#1C1E2D]">
             <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
               <span className="text-green-500">
                 <svg

@@ -289,7 +289,6 @@ function Summary({
   deliverHandler,
   // onApproveTest,
 }) {
-  console.log(currentUser);
   return (
     <div className="bg-gray-100 min-w-full max-h-90 overflow-auto dark:bg-[#1C1E2D] ">
       <div className=" min-w-full justify-center px-6 md:flex md:space-x-6 xl:px-0">
