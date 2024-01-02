@@ -1,38 +1,38 @@
-import { useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  useGetOrderDetailsQuery,
-  usePayOrderMutation,
-  useGetPaypalClientIdQuery,
-} from "../slices/orderApiSlice";
-import { clearCartItems } from "../slices/cartSlice";
-import { useDispatch } from "react-redux";
-import CustomSpinner from "../components/CustomSpinner";
-import ErrorComponent from "../components/ErrorComponent";
-import { toast } from "react-toastify";
+import { useGetOrderDetailsQuery } from "../../../slices/orderApiSlice";
+// import { resetCart, clearCartItems } from "../slices/cartSlice";
+// import { useDispatch } from "react-redux";
+import CustomSpinner from "../../../components/CustomSpinner";
+import ErrorComponent from "../../../components/ErrorComponent";
+import axios from "axios";
 
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-
-export default function PlaceOrder() {
-  let cart = useSelector((store) => store.cart.cardItems);
-  let subs = useSelector((store) => store.cart);
-  let user = useSelector((store) => store.auth.userInfo);
-
-  const dispatch = useDispatch();
-  const token = user.token;
+export default function AdminOrderView() {
+  let cart = [];
+  let subs = [];
+  let user = {};
+  // const token = user.token;
+  const currentUser = useSelector((store) => store.auth.userInfo);
+  // const dispatch = useDispatch();
+  let token = currentUser.token;
 
   const { id } = useParams();
   const { data, refetch, isLoading, error } = useGetOrderDetailsQuery(
     id,
     token
   );
-
+  // const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation(
+  //   id,
+  //   token
+  // );
+  // { isLoading, error }
   const location = useLocation();
 
+  //   console.log(data.data.order);
   const order = data?.data?.order || location?.state?.order;
-  console.log(order);
-  if (order) {
+  console.log(data);
+  if (currentUser.role === "ADMIN") {
     const {
       orderItems,
       shippingAddress,
@@ -55,73 +55,26 @@ export default function PlaceOrder() {
     cart = orderItems;
   }
 
-  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
-  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
-  const {
-    data: paypal,
-    isLoading: loadingPayPal,
-    error: errorPayPal,
-  } = useGetPaypalClientIdQuery();
-
-  useEffect(() => {
-    if (!errorPayPal && !loadingPayPal && paypal.clientId) {
-      const loadPaypalScript = async () => {
-        paypalDispatch({
-          type: "resetOptions",
-          value: {
-            "client-id": paypal.clientId,
-            currency: "USD",
-          },
-        });
-        paypalDispatch({ type: "setLoadingStatus", value: "pending" });
-      };
-      if (order && !order.isPaid) {
-        if (!window.paypal) {
-          loadPaypalScript();
+  const deliverHandler = async () => {
+    console.log(currentUser.token);
+    const headers = {
+      Authorization: `Bearer ${currentUser.token}`,
+      authorization: `Bearer ${currentUser.token}`,
+    };
+    try {
+      const res = await axios.put(
+        `http://localhost:3001/orders/${id}/deliver`,
+        null,
+        {
+          headers: headers,
         }
-      }
+      );
+      console.log(res);
+    } catch (err) {
+      console.log(err);
     }
-  }, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch]);
-
-  // createOrder={createOrder} onApprove={onApprove} onError={onError}
-  function onApprove(data, actions) {
-    return actions.order.capture().then(async function (details) {
-      try {
-        console.log(details);
-        await payOrder({ id, details });
-        refetch();
-        toast.success("Order is paid");
-        dispatch(clearCartItems());
-      } catch (err) {
-        console.log(err);
-        toast.error(err?.data?.message || err.error);
-      }
-    });
-  }
-  // async function onApproveTest() {
-  //   await payOrder({ id, details: { payer: {} } });
-
-  //   refetch();
-  //   toast.success("Order is paid");
-  // }
-  function onError(err) {
-    toast.error(err.message);
-  }
-  function createOrder(data, actions) {
-    return actions.order
-      .create({
-        purchase_units: [
-          {
-            currency_code: "USD",
-            amount: { value: order.totalPrice },
-          },
-        ],
-      })
-      .then((orderID) => {
-        console.log("order id is:" + orderID);
-        return orderID;
-      });
-  }
+    refetch();
+  };
 
   return isLoading ? (
     <CustomSpinner />
@@ -133,21 +86,16 @@ export default function PlaceOrder() {
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 p-5">
           Order: {id}
         </h1>
-        <ShippingSteps />
+        {currentUser.role !== "ADMIN" && <ShippingSteps />}
         <Summary
           // onApproveTest={onApproveTest}
-
+          deliverHandler={deliverHandler}
           // loadingDeliver={loadingDeliver}
-
-          createOrder={createOrder}
-          onApprove={onApprove}
-          onError={onError}
+          currentUser={currentUser}
           cart={cart}
           subs={subs}
           user={user}
           order={order}
-          loadingPay={loadingPay}
-          isPending={isPending}
         />
       </div>
     </>
@@ -257,11 +205,9 @@ function Summary({
   order,
   loadingPay,
   isPending,
-  createOrder,
-  onApprove,
-  onError,
+  currentUser,
   // loadingDeliver,
-
+  deliverHandler,
   // onApproveTest,
 }) {
   return (
@@ -271,7 +217,9 @@ function Summary({
           <div className="grid grid-cols-2 md:grid-cols-2  w-full h-min ">
             <div className="flex flex-col justify-start items-start min-w-max space-y-4 md:space-y-6 xl:space-y-8 auto-cols-max">
               <div
-                className={`bg-white dark:bg-[#1C1E2D] py-8 px-20 rounded-lg shadow-md border dark:border-[#242635] flex flex-col m-auto z-0 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700`}
+                className={`bg-white dark:bg-[#1C1E2D] ${
+                  currentUser?.role === "ADMIN" ? "px-2 py-8" : "py-8 px-20"
+                } rounded-lg shadow-md border dark:border-[#242635] flex flex-col m-auto z-0 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700`}
               >
                 <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">
                   Customer’s Cart
@@ -283,9 +231,9 @@ function Summary({
             </div>
             <div className="bg-gray-50 dark:bg-[#151725] flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col min-w-fit ml-auto">
               <Customer user={user} subs={subs} order={order} />
-              <Shipping subs={subs} order={order} />
+              <Shipping subs={subs} />
 
-              {!order.isPaid && user.role !== "ADMIN" && (
+              {!order.isPaid && currentUser.role !== "ADMIN" && (
                 <>
                   {loadingPay && <CustomSpinner />}
                   {isPending ? (
@@ -298,21 +246,22 @@ function Summary({
                       >
                         test pay order
                       </button> */}
-                      <div>
-                        <PayPalButtons
-                          style={{
-                            shape: "rect",
-                            layout: "vertical",
-                          }}
-                          createOrder={createOrder}
-                          onApprove={onApprove}
-                          onError={onError}
-                        />
-                      </div>
                     </div>
                   )}
                 </>
               )}
+              {/* {loadingDeliver && <CustomSpinner />} */}
+              {currentUser.role === "ADMIN" &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <button
+                    type="button"
+                    className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200"
+                    onClick={deliverHandler}
+                  >
+                    Mark As Delivered
+                  </button>
+                )}
             </div>
           </div>
         </div>
@@ -366,6 +315,7 @@ function Cart({ cart }) {
   return mappedElements;
 }
 function Customer({ user, subs, order }) {
+  console.log(order);
   return (
     <>
       <h3 className="text-xl dark:text-white  font-semibold  text-gray-800">
@@ -386,11 +336,9 @@ function Customer({ user, subs, order }) {
               Shipping Address
             </p>
             <p className="w-50 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600 ">
-              {order?.shippingAddress?.address ||
-                subs?.shippingAddress?.address}{" "}
-              / {order?.shippingAddress?.city || subs?.shippingAddress?.city} /{" "}
-              {order?.shippingAddress?.country ||
-                subs?.shippingAddress?.country}
+              {subs.shippingAddress.address} /{" "}
+              {subs.shippingAddress.selectedCity?.label} /{" "}
+              {subs.shippingAddress.selectedCountry?.label}
             </p>
             {order.isDelivered ? (
               <div className="font-regular relative block w-full rounded-lg bg-green-500 p-2 text-base leading-5 text-white opacity-100 border-b border-gray-200">
@@ -425,7 +373,7 @@ function Customer({ user, subs, order }) {
     </>
   );
 }
-function Shipping({ subs, order }) {
+function Shipping({ subs }) {
   return (
     <>
       <div className="flex justify-center flex-col md:flex-row flex-col items-stretch max-h-fit  space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
@@ -440,7 +388,7 @@ function Shipping({ subs, order }) {
                 Subtotal
               </p>
               <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                ${order?.itemsPrice || subs?.itemsPrice}
+                ${subs.itemsPrice}
               </p>
             </div>
             <div className="flex justify-between items-center w-full">
@@ -451,7 +399,7 @@ function Shipping({ subs, order }) {
                 </span>
               </p>
               <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                ${order?.itemsPrice || subs?.taxPrice}
+                ${subs.taxPrice}
               </p>
             </div>
             <div className="flex justify-between items-center w-full">
@@ -459,7 +407,7 @@ function Shipping({ subs, order }) {
                 Shipping
               </p>
               <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                ${order?.shippingPrice || subs?.shippingPrice}
+                ${subs.shippingPrice}
               </p>
             </div>
           </div>
@@ -468,7 +416,7 @@ function Shipping({ subs, order }) {
               Total
             </p>
             <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">
-              ${order?.totalPrice || subs.totalPrice}
+              ${subs.totalPrice}
             </p>
           </div>
         </div>

@@ -24,7 +24,7 @@ export default function OrderList() {
       });
       const order = res.data.data;
       if (res.data.status == "success") {
-        navigate(`/order/${id}`, { state: { order } });
+        navigate(`/admin/order/view/${id}`, { state: { order } });
       }
     }
     order();

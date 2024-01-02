@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { format } from "date-fns";
 import { Input } from "@material-tailwind/react";
@@ -103,6 +104,7 @@ function About({
     password: "",
     confirmPassword: "",
   });
+
   // const navigate = useNavigate();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -373,6 +375,7 @@ function OrderHistory({ order, isLoading, error }) {
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
                     Paid At
                   </th>
+                  <th scope="col" className="px-6 py-3"></th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-[#151725]">
@@ -429,6 +432,14 @@ function OrderHistory({ order, isLoading, error }) {
                     <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
                       {info.paidAt &&
                         format(new Date(info.paidAt), "yyyy-MM-dd")}
+                    </td>
+                    <td className="px-6 py-4">
+                      <Link
+                        to={`/order/${info._id}`}
+                        className=" flex flex-col items-center justify-center p-1 text-blue-500  transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+                      >
+                        View Details
+                      </Link>
                     </td>
                   </tr>
                 ))}

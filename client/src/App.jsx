@@ -36,6 +36,7 @@ import PendingProduct from "./pages/admin/PendingProduct";
 import ProductEdit from "./pages/admin/ProductEdit";
 import UserList from "./pages/admin/UserList";
 import UserEdit from "./pages/admin/UserEdit";
+import AdminOrderView from "./pages/admin/view/AdminOrderView";
 // seller
 import SellerRoute from "./components/seller/SellerRoute";
 import SellerProduct from "./pages/seller/SellerProduct";
@@ -100,6 +101,12 @@ const router = createBrowserRouter(
         <Route
           path="orderlist"
           element={<OrderList />}
+          loader={async () => null}
+        />
+        {/* AdminOrderView */}
+        <Route
+          path="order/view/:id"
+          element={<AdminOrderView />}
           loader={async () => null}
         />
         <Route
