@@ -61,7 +61,7 @@ export default function PendingProduct() {
     }
   };
   return (
-    <div className="max-w-2xl mx-auto min-w-fit min-h-screen my-3">
+    <div className=" mx-auto max-w-64 max-h-screen mx-3 my-3">
       {isLoading ? (
         <CustomSpinner />
       ) : error ? (
@@ -108,8 +108,8 @@ export default function PendingProduct() {
               />
             </div>
           </div> */}
-            <Card className="h-full w-full xs:overflow-scroll sm:overflow-scroll md:overflow-auto">
-              <table className="w-full min-w-max table-auto text-sm text-left text-gray-500 dark:text-gray-400">
+            <Card className="h-full max-w-80 overflow-auto">
+              <table className="max-w-72 table-auto text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     {/* <th scope="col" className="p-4">

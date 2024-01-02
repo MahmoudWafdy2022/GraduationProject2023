@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import CustomSpinner from "../../components/CustomSpinner";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUploadProductImageMutation } from "../../slices/productsApiSlice";
 export default function ProductPost() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -19,13 +20,33 @@ export default function ProductPost() {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
-  // const [product, setProduct] = useState({});
+  const [image, setImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadProductImage, { isLoading: loadingUpload }] =
+    useUploadProductImageMutation();
+  // const [product, setProduct] = useState({});
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+
+    formData.append("image", e.target.files[0]);
+
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      console.log(res);
+      toast.success(res?.message);
+      setImage(res?.image);
+      // setImage(e.target.files[0]); // Set the File object here
+    } catch (e) {
+      console.log(e?.data?.message || e?.error);
+    }
+    // Handle the selected file as needed
+  };
   const navigate = useNavigate();
   const values = {
     name,
     price,
     brand,
+    image,
     category,
     description,
     countInStock,
@@ -213,6 +234,27 @@ export default function ProductPost() {
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
+              Image
+            </Typography>
+            <div className="mb-3 w-96 flex">
+              <label
+                htmlFor="image"
+                className="mb-2 m-auto inline-block items-center justify-center text-neutral-700 dark:text-neutral-200"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+              ></label>
+              <input
+                className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] font-normal leading-[2.15] text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
+                id="image"
+                type="file"
+                onChange={uploadFileHandler} // Handle image change
+              />
+            </div>
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="dark:text-white -mb-3"
+            >
               Product Description
             </Typography>
             <Textarea
@@ -230,6 +272,7 @@ export default function ProductPost() {
           </div>
 
           {isLoading && <CustomSpinner />}
+          {loadingUpload && <CustomSpinner />}
           <Button
             className="mt-6 bg-[#151725] hover:bg-[#151729]"
             fullWidth

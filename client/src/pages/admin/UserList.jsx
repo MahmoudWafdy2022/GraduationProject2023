@@ -128,7 +128,12 @@ export default function UserList() {
                       </th>
                       <td className="px-6 py-4">{p.email}</td>
                       <td className="px-6 py-4">{p.role}</td>
-                      {p.role !== "ADMIN" && (
+                      {p.role === "ADMIN" ? (
+                        <>
+                          <td className="px-6 py-4"></td>
+                          <td className="px-6 py-4"></td>
+                        </>
+                      ) : (
                         <>
                           <td className="px-6 py-4 text-right">
                             <Link

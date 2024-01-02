@@ -250,14 +250,15 @@ const CreateProductReview = async (req, res) => {
 };
 
 const createSellerProduct = async (req, res) => {
-  const { name, brand, category, description, countInStock, price } = req.body;
+  const { name, brand, category, description, countInStock, price, image } =
+    req.body;
 
   try {
     const product = new sellerProductModel({
       name,
       price,
       user: req.currentUser.id,
-      image: "/images/sample.jpg",
+      image: image || "/images/sample.jpg",
       brand,
       category,
       countInStock,
