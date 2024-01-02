@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 export default function Search() {
   const [keyword, setKeyword] = useState("");
+
   const navigate = useNavigate();
 
   const handleSearch = () => {
     if (keyword.trim() !== "") {
       // products/search/:keyword/page/:pageNumber
       navigate(`/products/search/${encodeURIComponent(keyword)}/page/1`);
+      setKeyword("");
     }
   };
 
@@ -16,6 +19,7 @@ export default function Search() {
       handleSearch();
     }
   };
+
   return (
     <div className="ml-6 flex flex-1 gap-x-3 relative block">
       <input

@@ -5,9 +5,10 @@ export default async function productsLoader({ params }) {
     const pageNumber = params.pageNumber;
     const keyword = params.keyword;
     const limit = 6; // Set the same limit as in the backend
-    const res = await fetch(
-      `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&keyword=${keyword}`
-    );
+    const url = keyword
+      ? `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&keyword=${keyword}`
+      : `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}`;
+    const res = await fetch(url);
 
     if (!res.ok) {
       throw {
