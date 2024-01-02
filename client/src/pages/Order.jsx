@@ -289,13 +289,18 @@ function Summary({
   deliverHandler,
   // onApproveTest,
 }) {
+  console.log(currentUser);
   return (
-    <div className="bg-gray-100 min-w-full dark:bg-[#1C1E2D] ">
+    <div className="bg-gray-100 min-w-full max-h-90 overflow-auto dark:bg-[#1C1E2D] ">
       <div className=" min-w-full justify-center px-6 md:flex md:space-x-6 xl:px-0">
-        <div className="h-screen w-full ">
+        <div className=" ">
           <div className="grid grid-cols-2 md:grid-cols-2  w-full h-min ">
             <div className="flex flex-col justify-start items-start min-w-max space-y-4 md:space-y-6 xl:space-y-8 auto-cols-max">
-              <div className="bg-white dark:bg-[#1C1E2D] py-8 px-20 rounded-lg shadow-md border dark:border-[#242635] flex flex-col m-auto z-0 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700">
+              <div
+                className={`bg-white dark:bg-[#1C1E2D] ${
+                  currentUser?.role === "ADMIN" ? "px-4 py-8" : "py-8 px-20"
+                } rounded-lg shadow-md border dark:border-[#242635] flex flex-col m-auto z-0 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700`}
+              >
                 <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">
                   Customer’s Cart
                 </p>
@@ -461,7 +466,7 @@ function Customer({ user, subs, order }) {
 function Shipping({ subs }) {
   return (
     <>
-      <div className="flex justify-center flex-col md:flex-row flex-col items-stretch h-full  space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
+      <div className="flex justify-center flex-col md:flex-row flex-col items-stretch max-h-fit  space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
         {/*  */}
         <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-[#151725] space-y-6">
           <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
