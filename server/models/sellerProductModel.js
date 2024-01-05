@@ -64,6 +64,16 @@ const sellerProductSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
+    specifications: [
+      {
+        key: { type: String, required: false },
+        value: { type: String, required: false },
+      },
+    ],
+    longDescription: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

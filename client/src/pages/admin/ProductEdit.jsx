@@ -25,7 +25,11 @@ export default function ProductEdit() {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [longDescription, setLongDescription] = useState("");
+
   const [image, setImage] = useState("");
+  const [specifications, setSpecifications] = useState([]);
+
   const [uploadProductImage, { isLoading: loadingUpload }] =
     useUploadProductImageMutation();
   // const [product, setProduct] = useState({});
@@ -46,6 +50,16 @@ export default function ProductEdit() {
     }
     // Handle the selected file as needed
   };
+  const addSpecification = () => {
+    setSpecifications([...specifications, { key: "", value: "" }]);
+  };
+
+  const removeSpecification = (index) => {
+    const updatedSpecifications = [...specifications];
+    updatedSpecifications.splice(index, 1);
+    setSpecifications(updatedSpecifications);
+  };
+
   const values = {
     id,
     name,
@@ -54,6 +68,7 @@ export default function ProductEdit() {
     image,
     category,
     description,
+    longDescription,
     countInStock,
   };
   const user = useSelector((store) => store.auth.userInfo);
@@ -85,10 +100,12 @@ export default function ProductEdit() {
     e.preventDefault();
     const transformedValues = {
       ...values,
+      specifications: specifications.filter((spec) => spec.key && spec.value), // Remove empty specifications
       name: capitalizeWords(name),
       category: capitalizeFirstLetter(category),
       brand: capitalizeFirstLetter(brand),
       description: capitalizeFirstLetter(description),
+      longDescription: capitalizeFirstLetter(longDescription), // Add this line
     };
     console.log(transformedValues);
     try {
@@ -96,7 +113,8 @@ export default function ProductEdit() {
         !transformedValues.name ||
         !transformedValues.brand ||
         !transformedValues.category ||
-        !transformedValues.description
+        !transformedValues.description ||
+        !transformedValues.longDescription
       ) {
         toast.error("You must enter data first");
         return;
@@ -120,13 +138,15 @@ export default function ProductEdit() {
   };
   useEffect(() => {
     if (product) {
-      setName(product.name || "");
-      setPrice(product.price || 0);
-      setBrand(product.brand || "");
-      setCategory(product.category || "");
-      setCountInStock(product.countInStock || 0);
-      setDescription(product.description || "");
-      setImage(product.image || "");
+      setName(product?.name || "");
+      setPrice(product?.price || 0);
+      setBrand(product?.brand || "");
+      setCategory(product?.category || "");
+      setCountInStock(product?.countInStock || 0);
+      setDescription(product?.description || "");
+      setLongDescription(product?.longDescription || ""); // Add this line
+      setSpecifications(product?.specifications || []);
+      setImage(product?.image || "");
     }
   }, [product]);
   return (
@@ -142,16 +162,19 @@ export default function ProductEdit() {
       <Card
         color="transparent"
         shadow={false}
-        className="h-screen min-w-max  m-auto flex flex-col  justify-center items-center"
+        className="h-screen min-w-max m-auto flex flex-col justify-center items-center overflow-auto"
       >
-        <form onSubmit={submitHandler} className="mt-8 mb-2 min-w-max  sm:w-96">
-          <div className="mb-1 flex flex-col gap-6 grid grid-cols-2 grid-rows-5 gap-4">
+        <form
+          onSubmit={submitHandler}
+          className="mt-8 mb-2 min-w-max  sm:w-96 h-full"
+        >
+          <div className="mb-1 flex flex-col gap-6 grid grid-cols-2 auto-rows-auto gap-4">
             <Typography
               variant="h6"
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
-              Product Name
+              Name
             </Typography>
             <Input
               name="name"
@@ -166,12 +189,13 @@ export default function ProductEdit() {
                 className: "before:content-none after:content-none",
               }}
             />
+
             <Typography
               variant="h6"
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
-              Product Price
+              Price
             </Typography>
             <Input
               name="price"
@@ -193,7 +217,7 @@ export default function ProductEdit() {
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
-              Product Brand
+              Brand
             </Typography>
             <Input
               name="brand"
@@ -213,7 +237,7 @@ export default function ProductEdit() {
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
-              Product Category
+              Category
             </Typography>
             <Input
               name="category"
@@ -233,7 +257,7 @@ export default function ProductEdit() {
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
-              Product Count in Stock
+              Count in Stock
             </Typography>
             <Input
               name="countInStock"
@@ -276,7 +300,7 @@ export default function ProductEdit() {
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
-              Product Description
+              Short Description
             </Typography>
             <Textarea
               name="description"
@@ -285,12 +309,97 @@ export default function ProductEdit() {
               id="description"
               size="lg"
               placeholder="Product description"
+              className="resize-none !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="dark:text-white -mb-3"
+            >
+              Long Description
+            </Typography>
+            <Textarea
+              name="longDescription"
+              value={longDescription}
+              onChange={(e) => setLongDescription(e.target.value)}
+              id="longDescription"
+              size="lg"
+              rows="7"
+              placeholder="Product long description"
               className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
             />
           </div>
+
+          <div className="grid grid-cols-2">
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="dark:text-white -mb-3"
+            >
+              Specifications
+            </Typography>
+            {!specifications.length && (
+              <button
+                type="button"
+                onClick={addSpecification}
+                className="ml-3 mt-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-3 border border-blue-500 hover:border-transparent rounded w-[fit-content]"
+              >
+                + Add
+              </button>
+            )}
+          </div>
+          {specifications?.map((spec, index) => (
+            <div key={index} className="grid grid-cols-3 mb-3 mt-8">
+              <Input
+                name={`specKey${index}`}
+                type="text"
+                value={spec.key}
+                onChange={(e) => {
+                  const updatedSpecifications = [...specifications];
+                  updatedSpecifications[index].key = e.target.value;
+                  setSpecifications(updatedSpecifications);
+                }}
+                placeholder="Key"
+                className="mr-2 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
+              />
+              <Input
+                name={`specValue${index}`}
+                type="text"
+                value={spec.value}
+                onChange={(e) => {
+                  const updatedSpecifications = [...specifications];
+                  updatedSpecifications[index].value = e.target.value;
+                  setSpecifications(updatedSpecifications);
+                }}
+                placeholder="Value"
+                className=" !border-t-blue-gray-200  focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900 ml-7"
+              />
+              <div className="col-span-1 grid grid-cols-2 items-center justify-center ml-5">
+                <button
+                  type="button"
+                  onClick={() => removeSpecification(index)}
+                  className="m-auto  bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-3 border border-red-500 hover:border-transparent rounded w-[fit-content]"
+                >
+                  Remove
+                </button>
+                {index === specifications.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={addSpecification}
+                    className="m-auto ml-0 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-3 border border-blue-500 hover:border-transparent rounded w-[fit-content]"
+                  >
+                    + Add
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
 
           {isLoading && <CustomSpinner />}
           {loadingUpload && <CustomSpinner />}

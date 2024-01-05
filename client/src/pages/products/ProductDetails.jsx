@@ -105,7 +105,7 @@ export default function VanDetails() {
           {/* <!-- Image gallery --> */}
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl  lg:gap-x-8 lg:px-8">
             <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
-              <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
+              <div className="max-h-96  aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                 <img
                   src={
                     product.image.includes("/uploads")
@@ -113,7 +113,7 @@ export default function VanDetails() {
                       : product.image
                   }
                   alt={product.name}
-                  className="h-50 w-50 object-cover object-center"
+                  className="h-full w-50 object-cover object-center"
                 />
               </div>
             </div>
@@ -210,7 +210,7 @@ export default function VanDetails() {
 
                 <div className="mt-10">
                   <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-                    Highlights
+                    Specifications
                   </h3>
 
                   <div className="mt-4">
@@ -218,26 +218,15 @@ export default function VanDetails() {
                       role="list"
                       className="list-disc space-y-2 pl-4 text-sm "
                     >
-                      <li className="text-gray-400 ">
-                        <span className="text-gray-600 dark:text-white">
-                          Hand cut and sewn locally
-                        </span>
-                      </li>
-                      <li className="text-gray-400">
-                        <span className="text-gray-600 dark:text-white">
-                          Dyed with our proprietary colors
-                        </span>
-                      </li>
-                      <li className="text-gray-400">
-                        <span className="text-gray-600 dark:text-white">
-                          Pre-washed &amp; pre-shrunk
-                        </span>
-                      </li>
-                      <li className="text-gray-400">
-                        <span className="text-gray-600 dark:text-white">
-                          Ultra-soft 100% cotton
-                        </span>
-                      </li>
+                      {product?.specifications?.map((s) => (
+                        <>
+                          <li className="text-gray-400 ">
+                            <span className="text-gray-600 dark:text-white">
+                              {s?.key}: {s?.value}
+                            </span>
+                          </li>
+                        </>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -248,8 +237,13 @@ export default function VanDetails() {
                   </h2>
 
                   <div className="mt-4 space-y-6">
-                    <p className="text-sm text-gray-600 dark:text-white">
-                      {product.description}
+                    <p
+                      className="text-sm text-gray-600 dark:text-white"
+                      style={{ whiteSpace: "pre-line", lineHeight: "1.8" }}
+                    >
+                      {product.longDescription
+                        ? product.longDescription
+                        : product.description}
                     </p>
                   </div>
                 </div>

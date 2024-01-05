@@ -34,6 +34,8 @@ const get_all_products_no_pagination = async (req, res) => {
 
 const get_all_products = async (req, res) => {
   try {
+    const allProducts = await productModel.find();
+
     //filter
     const queryStringObject = { ...req.query };
     const excludeFields = ["pageNumber", "limit", "sort", "fields"];
@@ -104,10 +106,7 @@ const get_all_products = async (req, res) => {
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
       page,
-      pages:
-        products.length <= limit
-          ? Math.floor(count / limit)
-          : Math.ceil(count / limit),
+      pages: Math.ceil(allProducts.length / limit),
       numOfProducts: products.length,
       data: { products },
     });
@@ -155,8 +154,17 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { name, price, description, image, brand, category, countInStock } =
-      req.body;
+    const {
+      name,
+      price,
+      description,
+      image,
+      brand,
+      category,
+      countInStock,
+      specifications,
+      longDescription,
+    } = req.body;
     const product = await productModel.findById(req.params.id);
     console.log(image);
     if (product) {
@@ -167,6 +175,8 @@ const updateProduct = async (req, res) => {
       product.brand = brand;
       product.category = category;
       product.countInStock = countInStock;
+      product.specifications = specifications;
+      product.longDescription = longDescription;
 
       const updatedProduct = await product.save();
 
@@ -253,8 +263,17 @@ const CreateProductReview = async (req, res) => {
 };
 
 const createSellerProduct = async (req, res) => {
-  const { name, brand, category, description, countInStock, price, image } =
-    req.body;
+  const {
+    name,
+    brand,
+    category,
+    description,
+    countInStock,
+    price,
+    image,
+    specifications,
+    longDescription,
+  } = req.body;
 
   try {
     const product = new sellerProductModel({
@@ -267,6 +286,8 @@ const createSellerProduct = async (req, res) => {
       countInStock,
       numReviews: 0,
       description,
+      specifications,
+      longDescription,
     });
 
     const createdProduct = await product.save();

@@ -9,8 +9,8 @@ export default function Products() {
   // const [pageNumber] = useState(1);
   const params = useParams();
   const { pageNumber, keyword } = params;
-
   const dataPromise = useLoaderData(pageNumber, keyword);
+  console.log(dataPromise.pageInfo);
   const navigate = useNavigate();
   const handlePageChange = (newPage) => {
     // Update the URL with the new page number
