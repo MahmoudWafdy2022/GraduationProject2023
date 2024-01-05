@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher";
 export default function BottomHeader({ setIsDarkMode }) {
+  const { t } = useTranslation();
+
   return (
     <div className="mt-4 flex items-center justify-between">
       <div className="flex gap-x-8">
@@ -8,7 +12,7 @@ export default function BottomHeader({ setIsDarkMode }) {
           className="cursor-pointer rounded-sm py-1 px-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#242635]"
         >
           <span className="relative text-sm font-medium w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-left dark:text-white dark:after:bg-white">
-            Shop
+            {t("homepage.shop")}
           </span>
         </Link>
         <Link
@@ -16,11 +20,12 @@ export default function BottomHeader({ setIsDarkMode }) {
           className="cursor-pointer rounded-sm py-1 px-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#242635]"
         >
           <span className="relative text-sm font-medium w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-left dark:text-white dark:after:bg-white">
-            New Releases
+            {t("homepage.new_releases")}
           </span>
         </Link>
       </div>
       <div className="flex items-center justify-end">
+        <LanguageSwitcher />
         <button
           className="flex cursor-pointer justify-center items-center pt-1 h-7 w-7 ml-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 gap-x-2"
           onClick={() => setIsDarkMode((prev) => !prev)}

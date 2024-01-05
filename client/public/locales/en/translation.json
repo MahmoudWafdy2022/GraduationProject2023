@@ -1,0 +1,22 @@
+{
+  "homepage": {
+    "create_an_account": "Create an account",
+    "sign_in": "Sign in",
+    "hero": "Best Electronics Store Are Finally Here!",
+    "cart": "Cart",
+    "search": "Search",
+    "search_a_product": "Search a product",
+    "shop": "Shop",
+    "shop_now": "Shop",
+    "new_releases": "New Releases",
+    "shipping": "Shipping",
+    "payment": "Payment",
+    "placeOrder": "Place Order",
+    "laptop": "Laptop",
+    "Latest_Products": "Latest Products",
+    "rights": "All Rights Reserved",
+    "about": "About",
+    "contact": "Contact Us"
+  },
+  "products": {}
+}

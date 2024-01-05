@@ -1,4 +1,10 @@
 @tailwind base;
+/* styles.css */
+body.loading {
+  opacity: 0.5; /* Set the desired opacity value */
+  pointer-events: none; /* Disable interaction with the page while loading */
+}
+
 /* Firefox */
 .dark {
   scrollbar-width: thin;

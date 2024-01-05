@@ -1,5 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 export default function CartButton({ cart }) {
+  const { t } = useTranslation();
   return (
     <div className="flex cursor-pointer items-center gap-x-1 rounded-md py-2 px-4 hover:bg-gray-100 dark:hover:bg-[#242635]">
       <Link to="/cart" className="flex items-center gap-x-1">
@@ -16,7 +18,9 @@ export default function CartButton({ cart }) {
             {cart.length}
           </span>
         </div>
-        <span className="text-sm font-medium dark:text-white">Cart</span>
+        <span className="text-sm font-medium dark:text-white">
+          {t("homepage.cart")}
+        </span>
       </Link>
     </div>
   );

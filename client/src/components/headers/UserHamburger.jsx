@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 export default function UserHamburger({
   user,
   setShowProfile,
@@ -7,7 +8,7 @@ export default function UserHamburger({
   handleLogout,
 }) {
   const btnRef = useRef();
-
+  const { t } = useTranslation();
   useEffect(() => {
     const closeDropDown = (e) => {
       if (!btnRef?.current?.contains(e.target)) {
@@ -69,14 +70,14 @@ export default function UserHamburger({
             <div className="ml-2 flex cursor-pointer items-center gap-x-1 border-r py-2 px-4 hover:">
               {/* className="text-sm font-medium " */}
               <span className="relative text-sm font-medium w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-left dark:text-white dark:after:bg-white">
-                Create an account
+                {t("homepage.create_an_account")}
               </span>
             </div>
           </Link>
           <Link to="/login">
             <div className="ml-2 flex cursor-pointer items-center gap-x-1 rounded-md border py-2 px-4 hover:bg-gray-100 dark:hover:bg-[#242635]">
               <span className="text-sm font-medium dark:text-white ">
-                Sign in
+                {t("homepage.sign_in")}
               </span>
             </div>
           </Link>
