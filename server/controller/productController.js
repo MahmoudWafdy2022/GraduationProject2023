@@ -64,11 +64,13 @@ const get_all_products = async (req, res) => {
     //sorting
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
+      console.log(sortBy);
       mongooseQuery = await productModel
         .find()
         .skip(skip)
         .limit(limit)
         .sort(sortBy);
+      // console.log(mongooseQuery);
     } else {
       mongooseQuery = await productModel
         .find()
@@ -98,7 +100,6 @@ const get_all_products = async (req, res) => {
 
     //
 
-    console.log(req.query);
     //execute query
     const products = await mongooseQuery;
     //

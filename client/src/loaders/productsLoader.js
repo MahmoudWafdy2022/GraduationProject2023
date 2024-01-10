@@ -1,13 +1,16 @@
 import { defer } from "react-router-dom";
-export default async function productsLoader({ params }) {
+export default async function productsLoader({ params, request }) {
   // products
   try {
     const pageNumber = params.pageNumber;
     const keyword = params.keyword;
+    const u = new URL(request.url);
+    const searchTerm = u.searchParams.get("sort");
+    console.log(searchTerm);
     const limit = 6; // Set the same limit as in the backend
     const url = keyword
-      ? `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&keyword=${keyword}`
-      : `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}`;
+      ? `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&keyword=${keyword}&sort=${searchTerm}`
+      : `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&sort=${searchTerm}`;
     const res = await fetch(url);
 
     if (!res.ok) {

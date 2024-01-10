@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   // Form,
   Card,
@@ -12,7 +13,9 @@ import { useLoginMutation } from "../slices/userApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
 // import {CustomSpinner} from "../components/CustomSpinner"
+import i18n from "../i18n";
 function Login() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -65,10 +68,10 @@ function Login() {
       className="h-screen w-full max-w-xs m-auto flex flex-col  justify-center items-center"
     >
       <Typography variant="h4" color="blue-gray" className="dark:text-white">
-        Sign In
+        {t("sign_in.title")}
       </Typography>
       <Typography color="gray" className="mt-1 dark:text-white font-normal">
-        Welcome back!
+        {t("sign_in.details")}!
       </Typography>
       {state && <p className="text-red-500 text-md ">{state?.message}</p>}
       <form
@@ -81,7 +84,7 @@ function Login() {
             color="blue-gray"
             className="dark:text-white -mb-3"
           >
-            Your Email
+            {t("sign_in.email")}
           </Typography>
           <Input
             name="email"
@@ -101,7 +104,7 @@ function Login() {
             color="blue-gray"
             className="dark:text-white -mb-3"
           >
-            Password
+            {t("sign_in.password")}
           </Typography>
           <Input
             name="password"
@@ -125,18 +128,25 @@ function Login() {
           type="submit"
           onSubmit={submitHandler}
         >
-          {isLoading ? "Logging in..." : "Log in"}
+          {i18n.dir() === "rtl"
+            ? isLoading
+              ? "...جاري الدخول"
+              : "دخول للحساب"
+            : isLoading
+            ? "Logging in..."
+            : "Log in"}
         </Button>
         <Typography
           color="gray"
           className="dark:text-white mt-4 text-center font-normal"
         >
-          Don&apos;t have an account?{" "}
+          {t("sign_in.dont_have_an_account")}
+          {i18n.dir() === "rtl" ? "؟" : "?"}{" "}
           <Link
             to="/register"
             className="dark:text-blue-600  font-medium text-gray-900"
           >
-            Sign up
+            {t("sign_in.sign_up")}
           </Link>
         </Typography>
       </form>

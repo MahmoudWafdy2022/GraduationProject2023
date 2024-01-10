@@ -56,7 +56,7 @@ module.exports = withMT({
       xxl: "1980px",
     },
   },
-  plugins: [require("tailwind-scrollbar")],
+  plugins: [require("tailwind-scrollbar"), require("@tailwindcss/forms")],
   variants: {
     scrollbar: ["dark"],
     rotate: ["active", "group-hover"],

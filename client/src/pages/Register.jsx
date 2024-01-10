@@ -8,10 +8,13 @@ import {
 } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
+import { useTranslation } from "react-i18next";
 // import { toast } from "react-toastify";
+import i18n from "../i18n";
 import axios from "axios";
 
 function Register() {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const navigate = useNavigate();
   const [err, setErr] = useState("");
@@ -65,10 +68,10 @@ function Register() {
       className="h-screen w-full max-w-xs m-auto flex flex-col  justify-center items-center"
     >
       <Typography variant="h4" color="blue-gray" className="dark:text-white">
-        Sign Up
+        {t("register.title")}
       </Typography>
       <Typography color="gray" className="mt-1 font-normal dark:text-white">
-        Enter your details to register.
+        {t("register.details")}
       </Typography>
       {err && <p className="text-red-500 text-xs italic">{err}</p>}
       <form
@@ -83,7 +86,7 @@ function Register() {
                 color="blue-gray"
                 className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
               >
-                First Name
+                {t("register.first_Name")}
               </Typography>
 
               <Input
@@ -128,7 +131,7 @@ function Register() {
                 color="blue-gray"
                 className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white "
               >
-                Last Name
+                {t("register.last_Name")}
               </Typography>
 
               <Input
@@ -174,7 +177,7 @@ function Register() {
               color="blue-gray"
               className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
             >
-              Your Email
+              {t("register.email")}
             </Typography>
             <Input
               name="email"
@@ -221,7 +224,7 @@ function Register() {
               color="blue-gray"
               className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
             >
-              Password
+              {t("register.password")}
             </Typography>
             <Input
               name="password"
@@ -261,23 +264,23 @@ function Register() {
               color="blue-gray"
               className="mb-1 after:content-['*'] after:ml-0.5 after:text-red-500 dark:text-white"
             >
-              Select Role
+              {t("register.role")}
             </Typography>
             <select
               {...register("role", { required: "Required" })}
-              className="w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D] "
+              className="w-full border  p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]"
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
             >
-              <option value="USER">Buyer</option>
-              <option value="SELLER">Seller</option>
+              <option value="USER">{t("register.buyer")}</option>
+              <option value="SELLER">{t("register.seller")}</option>
             </select>
             {errors.role && (
               <p
                 className="m-0 visible peer-invalid:visible text-pink-600 text-sm"
                 role="alert"
               >
-                {errors.role.message}
+                {errors?.role?.message}
               </p>
             )}
           </div>
@@ -288,18 +291,25 @@ function Register() {
           disabled={navigation.state === "submitting"}
           type="submit"
         >
-          {navigation.state === "submitting" ? "Register in..." : "Register"}
+          {i18n.dir() === "rtl"
+            ? navigation.state === "submitting"
+              ? "...جاري تسجيل الحساب"
+              : "سجل الحساب"
+            : navigation.state === "submitting"
+            ? "Register in..."
+            : "Register"}
         </Button>
         <Typography
           color="gray"
           className="mt-4 text-center font-normal dark:text-white"
         >
-          Already have an account?{" "}
+          {t("register.already_have_an_account")}
+          {i18n.dir() === "rtl" ? "؟" : "?"}{" "}
           <Link
             to="/login"
             className="dark:text-blue-600 font-medium text-gray-900"
           >
-            Sign In
+            {t("register.sign_in")}
           </Link>
         </Typography>
       </form>

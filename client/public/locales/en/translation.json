@@ -20,5 +20,38 @@
     "about": "About",
     "contact": "Contact Us"
   },
-  "products": {}
+  "register": {
+    "title": "Sign Up",
+    "details": "Enter your details to register",
+    "first_Name": "First Name",
+    "last_Name": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "role": "Select Role",
+    "buyer": "Buyer",
+    "seller": "Seller",
+    "register": "Register",
+    "already_have_an_account": "Already have an account",
+    "sign_in": "Sign in"
+  },
+  "sign_in": {
+    "title": "Sign In",
+    "details": "Welcome back",
+    "email": "Email",
+    "password": "Password",
+    "log_in": "Log in",
+    "dont_have_an_account": "Don't have an account",
+    "sign_up": "Sign Up"
+  },
+  "cart": {
+    "empty": "Your Cart is Empty",
+    "items": "Cart Items"
+  },
+  "products": {},
+  "error_component": {
+    "oops": "Oops",
+    "reconnect": "Please re-connect to the internet",
+    "go_home": "Go Back Home",
+    "page_not_exist": "That page not exist"
+  }
 }
