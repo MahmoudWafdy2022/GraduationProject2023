@@ -5,12 +5,13 @@ export default async function productsLoader({ params, request }) {
     const pageNumber = params.pageNumber;
     const keyword = params.keyword;
     const u = new URL(request.url);
-    const searchTerm = u.searchParams.get("sort");
-    console.log(searchTerm);
+    const sort = u.searchParams.get("sort");
+    const brand = u.searchParams.get("brand");
+    console.log(brand);
     const limit = 6; // Set the same limit as in the backend
     const url = keyword
-      ? `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&keyword=${keyword}&sort=${searchTerm}`
-      : `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&sort=${searchTerm}`;
+      ? `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&keyword=${keyword}&sort=${sort}&brand=${brand}`
+      : `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&sort=${sort}&brand=${brand}`;
     const res = await fetch(url);
 
     if (!res.ok) {

@@ -35,11 +35,12 @@ const get_all_products_no_pagination = async (req, res) => {
 const get_all_products = async (req, res) => {
   try {
     const allProducts = await productModel.find();
-
+    let query = {};
     //filter
     const queryStringObject = { ...req.query };
     const excludeFields = ["pageNumber", "limit", "sort", "fields"];
     excludeFields.forEach((field) => delete queryStringObject[field]);
+    console.log(queryStringObject);
 
     // apply filteration using [gte,gt,lte,lt]
     let queryStr = JSON.stringify(queryStringObject);
@@ -51,7 +52,7 @@ const get_all_products = async (req, res) => {
     const page = parseInt(req.query.pageNumber) || 1;
     const skip = (page - 1) * limit;
     //
-
+    console.log(JSON.parse(queryStr));
     //
     //build query
     mongooseQuery = await productModel
@@ -64,7 +65,7 @@ const get_all_products = async (req, res) => {
     //sorting
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
-      console.log(sortBy);
+
       mongooseQuery = await productModel
         .find()
         .skip(skip)

@@ -24,22 +24,20 @@ export default function Products() {
   const navigate = useNavigate();
   const handlePageChange = (newPage) => {
     // Update the URL with the new page number
-    const sortQuery = dataPromise?.pageInfo.sort;
+    const sortQuery = new URLSearchParams(window.location.search).get("sort");
     const queryString = keyword
       ? `/products/search/${keyword}/page/${newPage}${
           sortQuery ? `?sort=${sortQuery}` : ""
         }`
       : `/products/page/${newPage}${sortQuery ? `?sort=${sortQuery}` : ""}`;
 
-    console.log(dataPromise);
     navigate(queryString);
   };
   const handleSortOptionClick = (sortValue) => {
     // Update the URL with the new sort option
     const newQueryString = keyword
-      ? `/products/search/${keyword}/page/1?sort=${sortValue}`
-      : `/products/page/1?sort=${sortValue}`;
-
+      ? `/products/search/${keyword}/page/${pageNumber}?sort=${sortValue}`
+      : `/products/page/${pageNumber}?sort=${sortValue}`;
     navigate(newQueryString);
 
     // Optionally, you can also trigger a re-fetch of the data
@@ -135,14 +133,14 @@ const filters = [
   //   ],
   // },
   {
-    id: "category",
-    name: "Category",
+    id: "brand",
+    name: "Brand",
     options: [
-      { value: "new-arrivals", label: "New Arrivals", checked: false },
-      { value: "sale", label: "Sale", checked: false },
-      { value: "travel", label: "Travel", checked: true },
-      { value: "organization", label: "Organization", checked: false },
-      { value: "accessories", label: "Accessories", checked: false },
+      { value: "Apple", label: "Apple", checked: false },
+      { value: "Cannon", label: "Cannon", checked: false },
+      { value: "Sony", label: "Sony", checked: false },
+      { value: "Logitech", label: "Logitech", checked: false },
+      { value: "Amazon", label: "Amazon", checked: false },
     ],
   },
   // {
@@ -165,6 +163,30 @@ function classNames(...classes) {
 
 function Filter({ handleSortOptionClick }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState({ brand: [] });
+  const navigate = useNavigate();
+
+  const handleCheckboxChange = (filterId, value) => {
+    const updatedFilters = { ...selectedFilters, [filterId]: value };
+    setSelectedFilters(updatedFilters);
+
+    // Update the URL with the selected filters
+    const queryString = createQueryString(updatedFilters);
+    navigate(`/products/page/1${queryString}`);
+  };
+  const createQueryString = (filters) => {
+    const queryString = Object.entries(filters)
+      .map(([filterId, values]) => {
+        if (values.length > 0) {
+          return `${filterId}=${values.join(",")}`;
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .join("&");
+
+    return queryString ? `?${queryString}` : "";
+  };
 
   return (
     <div className="bg-white dark:bg-[#151725]">
@@ -269,6 +291,25 @@ function Filter({ handleSortOptionClick }) {
                                       name={`${section.id}[]`}
                                       defaultValue={option.value}
                                       type="checkbox"
+                                      checked={selectedFilters[
+                                        section.id
+                                      ].includes(option.value)}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const updatedValues = isChecked
+                                          ? [
+                                              ...selectedFilters[section.id],
+                                              option.value,
+                                            ]
+                                          : selectedFilters[section.id].filter(
+                                              (value) => value !== option.value
+                                            );
+
+                                        handleCheckboxChange(
+                                          section.id,
+                                          updatedValues
+                                        );
+                                      }}
                                       defaultChecked={option.checked}
                                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:text-white"
                                     />
