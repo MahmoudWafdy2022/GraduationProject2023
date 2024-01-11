@@ -18,13 +18,14 @@ export default function HomePage() {
       <header>
         <StoreFront />
         {/* <HomePageHeader /> */}
+
         <Typography
           variant="h3"
           color="blue-gray"
           className={
             i18n.dir() === "rtl"
-              ? "rtl mr-5 mt-7 mb-2 text-3xl md:text-2xl lg:text-3xl dark:text-white"
-              : "ml-5 mt-7 mb-2 text-3xl md:text-2xl lg:text-3xl dark:text-white"
+              ? "rtl mr-10 pr-10 mt-12 mb-2 text-3xl md:text-2xl lg:text-3xl dark:text-white"
+              : "ml-10 pl-10 mt-12 mb-2 text-3xl md:text-2xl lg:text-3xl dark:text-white"
           }
         >
           {t("homepage.Latest_Products")}
@@ -36,8 +37,8 @@ export default function HomePage() {
           color="blue-gray"
           className={
             i18n.dir() === "rtl"
-              ? "rtl mr-5 mt-7 mb-2 text-3xl md:text-2xl lg:text-3xl dark:text-white"
-              : "ml-5 mt-7 mb-2 text-3xl md:text-2xl lg:text-3xl dark:text-white"
+              ? "rtl mr-10 pr-10 mt-7  text-3xl md:text-2xl lg:text-3xl dark:text-white"
+              : "ml-10 pl-10 mt-7  text-3xl md:text-2xl lg:text-3xl dark:text-white"
           }
         >
           {t("homepage.brands")}

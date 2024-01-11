@@ -71,13 +71,13 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
 
   const handleCheckboxChange = (filterId, value) => {
     const updatedFilters = { ...selectedFilters, [filterId]: value };
-    console.log(updatedFilters);
     setSelectedFilters(updatedFilters);
 
     // Update the URL with the selected filters
     const queryString = createQueryString(updatedFilters);
     navigate(`/products/page/${pageNumber}${queryString}`);
   };
+
   const createQueryString = (filters) => {
     const queryString = Object.entries(filters)
       .map(([filterId, values]) => {

@@ -1,13 +1,12 @@
-// LanguageSwitcher.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import CustomSpinner from "./CustomSpinner"; // Import your loading spinner component
+import CustomSpinner from "./CustomSpinner";
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-
+  const languageSwitcherRef = useRef(null);
   const changeLanguage = async (lang) => {
     setLoading(true);
 
@@ -19,13 +18,31 @@ const LanguageSwitcher = () => {
   const toggleOptions = () => {
     setShowOptions(!showOptions);
   };
+
+  const handleClickOutside = (event) => {
+    if (
+      languageSwitcherRef.current &&
+      !languageSwitcherRef.current.contains(event.target)
+    ) {
+      setShowOptions(false);
+    }
+  };
   useEffect(() => {
     const dir = i18n.dir(i18n.language);
     document.documentElement.dir = dir;
+
+    // Add event listener to handle clicks outside the dropdown
+    document.addEventListener("click", handleClickOutside);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, [i18n, i18n.language]);
 
   return (
     <div
+      ref={languageSwitcherRef}
       className={`relative ${
         loading ? "opacity-50 pointer-events-none" : ""
       } ml-2`}

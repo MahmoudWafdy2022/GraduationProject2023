@@ -19,7 +19,9 @@
     "rights": "كل الحقوق محفوظة",
     "about": "عـنا",
     "contact": "تواصـل معنا",
-    "brands": "براندات"
+    "brands": "براندات",
+    "highest_rating": "الاعلي تقييماً",
+    "lowest_price": "الاقل سعراً"
   },
   "register": {
     "title": "سجل حساب جديد",

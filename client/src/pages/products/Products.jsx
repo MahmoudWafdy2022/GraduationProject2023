@@ -29,9 +29,14 @@ export default function Products() {
     navigate(queryString);
   };
   const handleSortOptionClick = (sortValue) => {
+    const brandQuery = new URLSearchParams(window.location.search).get("brand");
     const newQueryString = keyword
-      ? `/products/search/${keyword}/page/${pageNumber}?sort=${sortValue}`
-      : `/products/page/${pageNumber}?sort=${sortValue}`;
+      ? `/products/search/${keyword}/page/${pageNumber}?sort=${sortValue}${
+          brandQuery ? `&brand=${brandQuery}` : ""
+        }`
+      : `/products/page/${pageNumber}?sort=${sortValue}${
+          brandQuery ? `&brand=${brandQuery}` : ""
+        }`;
     navigate(newQueryString);
   };
 

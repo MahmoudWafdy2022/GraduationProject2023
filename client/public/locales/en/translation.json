@@ -19,7 +19,9 @@
     "rights": "All Rights Reserved",
     "about": "About",
     "contact": "Contact Us",
-    "brands": "Brands"
+    "brands": "Brands",
+    "highest_rating": "Highest Rating",
+    "lowest_price": "Lowest Price"
   },
   "register": {
     "title": "Sign Up",
