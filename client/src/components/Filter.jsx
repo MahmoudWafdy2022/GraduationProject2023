@@ -69,7 +69,7 @@ export default function Filter({
   pageNumber,
   selectedFilters,
   setSelectedFilters,
-  // createQueryString,
+  createQueryString,
   // concatenateQueryString,
 }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -94,24 +94,50 @@ export default function Filter({
 
   const filterValuesFromUrl = getFilterValuesFromUrl();
 
-  const handleCheckboxChange = (filterId, value) => {
+  // const handleCheckboxChange = (filterId, value) => {
+  //   const sortQuery = new URLSearchParams(window.location.search).get("sort");
+  //   const updatedFilters = { ...selectedFilters, [filterId]: value };
+
+  //   setSelectedFilters(updatedFilters);
+
+  //   // Update the URL with the selected filters
+  //   const baseUrl = `/products/page/${pageNumber}`;
+  //   const queryString = createQueryString(updatedFilters);
+  //   const updatedUrl = concatenateQueryString(baseUrl, {
+  //     sort: sortQuery,
+  //     ...queryString,
+  //   });
+
+  //   console.log(updatedUrl);
+  //   navigate(updatedUrl);
+  // };
+  const handleClearFilters = () => {
+    // Clear all selected filters
+    const clearedFilters = {};
+    filters.forEach((section) => {
+      clearedFilters[section.id] = [];
+    });
+
+    setSelectedFilters(clearedFilters);
+
+    // Update the URL with the cleared filters
+    const baseUrl = `/products/page/${pageNumber}`;
     const sortQuery = new URLSearchParams(window.location.search).get("sort");
-    const updatedFilters = { ...selectedFilters, [filterId]: value };
+    const updatedUrl = `${baseUrl}${sortQuery ? `?sort=${sortQuery}` : ""}`;
+
+    navigate(updatedUrl);
+  };
+
+  const handleRadioChange = (filterId, value) => {
+    const sortQuery = new URLSearchParams(window.location.search).get("sort");
+    const updatedFilters = { ...selectedFilters, [filterId]: [value] };
 
     setSelectedFilters(updatedFilters);
 
     // Update the URL with the selected filters
     const baseUrl = `/products/page/${pageNumber}`;
-    const params = new URLSearchParams();
-
-    Object.entries(updatedFilters).forEach(([key, values]) => {
-      if (values.length > 0) {
-        params.append(key, values.join(","));
-      }
-    });
-
-    const queryString = params.toString();
-    const updatedUrl = `${baseUrl}?${sortQuery ? `sort=${sortQuery}` : ""}${
+    const queryString = createQueryString(updatedFilters);
+    const updatedUrl = `${baseUrl}${sortQuery ? `?sort=${sortQuery}` : "?"}${
       queryString ? (sortQuery ? `&${queryString}` : queryString) : ""
     }`;
 
@@ -210,6 +236,7 @@ export default function Filter({
                                 </span>
                               </Disclosure.Button>
                             </h3>
+                            {/* mobile */}
                             <Disclosure.Panel className="pt-6">
                               <div className="space-y-6">
                                 {section.options.map((option, optionIdx) => (
@@ -221,28 +248,23 @@ export default function Filter({
                                       id={`filter-mobile-${section.id}-${optionIdx}`}
                                       name={`${section.id}[]`}
                                       defaultValue={option.value}
-                                      type="checkbox"
-                                      checked={selectedFilters[
-                                        section.id
-                                      ].includes(option.value)}
-                                      onChange={(e) => {
-                                        const isChecked = e.target.checked;
-                                        const updatedValues = isChecked
-                                          ? [
-                                              ...selectedFilters[section.id],
-                                              option.value,
-                                            ]
-                                          : selectedFilters[section.id].filter(
-                                              (value) => value !== option.value
-                                            );
-
-                                        handleCheckboxChange(
-                                          section.id,
-                                          updatedValues
-                                        );
-                                      }}
                                       defaultChecked={option.checked}
-                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:text-white"
+                                      type="radio"
+                                      checked={
+                                        selectedFilters[section.id][0] ===
+                                          option.value ||
+                                        (
+                                          filterValuesFromUrl[section.id] || []
+                                        ).includes(option.value)
+                                      }
+                                      onChange={() =>
+                                        handleRadioChange(
+                                          section.id,
+                                          option.value
+                                        )
+                                      }
+                                      // defaultChecked={option.checked}
+                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 "
                                     />
                                     <label
                                       htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
@@ -253,6 +275,30 @@ export default function Filter({
                                   </div>
                                 ))}
                               </div>
+                              <button
+                                type="button"
+                                className="mt-4  border-gray-300 text-red-600 focus:ring-red-500"
+                                onClick={handleClearFilters}
+                              >
+                                <div className="flex justify-between items-center">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    className="bi bi-ban"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
+                                  </svg>
+                                  <span
+                                    className="ml-3  text-gray-600 dark:text-white"
+                                    style={{ whiteSpace: "nowrap" }}
+                                  >
+                                    Clear
+                                  </span>
+                                </div>
+                              </button>
                             </Disclosure.Panel>
                           </>
                         )}
@@ -397,32 +443,18 @@ export default function Filter({
                                   id={`filter-${section.id}-${optionIdx}`}
                                   name={`${section.id}[]`}
                                   defaultValue={option.value}
-                                  type="checkbox"
                                   defaultChecked={option.checked}
+                                  type="radio"
                                   checked={
-                                    selectedFilters[section.id].includes(
-                                      option.value
-                                    ) ||
+                                    selectedFilters[section.id][0] ===
+                                      option.value ||
                                     (
                                       filterValuesFromUrl[section.id] || []
                                     ).includes(option.value)
                                   }
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const updatedValues = isChecked
-                                      ? [
-                                          ...selectedFilters[section.id],
-                                          option.value,
-                                        ]
-                                      : selectedFilters[section.id].filter(
-                                          (value) => value !== option.value
-                                        );
-
-                                    handleCheckboxChange(
-                                      section.id,
-                                      updatedValues
-                                    );
-                                  }}
+                                  onChange={() =>
+                                    handleRadioChange(section.id, option.value)
+                                  }
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
@@ -434,6 +466,30 @@ export default function Filter({
                               </div>
                             ))}
                           </div>
+                          <button
+                            type="button"
+                            className="mt-3 border-gray-300 text-red-600 focus:ring-red-500"
+                            onClick={handleClearFilters}
+                          >
+                            <div className="flex justify-between items-center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                className="bi bi-ban"
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
+                              </svg>
+                              <span
+                                className="ml-3  text-gray-600 dark:text-white"
+                                style={{ whiteSpace: "nowrap" }}
+                              >
+                                Clear
+                              </span>
+                            </div>
+                          </button>
                         </Disclosure.Panel>
                       </>
                     )}

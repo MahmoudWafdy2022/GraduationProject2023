@@ -34,7 +34,7 @@ export default function Products() {
   const createQueryString = (filters) => {
     const queryString = Object.entries(filters)
       .map(([filterId, values]) => {
-        if (values.length > 0) {
+        if (values?.length > 0) {
           return `${filterId}=${values.join(",")}`;
         }
         return null;
