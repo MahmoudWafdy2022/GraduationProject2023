@@ -27,53 +27,24 @@ export default function StoreFront() {
                 className="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl"
               >
                 <div
+                  // sm:right-1/2 sm:top-0 sm:translate-x-8 lg:right-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-20
                   className={
                     i18n.dir() === "rtl"
-                      ? "rtl absolute transform sm:right-1/2 sm:top-0 sm:translate-x-8 lg:right-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8"
-                      : "absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8"
+                      ? "rtl absolute transform lg:right-1/4 lg:top-0 lg:translate-x-20 xs:hidden"
+                      : "absolute transform lg:left-1/4 lg:top-0 lg:-translate-x-20 xs:hidden "
                   }
                 >
                   <div className="flex items-center space-x-6 lg:space-x-8">
                     <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                      <div className="h-64 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
+                      <div className="h-100 w-100 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
                         <img
-                          src="/assets/header-1.jpg"
+                          src="/assets/header-4.png"
                           alt=""
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
-                      <div className="h-64 w-44 overflow-hidden rounded-lg">
-                        <img
-                          src="/assets/header-3.jpg"
-                          alt=""
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
-                    </div>
-                    <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                      <div className="h-64 w-44 overflow-hidden rounded-lg"></div>
-                      <div className="h-64 w-44 overflow-hidden rounded-lg">
-                        <img
-                          src="/assets/header-2.jpg"
-                          alt=""
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
-                      <div className="h-64 w-44 overflow-hidden rounded-lg"></div>
-                    </div>
-                    <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                      <div className="h-64 w-44 overflow-hidden rounded-lg">
-                        <img
-                          src="/assets/header-2.jpg"
-                          alt=""
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
-                      <div className="h-64 w-44 overflow-hidden rounded-lg">
-                        <img
-                          src="/assets/header-2.jpg"
-                          alt=""
-                          className="h-full w-full object-cover object-center"
+                          className={
+                            i18n.dir() === "rtl"
+                              ? "h-full w-full object-cover object-center "
+                              : "h-full w-full object-cover object-center -scale-x-100"
+                          }
                         />
                       </div>
                     </div>

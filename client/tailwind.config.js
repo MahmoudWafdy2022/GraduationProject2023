@@ -5,7 +5,13 @@ module.exports = withMT({
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   darkMode: "class",
   theme: {
+    fontFamily: {
+      sans: ["Noto Kufi Arabic", "sans-serif"],
+    },
     extend: {
+      scale: {
+        "-100": "-1",
+      },
       rotate: {
         "-180": "-180deg",
         "-90": "-90deg",
