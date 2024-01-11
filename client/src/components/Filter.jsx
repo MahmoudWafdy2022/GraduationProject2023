@@ -6,7 +6,7 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  Squares2X2Icon,
+  // Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 const sortOptions = [
@@ -71,13 +71,13 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
 
   const handleCheckboxChange = (filterId, value) => {
     const updatedFilters = { ...selectedFilters, [filterId]: value };
+    console.log(updatedFilters);
     setSelectedFilters(updatedFilters);
 
     // Update the URL with the selected filters
     const queryString = createQueryString(updatedFilters);
     navigate(`/products/page/${pageNumber}${queryString}`);
   };
-
   const createQueryString = (filters) => {
     const queryString = Object.entries(filters)
       .map(([filterId, values]) => {
@@ -124,14 +124,14 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
+                <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl dark:bg-[#1C1E2D]">
                   <div className="flex items-center justify-between px-4">
                     <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                       Filters
                     </h2>
                     <button
                       type="button"
-                      className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400 "
+                      className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400 dark:bg-[#1C1E2D]"
                       onClick={() => setMobileFiltersOpen(false)}
                     >
                       <span className="sr-only">Close menu</span>
@@ -164,7 +164,7 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
                         {({ open }) => (
                           <>
                             <h3 className="-mx-2 -my-3 flow-root">
-                              <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500 ">
+                              <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500 dark:bg-[#1C1E2D]">
                                 <span className="font-medium text-gray-900 dark:text-white">
                                   {section.name}
                                 </span>
@@ -247,7 +247,7 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 ">
+                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-white">
                     Sort
                     <ChevronDownIcon
                       className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500 "
@@ -265,7 +265,7 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-[#1C1E2D]">
                     <div className="py-1">
                       {sortOptions?.map((option) => (
                         <Menu.Item key={option.name}>
@@ -279,7 +279,7 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
                                 option.current
                                   ? "font-medium text-gray-900 "
                                   : "text-gray-500 ",
-                                active ? "bg-gray-100 " : "",
+                                active ? "bg-gray-100 dark:bg-[#151725]" : "",
                                 "block px-4 py-2 text-sm"
                               )}
                             >
@@ -293,13 +293,13 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
                 </Transition>
               </Menu>
 
-              <button
+              {/* <button
                 type="button"
                 className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7 "
               >
                 <span className="sr-only">View grid</span>
                 <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
-              </button>
+              </button> */}
               <button
                 type="button"
                 className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden "
@@ -340,8 +340,8 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
                     {({ open }) => (
                       <>
                         <h3 className="-my-3 flow-root">
-                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                            <span className="font-medium text-gray-900">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500 dark:bg-[#151725] ">
+                            <span className="font-medium text-gray-900 dark:text-white">
                               {section.name}
                             </span>
                             <span className="ml-6 flex items-center">
