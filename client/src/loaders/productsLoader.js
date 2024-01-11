@@ -6,12 +6,27 @@ export default async function productsLoader({ params, request }) {
     const keyword = params.keyword;
     const u = new URL(request.url);
     const sort = u.searchParams.get("sort");
-    const brand = u.searchParams.get("brand");
-    console.log(brand);
+    let brand = u.searchParams.get("brand");
+    // const searchParams = new URLSearchParams(document.location.search);
+
+    // Get all query parameters as an object
+
+    brand = brand ? brand[0].toUpperCase() + brand.slice(1) : "";
+
+    console.log(params);
     const limit = 6; // Set the same limit as in the backend
-    const url = keyword
-      ? `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&keyword=${keyword}&sort=${sort}&brand=${brand}`
-      : `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}&sort=${sort}&brand=${brand}`;
+    const baseURL = `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}`;
+    const queryParams = [];
+
+    if (keyword) queryParams.push(`keyword=${keyword}`);
+    if (sort) queryParams.push(`sort=${sort}`);
+    if (brand) queryParams.push(`brand=${brand}`);
+
+    const url = `${baseURL}${
+      queryParams.length > 0 ? `&${queryParams.join("&")}` : ""
+    }`;
+
+    console.log(url);
     const res = await fetch(url);
 
     if (!res.ok) {

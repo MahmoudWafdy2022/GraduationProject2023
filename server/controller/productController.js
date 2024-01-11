@@ -35,12 +35,12 @@ const get_all_products_no_pagination = async (req, res) => {
 const get_all_products = async (req, res) => {
   try {
     const allProducts = await productModel.find();
-    let query = {};
+    let count = allProducts.length;
     //filter
+
     const queryStringObject = { ...req.query };
     const excludeFields = ["pageNumber", "limit", "sort", "fields"];
     excludeFields.forEach((field) => delete queryStringObject[field]);
-    console.log(queryStringObject);
 
     // apply filteration using [gte,gt,lte,lt]
     let queryStr = JSON.stringify(queryStringObject);
@@ -52,34 +52,44 @@ const get_all_products = async (req, res) => {
     const page = parseInt(req.query.pageNumber) || 1;
     const skip = (page - 1) * limit;
     //
-    console.log(JSON.parse(queryStr));
-    //
-    //build query
-    mongooseQuery = await productModel
-      .find(JSON.parse(queryStr))
+
+    let mongooseQuery = await productModel
+      .find(
+        Object.keys(JSON.parse(queryStr)).length === 0
+          ? {}
+          : JSON.parse(queryStr)
+      )
       .skip(skip)
       .limit(limit);
-
-    //
+    if (Object.keys(JSON.parse(queryStr)).length !== 0) {
+      count = await productModel.find(JSON.parse(queryStr)).countDocuments();
+    }
 
     //sorting
+
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
-
+      //build query
       mongooseQuery = await productModel
-        .find()
+        .find(
+          Object.keys(JSON.parse(queryStr)).length === 0
+            ? {}
+            : JSON.parse(queryStr)
+        )
         .skip(skip)
         .limit(limit)
         .sort(sortBy);
-      // console.log(mongooseQuery);
     } else {
       mongooseQuery = await productModel
-        .find()
+        .find(
+          Object.keys(JSON.parse(queryStr)).length === 0
+            ? {}
+            : JSON.parse(queryStr)
+        )
         .skip(skip)
         .limit(limit)
         .sort("-createdAt");
     }
-
     //
 
     //search
@@ -95,20 +105,19 @@ const get_all_products = async (req, res) => {
       query.$or = [{ name: { $regex: req.query.keyword, $options: "i" } }];
 
       mongooseQuery = await productModel.find(query).skip(skip).limit(limit);
+      count = await productModel.find(query).countDocuments();
     }
 
-    const count = await productModel.countDocuments(req.query.keyword);
-
     //
-
     //execute query
+
     const products = await mongooseQuery;
     //
 
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
       page,
-      pages: Math.ceil(allProducts.length / limit),
+      pages: Math.ceil(count / limit),
       numOfProducts: products.length,
       data: { products },
     });

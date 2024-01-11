@@ -52,7 +52,7 @@ import productDetailsLoader from "./loaders/productDetailsLoader";
 
 const Products = React.lazy(() => import("./pages/products/Products"));
 // loading spinner
-import CustomSpinner from "./components/CustomSpinner";
+// import CustomSpinner from "./components/CustomSpinner";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -68,20 +68,12 @@ const router = createBrowserRouter(
 
       <Route
         path="products/page/:pageNumber"
-        element={
-          <React.Suspense fallback={<CustomSpinner />}>
-            <Products />
-          </React.Suspense>
-        }
+        element={<Products />}
         loader={productsLoader}
       />
       <Route
         path="products/search/:keyword/page/:pageNumber"
-        element={
-          <React.Suspense fallback={<CustomSpinner />}>
-            <Products />
-          </React.Suspense>
-        }
+        element={<Products />}
         loader={productsLoader}
       />
       <Route

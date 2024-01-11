@@ -18,18 +18,20 @@ export default function Products() {
   // const [pageNumber] = useState(1);
 
   const params = useParams();
+  console.log(params);
   const { pageNumber, keyword } = params;
   const dataPromise = useLoaderData(pageNumber, keyword);
-  console.log(dataPromise.pageInfo);
+  console.log(dataPromise);
   const navigate = useNavigate();
   const handlePageChange = (newPage) => {
     // Update the URL with the new page number
     const sortQuery = new URLSearchParams(window.location.search).get("sort");
+    const brandQuery = new URLSearchParams(window.location.search).get("brand");
     const queryString = keyword
       ? `/products/search/${keyword}/page/${newPage}${
           sortQuery ? `?sort=${sortQuery}` : ""
-        }`
-      : `/products/page/${newPage}${sortQuery ? `?sort=${sortQuery}` : ""}`;
+        }${brandQuery? `brand=${brandQuery}`: "" }`
+      : `/products/page/${newPage}${sortQuery ? `?sort=${sortQuery}` : ""}${brandQuery? `brand=${brandQuery}`: "" }`;
 
     navigate(queryString);
   };
