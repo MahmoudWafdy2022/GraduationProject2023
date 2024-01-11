@@ -13,7 +13,6 @@ export default async function productsLoader({ params, request }) {
 
     brand = brand ? brand[0].toUpperCase() + brand.slice(1) : "";
 
-    console.log(params);
     const limit = 6; // Set the same limit as in the backend
     const baseURL = `http://localhost:3001/products?pageNumber=${pageNumber}&limit=${limit}`;
     const queryParams = [];
@@ -26,7 +25,6 @@ export default async function productsLoader({ params, request }) {
       queryParams.length > 0 ? `&${queryParams.join("&")}` : ""
     }`;
 
-    console.log(url);
     const res = await fetch(url);
 
     if (!res.ok) {
@@ -37,7 +35,7 @@ export default async function productsLoader({ params, request }) {
       };
     }
     const obj = await res.json();
-    console.log(obj);
+
     const { data } = obj;
 
     const products = data.products;

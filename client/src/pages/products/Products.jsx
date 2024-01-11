@@ -1,5 +1,5 @@
 import { useLoaderData, Await, useParams, useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import EcommerceCard from "../../components/EcommerceCard";
 import ProductsNavbar from "../../components/ProductsNavbar";
 import CustomSpinner from "../../components/CustomSpinner";
@@ -9,33 +9,50 @@ export default function Products() {
   // const [pageNumber] = useState(1);
 
   const params = useParams();
-  console.log(params);
+  const [selectedFilters, setSelectedFilters] = useState({ brand: [] });
+
   const { pageNumber, keyword } = params;
   const dataPromise = useLoaderData(pageNumber, keyword);
-  console.log(dataPromise);
+
   const navigate = useNavigate();
   const handlePageChange = (newPage) => {
     // Update the URL with the new page number
     const sortQuery = new URLSearchParams(window.location.search).get("sort");
-    const brandQuery = new URLSearchParams(window.location.search).get("brand");
-    const queryString = keyword
+    const queryString = createQueryString(selectedFilters);
+    console.log(queryString);
+    const newQueryString = keyword
       ? `/products/search/${keyword}/page/${newPage}${
-          sortQuery ? `?sort=${sortQuery}` : ""
-        }${brandQuery ? `brand=${brandQuery}` : ""}`
-      : `/products/page/${newPage}${sortQuery ? `?sort=${sortQuery}` : ""}${
-          brandQuery ? `brand=${brandQuery}` : ""
-        }`;
+          sortQuery ? `?sort=${sortQuery}` : "?"
+        }${queryString}`
+      : `/products/page/${newPage}${
+          sortQuery ? `?sort=${sortQuery}` : "?"
+        }${queryString}`;
 
-    navigate(queryString);
+    navigate(newQueryString);
+  };
+
+  const createQueryString = (filters) => {
+    const queryString = Object.entries(filters)
+      .map(([filterId, values]) => {
+        if (values.length > 0) {
+          return `${filterId}=${values.join(",")}`;
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .join("&");
+
+    return queryString ? `${queryString}` : "";
   };
   const handleSortOptionClick = (sortValue) => {
-    const brandQuery = new URLSearchParams(window.location.search).get("brand");
+    const queryString = createQueryString(selectedFilters);
+
     const newQueryString = keyword
       ? `/products/search/${keyword}/page/${pageNumber}?sort=${sortValue}${
-          brandQuery ? `&brand=${brandQuery}` : ""
+          queryString ? `&${queryString}` : ""
         }`
       : `/products/page/${pageNumber}?sort=${sortValue}${
-          brandQuery ? `&brand=${brandQuery}` : ""
+          queryString ? `&${queryString}` : ""
         }`;
     navigate(newQueryString);
   };
@@ -53,6 +70,9 @@ export default function Products() {
           <Filter
             handleSortOptionClick={handleSortOptionClick}
             pageNumber={pageNumber}
+            selectedFilters={selectedFilters}
+            setSelectedFilters={setSelectedFilters}
+            createQueryString={createQueryString}
           />
         </div>
         <div className="lg:col-span-3 grid grid-cols-3 p-1">

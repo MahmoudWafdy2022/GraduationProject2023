@@ -64,32 +64,59 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Filter({ handleSortOptionClick, pageNumber }) {
+export default function Filter({
+  handleSortOptionClick,
+  pageNumber,
+  selectedFilters,
+  setSelectedFilters,
+  // createQueryString,
+  // concatenateQueryString,
+}) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState({ brand: [] });
+
   const navigate = useNavigate();
+  // Function to extract filter values from the URL
+  const getFilterValuesFromUrl = () => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+
+    const filterValuesFromUrl = {};
+
+    for (const [key, value] of urlSearchParams.entries()) {
+      // Assuming filters have specific keys in the URL, e.g., "brand", "color", etc.
+      // Update this condition based on your URL structure
+      if (filters.find((filter) => filter.id === key)) {
+        filterValuesFromUrl[key] = value.split(",");
+      }
+    }
+
+    return filterValuesFromUrl;
+  };
+
+  const filterValuesFromUrl = getFilterValuesFromUrl();
 
   const handleCheckboxChange = (filterId, value) => {
+    const sortQuery = new URLSearchParams(window.location.search).get("sort");
     const updatedFilters = { ...selectedFilters, [filterId]: value };
-    console.log(updatedFilters);
+
     setSelectedFilters(updatedFilters);
 
     // Update the URL with the selected filters
-    const queryString = createQueryString(updatedFilters);
-    navigate(`/products/page/${pageNumber}${queryString}`);
-  };
-  const createQueryString = (filters) => {
-    const queryString = Object.entries(filters)
-      .map(([filterId, values]) => {
-        if (values.length > 0) {
-          return `${filterId}=${values.join(",")}`;
-        }
-        return null;
-      })
-      .filter(Boolean)
-      .join("&");
+    const baseUrl = `/products/page/${pageNumber}`;
+    const params = new URLSearchParams();
 
-    return queryString ? `?${queryString}` : "";
+    Object.entries(updatedFilters).forEach(([key, values]) => {
+      if (values.length > 0) {
+        params.append(key, values.join(","));
+      }
+    });
+
+    const queryString = params.toString();
+    const updatedUrl = `${baseUrl}?${sortQuery ? `sort=${sortQuery}` : ""}${
+      queryString ? (sortQuery ? `&${queryString}` : queryString) : ""
+    }`;
+
+    console.log(updatedUrl);
+    navigate(updatedUrl);
   };
 
   return (
@@ -372,6 +399,14 @@ export default function Filter({ handleSortOptionClick, pageNumber }) {
                                   defaultValue={option.value}
                                   type="checkbox"
                                   defaultChecked={option.checked}
+                                  checked={
+                                    selectedFilters[section.id].includes(
+                                      option.value
+                                    ) ||
+                                    (
+                                      filterValuesFromUrl[section.id] || []
+                                    ).includes(option.value)
+                                  }
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
                                     const updatedValues = isChecked
