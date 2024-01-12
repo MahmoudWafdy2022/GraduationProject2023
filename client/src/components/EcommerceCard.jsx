@@ -47,7 +47,7 @@ export default function EcommerceCard({
   }
   return (
     <>
-      <Card className="relative w-72 bg-white m-auto shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl dark:bg-[#151725]">
+      <Card className="relative w-72 bg-white h-[545px] m-auto shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl dark:bg-[#151725]">
         <Link to={`/products/${id}`}>
           <CardHeader
             shadow={false}
@@ -62,7 +62,7 @@ export default function EcommerceCard({
                   : image
               }
               alt={name}
-              className="h-full w-full object-cover"
+              className="h-[256px] w-[256px] object-cover"
             />
           </CardHeader>
           {status === "pending" && (
@@ -122,7 +122,7 @@ export default function EcommerceCard({
               ripple={false}
               fullWidth={true}
               onClick={addToCardHandler}
-              className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-700"
+              className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-700 absolute bottom-0 left-0 transform -translate-y-1"
               disabled={!countInStock}
             >
               Add to Cart
