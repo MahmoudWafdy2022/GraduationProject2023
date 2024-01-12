@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 export default function UserHamburger({
   user,
   setShowProfile,
@@ -43,7 +44,13 @@ export default function UserHamburger({
             </button>
 
             {showProfile && (
-              <div className="absolute right-0 w-40 mt-2 py-2 bg-white border rounded shadow-xl">
+              <div
+                className={
+                  i18n.dir() === "rtl"
+                    ? "rtl absolute left-0 w-40 mt-2 py-2 bg-white border rounded shadow-xl"
+                    : "absolute right-0 w-40 mt-2 py-2 bg-white border rounded shadow-xl"
+                }
+              >
                 <Link
                   to="/profile"
                   className="transition-colors duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-purple-500 hover:text-white"
@@ -57,7 +64,7 @@ export default function UserHamburger({
                   onClick={handleLogout}
                   className="transition-colors text-left w-full duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-purple-500 hover:text-white"
                 >
-                  {t("homepage.loguot")}
+                  {t("homepage.logout")}
                 </button>
               </div>
             )}

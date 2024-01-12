@@ -3,6 +3,8 @@
     "create_an_account": "Create an account",
     "sign_in": "Sign in",
     "hero": "Best Electronics Store Are Finally Here!",
+    "hero_details": "This year, our new electronics collection will shelter you from the harsh elements of a world that doesn't care if you live or die.",
+
     "cart": "Cart",
     "search": "Search",
     "search_a_product": "Search a product",
@@ -19,7 +21,7 @@
     "rights": "All Rights Reserved",
     "about": "About",
     "contact": "Contact Us",
-    "brands": "Brands",
+    "brands": "Popular Brands",
     "highest_rating": "Highest Rating",
     "lowest_price": "Lowest Price"
   },

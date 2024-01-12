@@ -14,9 +14,7 @@ export default function StoreFront() {
               {t("homepage.hero")}
             </h1>
             <p className="mt-4 text-xl text-gray-500">
-              {
-                "This year, our new summer collection will shelter you from the harsh elements of a world that doesn't care if you live or die."
-              }
+              {t("homepage.hero_details")}
             </p>
           </div>
           <div>

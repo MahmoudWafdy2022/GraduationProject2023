@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../../slices/cartSlice";
 export default function CartSummary({ c: product, ind, setCurrent }) {
   const [qt, setQt] = useState(product.qty || 1);
+  const image = product.image;
   const dispatch = useDispatch();
   useEffect(() => {
     setCurrent(ind);
@@ -38,11 +39,14 @@ export default function CartSummary({ c: product, ind, setCurrent }) {
     product = { ...product, qt };
     dispatch(removeFromCart({ product, qty: qt, id }));
   };
+  console.log(product);
   return (
     <div>
       <div className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start dark:bg-[#151725]">
         <img
-          src={product.image}
+          src={
+            image.includes("/uploads") ? `http://localhost:3001${image}` : image
+          }
           alt="product-image"
           className="w-full rounded-lg sm:w-40"
         />
