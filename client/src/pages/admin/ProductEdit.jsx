@@ -8,6 +8,7 @@ import {
   Input,
   Button,
   Typography,
+  // ValidationError,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import CustomSpinner from "../../components/CustomSpinner";
@@ -15,6 +16,7 @@ import {
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
 } from "../../slices/productsApiSlice";
+import useProductValidation from "../../utils/useProductValidation";
 import axios from "axios";
 export default function ProductEdit() {
   const { id } = useParams();
@@ -27,6 +29,17 @@ export default function ProductEdit() {
   const [description, setDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
 
+  const {
+    errors,
+    validateName,
+    validateCategory,
+    validateBrand,
+    validateDescription,
+    validateLongDescription,
+    capitalizeWords,
+    capitalizeFirstLetter,
+  } = useProductValidation();
+  console.log(errors);
   const [image, setImage] = useState("");
   const [specifications, setSpecifications] = useState([]);
 
@@ -87,17 +100,29 @@ export default function ProductEdit() {
 
   const product = data?.data?.product;
   const navigate = useNavigate();
-  const capitalizeWords = (str) => {
-    return str
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-  const capitalizeFirstLetter = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    // Validate inputs
+    validateName(values.name);
+    validateBrand(values.brand);
+    validateCategory(values.category);
+    validateDescription(values.description);
+    validateLongDescription(values.longDescription);
+    console.log(values);
+    // Check for validation errors
+    if (
+      errors.name ||
+      errors.brand ||
+      errors.category ||
+      errors.Description ||
+      errors.LongDescription
+    ) {
+      console.log(errors);
+      toast.error("Please fix the validation errors");
+      return;
+    }
     const transformedValues = {
       ...values,
       specifications: specifications.filter((spec) => spec.key && spec.value), // Remove empty specifications
@@ -105,20 +130,20 @@ export default function ProductEdit() {
       category: capitalizeFirstLetter(category),
       brand: capitalizeFirstLetter(brand),
       description: capitalizeFirstLetter(description),
-      longDescription: capitalizeFirstLetter(longDescription), // Add this line
+      longDescription: capitalizeFirstLetter(longDescription),
     };
-    console.log(transformedValues);
+
+    const emptyFields = Object.values(transformedValues).some(
+      (value) => !value
+    );
+
+    if (emptyFields) {
+      toast.error("Please fill in all fields");
+      return; // Stop further execution
+    }
+    transformedValues.price = (values.price - 0.01).toFixed(2);
+
     try {
-      if (
-        !transformedValues.name ||
-        !transformedValues.brand ||
-        !transformedValues.category ||
-        !transformedValues.description ||
-        !transformedValues.longDescription
-      ) {
-        toast.error("You must enter data first");
-        return;
-      }
       const res = await axios.put(
         `http://localhost:3001/products/${id}`,
         transformedValues,
@@ -136,6 +161,7 @@ export default function ProductEdit() {
       toast.error(err?.response?.data?.data || err.error);
     }
   };
+
   useEffect(() => {
     if (product) {
       setName(product?.name || "");
@@ -154,7 +180,7 @@ export default function ProductEdit() {
       <Link
         to="/admin/productlist"
         relative="path"
-        className="dark:text-white mx-auto flex max-w-2xl items-center space-x-2 px-4 pt-5 sm:px-6 lg:max-w-7xl lg:px-8"
+        className="dark:text-white mx-auto inline-flex  items-center space-x-2 px-4 pt-5 sm:px-6  lg:px-8"
       >
         &larr;{" "}
         <span className="ml-2 dark:text-white">Back to Product List</span>
@@ -176,33 +202,54 @@ export default function ProductEdit() {
             >
               Name
             </Typography>
-            <Input
-              name="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              id="name"
-              size="lg"
-              placeholder="Airpods"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
+            {errors.name ? (
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  validateName(name);
+                }}
+                size="lg"
+                label={errors.name}
+                error
+              />
+            ) : (
+              <Input
+                name="name"
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  validateName(name);
+                }}
+                id="name"
+                size="lg"
+                placeholder="Airpods"
+                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+            )}
+
+            {/* // {errors.name && label={`${errors.name}`} error} */}
+            {/* {errors.name && <Input label="Input Error" error />} */}
+            {/* <ValidationError>{errors.name}</ValidationError> */}
 
             <Typography
               variant="h6"
               color="blue-gray"
               className="dark:text-white -mb-3"
             >
-              Price
+              Price ($)
             </Typography>
             <Input
               name="price"
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              min={0}
+              min={1}
               id="price"
               size="lg"
               placeholder="20$"
@@ -211,7 +258,7 @@ export default function ProductEdit() {
                 className: "before:content-none after:content-none",
               }}
             />
-
+            {/* <ValidationError>{errors.price}</ValidationError> */}
             <Typography
               variant="h6"
               color="blue-gray"
@@ -219,19 +266,37 @@ export default function ProductEdit() {
             >
               Brand
             </Typography>
-            <Input
-              name="brand"
-              type="text"
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              id="brand"
-              size="lg"
-              placeholder="brand"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
+            {errors.brand ? (
+              <Input
+                type="text"
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  validateBrand(brand);
+                }}
+                size="lg"
+                label={errors.brand}
+                error
+              />
+            ) : (
+              <Input
+                name="brand"
+                type="text"
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  validateBrand(brand);
+                }}
+                id="brand"
+                size="lg"
+                placeholder="brand"
+                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+            )}
+            {/* <ValidationError>{errors.brand}</ValidationError> */}
             <Typography
               variant="h6"
               color="blue-gray"
@@ -239,19 +304,36 @@ export default function ProductEdit() {
             >
               Category
             </Typography>
-            <Input
-              name="category"
-              type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              id="category"
-              size="lg"
-              placeholder="category"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
+            {errors.category ? (
+              <Input
+                type="text"
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  validateCategory(category);
+                }}
+                size="lg"
+                label={errors.category}
+                error
+              />
+            ) : (
+              <Input
+                name="category"
+                type="text"
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  validateCategory(category);
+                }}
+                id="category"
+                size="lg"
+                placeholder="category"
+                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+            )}
             <Typography
               variant="h6"
               color="blue-gray"
@@ -302,18 +384,39 @@ export default function ProductEdit() {
             >
               Short Description
             </Typography>
-            <Textarea
-              name="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              id="description"
-              size="lg"
-              placeholder="Product description"
-              className="resize-none !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
+            {errors.Description ? (
+              <Textarea
+                name="description"
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  validateDescription(description);
+                }}
+                id="description"
+                size="lg"
+                // placeholder="Product description"
+                label={errors.Description}
+                error
+              />
+            ) : (
+              <Textarea
+                name="description"
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  validateDescription(description);
+                }}
+                id="description"
+                size="lg"
+                placeholder="Product description"
+                className="resize-none !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+            )}
+
+            {/* <ValidationError>{errors.Description}</ValidationError> */}
             <Typography
               variant="h6"
               color="blue-gray"
@@ -321,19 +424,43 @@ export default function ProductEdit() {
             >
               Long Description
             </Typography>
-            <Textarea
-              name="longDescription"
-              value={longDescription}
-              onChange={(e) => setLongDescription(e.target.value)}
-              id="longDescription"
-              size="lg"
-              rows="7"
-              placeholder="Product long description"
-              className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
+            {errors.LongDescription ? (
+              <Textarea
+                name="longDescription"
+                value={longDescription}
+                onChange={(e) => {
+                  setLongDescription(e.target.value);
+                  validateLongDescription(longDescription);
+                }}
+                size="lg"
+                rows="7"
+                // placeholder="Product long description"
+                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+                label={errors.LongDescription}
+                error
+              />
+            ) : (
+              <Textarea
+                name="longDescription"
+                value={longDescription}
+                onChange={(e) => {
+                  setLongDescription(e.target.value);
+                  validateLongDescription(longDescription);
+                }}
+                id="longDescription"
+                size="lg"
+                rows="7"
+                placeholder="Product long description"
+                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+            )}
+            {/* <ValidationError>{errors.LongDescription}</ValidationError> */}
           </div>
 
           <div className="grid grid-cols-2">
