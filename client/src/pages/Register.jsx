@@ -94,7 +94,7 @@ function Register() {
                 type="firstname"
                 id="firstname"
                 size="md"
-                placeholder="John"
+                placeholder="First Name"
                 {...register("firstname", {
                   required: "Required",
                   validate: validateName,
@@ -139,7 +139,7 @@ function Register() {
                 type="lastname"
                 id="lastname"
                 size="md"
-                placeholder="Doe"
+                placeholder="Last name"
                 {...register("lastname", {
                   required: "Required",
                   validate: validateName,

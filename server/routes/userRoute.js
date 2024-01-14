@@ -50,4 +50,6 @@ router.delete(
   allowedTo(userRoles.ADMIN),
   userController.deleteUser
 );
+
+router.get("/users/:id/verify/:token",userController.verifyUserAccountCtrl)
 module.exports = router;

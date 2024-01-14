@@ -10,7 +10,7 @@ auth:{
     })
 // 6E3E3-X7C7U-C7MCQ-BX8RG-4RG2R
 const mailOptions = {
-from:"your gmail address", //sender
+from:process.env.APP_EMAIL_ADDRESS, //sender
 to :userEmail,
 subject:subject,
 html:htmlTemplate
@@ -22,7 +22,7 @@ console.log("Email sent "+ info.response)
 
 } catch (error) {
     console.log(error)
-    throw new Error("internal Server Error (nodemailer)")
+    throw new Error(error)
 }
 
 

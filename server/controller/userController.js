@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const JWTGenerateToken = require("../utils//JWTGenerateToken");
 const userRoles = require("../utils/userRoles");
 const allowedTo = require("../middleware/allowedTo");
+const sendEmail = require("../utils/sendEmail")
 // const asyncHandler = require("../middleware/asyncHandler");
 const checkUserExistence = async (req, res) => {
   try {
@@ -67,9 +68,24 @@ const register = async (req, res) => {
     });
     newuser.token = token;
     await newuser.save();
-    return res
-      .status(200)
-      .json({ status: httpStatusText.SUCCESS, data: { newuser } });
+    const link = `http://localhost:3001/users/${newuser._id}/verify/${newuser.token}`
+
+    const htmlTemplate = `
+    <div>
+    <p>click on the link below to verufy your email</p>
+    <a href = "${link}">Verify</a>
+    </div>
+    `
+
+await sendEmail(newuser.email,"verify Your Email",htmlTemplate)
+
+return res
+.status(200)
+.json({ status: httpStatusText.SUCCESS, message:"we send to you an email please verify your email address", data: { newuser } });
+
+    // return res
+    //   .status(200)
+    //   .json({ status: httpStatusText.SUCCESS, data: { newuser } });
   } catch (err) {
     console.log(err);
   }
@@ -91,12 +107,18 @@ const login = async (req, res) => {
     });
   }
   const matchedPassword = await bcrypt.compare(password, oldUser.password);
+  //
+  if(!oldUser.isAccountVerified){
+return res.status(400).json({message:"we sent to you an email,please verify your email address"})
+
+  }
   if (oldUser && matchedPassword) {
     const token = await JWTGenerateToken({
       email: oldUser.email,
       id: oldUser._id,
       role: oldUser.role,
     });
+
 
     const { firstname, lastname, email, id, role } = oldUser;
 
@@ -112,6 +134,50 @@ const login = async (req, res) => {
     });
   }
 };
+
+// @des Verify user account
+// @route GET/api/users/:usedId/verify/:token
+// @access public
+
+const verifyUserAccountCtrl = async(req,res)=>{
+try{
+const user = await userModel.findById(req.params.id)
+console.log("user ",user)
+if(!user){
+  console.log("!user")
+
+  return res
+  .status(400)
+  .json({ status: httpStatusText.FAIL, message:"Invalid link"})
+}
+const verificationToken = await userModel.findOne({
+  _id:user._id,
+  token:req.params.token
+})
+console.log("verificationToken ",verificationToken)
+console.log("id ",verificationToken._id)
+console.log("token ",verificationToken.token)
+
+
+if(!verificationToken){
+  console.log("!verificationToken")
+  return res
+  .status(400)
+  .json({ status: httpStatusText.FAIL, message:"Invalid link"})
+}
+user.isAccountVerified = true
+await user.save()
+verificationToken = {}
+return res.status(200).json({ status: httpStatusText.SUCCESS, message:"your account verified"})
+}catch (err) {
+    return res
+      .status(404)
+      .json({ status: httpStatusText.FAIL, msg: err.message });
+  }
+
+  
+}
+
 
 // @des logout/clear cookie
 // @route Post/api/users
@@ -269,4 +335,5 @@ module.exports = {
   UpdateUser,
   logoutUser,
   checkUserExistence,
+  verifyUserAccountCtrl
 };
