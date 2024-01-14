@@ -52,4 +52,12 @@ router.delete(
 );
 
 router.get("/users/:id/verify/:token",userController.verifyUserAccountCtrl)
+
+
+router.post("/users/reset-password-link",userController.sendResetPasswordLinkCtrl)
+
+router.get("/users/reset-password/:id/:token",userController.getResetPasswordLinkCtrl)
+router.post("/users/reset-password/:id/:token",userController.resetPasswordCtrl)
+
+
 module.exports = router;

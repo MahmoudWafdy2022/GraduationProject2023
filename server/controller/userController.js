@@ -177,7 +177,121 @@ return res.status(200).json({ status: httpStatusText.SUCCESS, message:"your acco
 
   
 }
+// @des send reset password link
+// @route POST/users/reset-password
+// @access public
 
+const sendResetPasswordLinkCtrl = async(req,res)=>{
+//1.validation skip
+//2.get the user from DB by email
+try {
+  const user  = await userModel.findOne({email:req.body.email})
+if(!user){
+res.status(404).json({status:httpStatusText.FAIL,message:"this Email does not exist"})
+
+}
+//3.creating verificationtoken
+const verificationToken = await userModel.findOne({
+  _id:user._id,
+})
+if(!verificationToken){
+  const token = await JWTGenerateToken({
+    email: newuser.email,
+    id: newuser._id,
+    role: newuser.role,
+  });
+  user.token = token;
+}
+//4.create link
+const link = `http://localhost:3001/users/reset-password/${user._id}/${user.token}`
+
+
+//5.creating html template
+const htmlTemplate = `<a href = "${link}">click here the to reset your password</a>`
+
+//6.send email
+await sendEmail(user.email,"Reset password",htmlTemplate)
+
+//7.response to the client
+res.status(200).json({message:"password reset link sent to your email, please check your email"})
+
+} catch (error) {
+res.status(400).json({error})
+  
+}
+
+}
+
+// @des get reset password link
+// @route GET/users/reset-password
+// @access public
+
+const getResetPasswordLinkCtrl = async(req,res)=>{
+
+  try {
+    const user  = await userModel.fin(req.params.id)
+  if(!user){
+  return res.status(404).json({status:httpStatusText.FAIL,message:"Invalid link"}) 
+  }
+  //3.creating verificationtoken
+  const verificationToken = await userModel.findOne({
+    _id:user._id,
+    token:req.params.token
+  })
+  if(!verificationToken){
+    return res.status(404).json({status:httpStatusText.FAIL,message:"Invalid link"}) 
+
+  }
+  
+  return res.status(404).json({status:httpStatusText.SUCCESS,message:"valid url"}) 
+  
+  
+  } catch (error) {
+  res.status(400).json({message:error.message})
+    
+  }
+}
+
+
+// @des reset password
+// @route POST/users/reset-password
+// @access public
+
+const resetPasswordCtrl = async(req,res)=>{
+
+  try {
+    const user  = await userModel.findById(req.params.id)
+  if(!user){
+  return res.status(400).json({status:httpStatusText.FAIL,message:"Invalid link"}) 
+  }
+  let verificationToken = await userModel.findOne({
+    _id:user._id,
+    token:req.params.token
+  })
+  if(!verificationToken){
+    return res
+    .status(400)
+    .json({ status: httpStatusText.FAIL, message:"Invalid link"})
+  }
+  if(!user.isAccountVerified){
+    user.isAccountVerified = true
+  }
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(req.body.password,salt)
+  user.password = hashedPassword
+  await user.save()
+  verificationToken = {}
+res.status(200).json({message:"password reset successfully, please log in"})
+}
+
+catch (error) {
+  res.status(400).json({message:message.error})
+    
+  }
+
+
+
+}
 
 // @des logout/clear cookie
 // @route Post/api/users
@@ -335,5 +449,8 @@ module.exports = {
   UpdateUser,
   logoutUser,
   checkUserExistence,
-  verifyUserAccountCtrl
-};
+  verifyUserAccountCtrl,
+  resetPasswordCtrl,
+  getResetPasswordLinkCtrl,
+  sendResetPasswordLinkCtrl,
+}
