@@ -61,5 +61,27 @@
     "reconnect": "Please re-connect to the internet",
     "go_home": "Go Back Home",
     "page_not_exist": "That page not exist"
+  },
+  "profile": {
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "current_address": "Current Address",
+    "email": "Email",
+    "city": "City",
+    "country": "Country",
+    "edit_information": "Edit Information",
+    "save_information": "Save Information",
+    "cancel": "Cancel",
+    "about": "About"
+  },
+  "order_history": {
+    "order": "Order History",
+    "paid_at": "Paid At",
+    "created_at": "Created At",
+    "delivered": "Delivered",
+    "paid": "Paid",
+    "order_ID": "Order ID"
   }
 }

@@ -269,7 +269,9 @@ function Register() {
             </Typography>
             <select
               {...register("role", { required: "Required" })}
-              className="w-full border  p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]"
+              className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D] ${
+                i18n.dir() === "rtl" ? "text-right pr-8" : ""
+              }`}
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
             >

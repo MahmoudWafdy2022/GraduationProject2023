@@ -61,5 +61,27 @@
     "reconnect": "من فضلك اعد الاتصال بالانترنت",
     "go_home": "الرجوع للرئيسية",
     "page_not_exist": "هذه الصفحة غير موجودة"
+  },
+  "profile": {
+    "first_name": "الاسم الاول",
+    "last_name": "اسم العائلة",
+    "password": "كلمة المرور",
+    "confirm_password": "تأكيد كلمة المرور",
+    "current_address": "العنوان الحالي",
+    "email": "البريد الالكتروني",
+    "city": "المدينة",
+    "country": "الدولة",
+    "edit_information": "تعديل المعلومات",
+    "save_information": "حفظ المعلومات",
+    "cancel": "الغاء",
+    "about": "معلوماتك الشخصية"
+  },
+  "order_history": {
+    "order": "تاريخ الطلبات",
+    "paid_at": "تم دفعه في",
+    "created_at": "تم انشاءه في",
+    "delivered": "هل تم توصيله؟",
+    "paid": "هل تم دفه؟",
+    "order_ID": "رقم الطلب"
   }
 }
