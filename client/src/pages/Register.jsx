@@ -9,7 +9,7 @@ import {
 import { useSelector } from "react-redux";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
 import { useTranslation } from "react-i18next";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 import i18n from "../i18n";
 import axios from "axios";
 
@@ -54,10 +54,11 @@ function Register() {
         values.lastname.charAt(0).toUpperCase() + values.lastname.slice(1);
 
       await axios.post("http://localhost:3001/users/register", values);
-
+      toast.success("Please check your inbox");
       return navigate("/login");
     } catch (err) {
-      setErr(err?.response?.data?.message);
+      setErr(err?.response?.data?.message || err?.response?.data);
+      toast.error(err?.response?.data?.message || err?.response?.data);
       console.log(err);
     }
   };

@@ -520,7 +520,7 @@ export default function ProductPost() {
             type="submit"
             onSubmit={submitHandler}
           >
-            {isLoading ? "Updating..." : "Update Product"}
+            {isLoading ? "Adding..." : "Add Product"}
           </Button>
         </form>
       </Card>

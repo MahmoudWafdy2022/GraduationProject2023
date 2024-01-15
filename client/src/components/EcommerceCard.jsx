@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import { RatingWithText } from "./RatingWithText";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
+import { addToFavorites, removeFromFavorites } from "../slices/favoriteSlice";
+
 import { toast } from "react-toastify";
 
 /* eslint-disable react/prop-types */
@@ -26,6 +28,15 @@ export default function EcommerceCard({
   const { userInfo } = useSelector((state) => state.auth);
   if (userInfo?.role === "ADMIN" || userInfo?.role === "SELLER")
     disableCart = false;
+  const { favoriteItems } = useSelector((state) => state.favorites);
+  const isFavorite = favoriteItems.some((item) => item._id === id);
+  const handleToggleFavorite = () => {
+    if (isFavorite) {
+      dispatch(removeFromFavorites(product));
+    } else {
+      dispatch(addToFavorites(product));
+    }
+  };
   const dispatch = useDispatch();
 
   const addedSuccessfully = () =>
@@ -48,40 +59,73 @@ export default function EcommerceCard({
   return (
     <>
       <Card className="relative w-72 bg-white h-[545px] m-auto shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl dark:bg-[#151725]">
-        <Link to={`/products/${id}`}>
-          <CardHeader
-            shadow={false}
-            floated={false}
-            className="h-100 dark:bg-[#242635]"
+        <CardHeader
+          shadow={false}
+          floated={false}
+          className="h-100 relative dark:bg-[#242635]"
+        >
+          <Button
+            ripple={false}
+            // fullWidth={true}
+            onClick={handleToggleFavorite}
+            className="bg-transparent p-2 absolute top-0 right-0 inline focus:outline-none"
           >
-            <img
-              // http://localhost:3001/uploads/image-1704202756669.png
-              src={
-                image.includes("/uploads")
-                  ? `http://localhost:3001${image}`
-                  : image
-              }
-              alt={name}
-              className="h-[256px] w-[256px] object-cover"
-            />
-          </CardHeader>
-          {status === "pending" && (
-            <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-yellow-500 text-center text-sm text-white z-1000">
-              Pending
-            </span>
-          )}
-          {status === "accepted" && (
-            <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-green-500 text-center text-sm text-white z-1000">
-              Accepted
-            </span>
-          )}
+            {isFavorite ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="currentColor"
+                className="bi bi-heart-fill text-red-500"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="currentColor"
+                className="bi bi-heart text-red-500"
+                viewBox="0 0 16 16"
+              >
+                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+              </svg>
+            )}
+          </Button>
+          <img
+            // http://localhost:3001/uploads/image-1704202756669.png
+            src={
+              image.includes("/uploads")
+                ? `http://localhost:3001${image}`
+                : image
+            }
+            alt={name}
+            className="h-[256px] w-[256px] object-cover z-10"
+          />
+        </CardHeader>
+        {status === "pending" && (
+          <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-yellow-500 text-center text-sm text-white z-1000">
+            Pending
+          </span>
+        )}
+        {status === "accepted" && (
+          <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-green-500 text-center text-sm text-white z-1000">
+            Accepted
+          </span>
+        )}
 
-          {newArrival && (
-            // text-1xl font-bold
-            <span className="absolute top-0 left-6 w-[55px] h-[55px] flex items-center justify-center rounded-full translate-y-2 -translate-x-6 -rotate-12 bg-black text-center text-1xl font-bold text-white z-1000">
-              NEW
-            </span>
-          )}
+        {newArrival && (
+          // text-1xl font-bold
+          <span className="absolute top-0 left-6 w-[55px] h-[55px] flex items-center justify-center rounded-full translate-y-2 -translate-x-6 -rotate-12 bg-black text-center text-1xl font-bold text-white z-1000">
+            NEW
+          </span>
+        )}
+        <Link to={`/products/${id}`}>
           <CardBody>
             <div className="mb-2 flex items-center justify-between">
               <Typography

@@ -4,7 +4,6 @@
     "sign_in": "Sign in",
     "hero": "Best Electronics Store Are Finally Here!",
     "hero_details": "This year, our new electronics collection will shelter you from the harsh elements of a world that doesn't care if you live or die.",
-
     "cart": "Cart",
     "search": "Search",
     "search_a_product": "Search a product",
@@ -51,6 +50,10 @@
   "cart": {
     "empty": "Your Cart is Empty",
     "items": "Cart Items"
+  },
+  "favorutes": {
+    "empty": "Your Favorite is Empty",
+    "favorite": "Favorites"
   },
   "products": {},
   "error_component": {

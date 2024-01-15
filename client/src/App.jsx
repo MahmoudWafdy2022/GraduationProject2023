@@ -17,6 +17,7 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
+import Favorites from "./pages/Favorite";
 //
 import Protected from "./components/Protected";
 import Shipping from "./pages/Shipping";
@@ -82,6 +83,11 @@ const router = createBrowserRouter(
         loader={productDetailsLoader}
       />
       <Route path="cart" element={<Cart />} loader={async () => null} />
+      <Route
+        path="favorites"
+        element={<Favorites />}
+        loader={async () => null}
+      />
       <Route element={<Protected />} loader={async () => null}>
         <Route
           path="shipping"
