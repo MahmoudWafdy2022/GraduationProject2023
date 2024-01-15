@@ -2,6 +2,7 @@ import CustomSpinner from "../../CustomSpinner";
 import Cart from "../../orders/Cart";
 import Shipping from "../../placeorder/Shipping";
 import Customer from "./Customer";
+import i18n from "../../../i18n.js";
 export default function Summary({
   cart,
   subs,
@@ -14,12 +15,13 @@ export default function Summary({
   deliverHandler,
   // onApproveTest,
 }) {
+  const isRtl = i18n.dir() === "rtl";
   return (
     <div className="bg-gray-100 min-w-full max-h-90 overflow-auto dark:bg-[#1C1E2D] ">
       <div className=" min-w-full justify-center px-6 md:flex md:space-x-6 xl:px-0">
         <div className=" ">
-          <div className="grid grid-cols-2 md:grid-cols-2  w-full h-min ">
-            <div className="flex flex-col justify-start items-start min-w-max space-y-4 md:space-y-6 xl:space-y-8 auto-cols-max">
+          <div className="grid grid-cols-5 md:grid-cols-5  w-full h-min ">
+            <div className="flex flex-col justify-start items-start min-w-max space-y-4 md:space-y-6 xl:space-y-8 col-span-4">
               <div
                 className={`bg-white dark:bg-[#1C1E2D] ${
                   currentUser?.role === "ADMIN" ? "px-2 py-8" : "py-8 px-20"
@@ -33,7 +35,11 @@ export default function Summary({
               </div>
               {/*  */}
             </div>
-            <div className="bg-gray-50 dark:bg-[#151725] flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col min-w-fit ml-auto">
+            <div
+              className={`bg-gray-50 dark:bg-[#151725] flex ${
+                isRtl ? " mr-auto" : "ml-auto"
+              } auto-cols-max auto-rows-max grid-flow-row	  	 justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col min-w-fit `}
+            >
               <Customer user={user} subs={subs} order={order} />
               <Shipping subs={subs} />
 

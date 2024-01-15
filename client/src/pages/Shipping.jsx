@@ -6,8 +6,10 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { saveShippingAddress } from "../slices/cartSlice";
 import useRedirect from "../utils/useRedirect";
 import CustomSpinner from "../components/CustomSpinner";
+import { useTranslation } from "react-i18next";
 export default function Shipping() {
   useRedirect();
+  const { t } = useTranslation();
   const [isLoadingCountry, setIsLoadingCountry] = useState(false);
   const [isLoadingCity, setIsLoadingCity] = useState(false);
   const cart = useSelector((state) => state.cart);
@@ -258,14 +260,14 @@ export default function Shipping() {
       <div className="w-full max-w-3xl mx-auto p-8">
         <div className="bg-white dark:bg-[#1C1E2D] p-8 rounded-lg shadow-md border dark:border-[#242635]">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-            Checkout
+            {t("order.checkout")}
           </h1>
           <ShippingSteps />
           {/* <!-- Shipping Address --> */}
           <ShippingAddress>
             <form className="mb-6" onSubmit={(e) => handleSubmit(e)}>
               <h2 className="text-xl font-semibold text-gray-700 dark:text-white mb-2">
-                Shipping Address
+                {t("order.shipping_address")}
               </h2>
 
               <div className="mt-4">
@@ -273,7 +275,7 @@ export default function Shipping() {
                   htmlFor="address"
                   className="block text-gray-700 dark:text-white mb-1"
                 >
-                  Address
+                  {t("order.address")}
                 </label>
                 <input
                   value={address}
@@ -296,7 +298,7 @@ export default function Shipping() {
                   htmlFor="country"
                   className="block text-gray-700 dark:text-white mb-1"
                 >
-                  Country
+                  {t("order.country")}
                 </label>
 
                 <Select
@@ -321,7 +323,7 @@ export default function Shipping() {
                     htmlFor="city"
                     className="block text-gray-700 dark:text-white mb-1"
                   >
-                    City
+                    {t("order.city")}
                   </label>
 
                   <Select
@@ -345,7 +347,7 @@ export default function Shipping() {
                     htmlFor="postal"
                     className="block text-gray-700 dark:text-white mb-1"
                   >
-                    Postal Code
+                    {t("order.postal_code")}
                   </label>
                   <input
                     type="text"
@@ -372,7 +374,7 @@ export default function Shipping() {
                     addressError || cityError || postalCodeError || countryError
                   }
                 >
-                  Go to Payment
+                  {t("order.go_to_payment")}
                 </button>
               </div>
             </form>

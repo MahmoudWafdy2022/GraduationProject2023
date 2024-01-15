@@ -55,7 +55,12 @@
     "empty": "Your Favorite is Empty",
     "favorite": "Favorites"
   },
-  "products": {},
+  "products": {
+    "add_to_cart": "ADD TO CART",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "new": "NEW"
+  },
   "error_component": {
     "oops": "Oops",
     "reconnect": "Please re-connect to the internet",
@@ -83,5 +88,22 @@
     "delivered": "Delivered",
     "paid": "Paid",
     "order_ID": "Order ID"
+  },
+  "order": {
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "USD": "USD",
+    "vat": "including VAT",
+    "checkout": "Checkout",
+    "shipping_address": "Shipping Address",
+    "city": "City",
+    "country": "Country",
+    "address": "Address",
+    "go_to_payment": "Go to Payment",
+    "postal_code": "Postal Code",
+    "payment": "Payment",
+    "check_out_with_payPal": "Check out with PayPal"
   }
 }

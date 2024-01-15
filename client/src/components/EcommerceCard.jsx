@@ -14,6 +14,7 @@ import { addToCart } from "../slices/cartSlice";
 import { addToFavorites, removeFromFavorites } from "../slices/favoriteSlice";
 
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 /* eslint-disable react/prop-types */
 export default function EcommerceCard({
@@ -25,6 +26,7 @@ export default function EcommerceCard({
 }) {
   const { image, name, price, description, rating, numReviews, countInStock } =
     product;
+  const { t } = useTranslation();
   const { userInfo } = useSelector((state) => state.auth);
   if (userInfo?.role === "ADMIN" || userInfo?.role === "SELLER")
     disableCart = false;
@@ -110,19 +112,19 @@ export default function EcommerceCard({
         </CardHeader>
         {status === "pending" && (
           <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-yellow-500 text-center text-sm text-white z-1000">
-            Pending
+            {t("products.pending")}
           </span>
         )}
         {status === "accepted" && (
           <span className="absolute top-0 left-0 w-20 translate-y-4 -translate-x-6 -rotate-45 bg-green-500 text-center text-sm text-white z-1000">
-            Accepted
+            {t("products.accepted")}
           </span>
         )}
 
         {newArrival && (
           // text-1xl font-bold
           <span className="absolute top-0 left-6 w-[55px] h-[55px] flex items-center justify-center rounded-full translate-y-2 -translate-x-6 -rotate-12 bg-black text-center text-1xl font-bold text-white z-1000">
-            NEW
+            {t("products.new")}
           </span>
         )}
         <Link to={`/products/${id}`}>
@@ -169,7 +171,7 @@ export default function EcommerceCard({
               className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-700 absolute bottom-0 left-0 transform -translate-y-1"
               disabled={!countInStock}
             >
-              Add to Cart
+              {t("products.add_to_cart")}
             </Button>
           </CardFooter>
         )}
