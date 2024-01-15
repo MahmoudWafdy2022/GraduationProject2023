@@ -64,6 +64,7 @@ const sellerProductSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
+    
     specifications: [
       {
         key: { type: String, required: false },
