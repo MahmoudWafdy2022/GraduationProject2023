@@ -150,7 +150,7 @@ if(!user){
   .status(400)
   .json({ status: httpStatusText.FAIL, message:"Invalid link"})
 }
-const verificationToken = await userModel.findOne({
+let verificationToken = await userModel.findOne({
   _id:user._id,
   token:req.params.token
 })
