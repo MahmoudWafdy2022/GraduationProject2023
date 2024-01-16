@@ -191,11 +191,11 @@ res.status(404).json({status:httpStatusText.FAIL,message:"this Email does not ex
 
 }
 //3.creating verificationtoken
-const verificationToken = await userModel.findOne({
+let verificationToken = await userModel.findOne({
   _id:user._id,
 })
 if(!verificationToken){
-  const token = await JWTGenerateToken({
+  let token = await JWTGenerateToken({
     email: newuser.email,
     id: newuser._id,
     role: newuser.role,
@@ -277,7 +277,7 @@ const resetPasswordCtrl = async(req,res)=>{
     user.isAccountVerified = true
   }
   const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(req.body.password,salt)
+  let hashedPassword = await bcrypt.hash(req.body.password,salt)
   user.password = hashedPassword
   await user.save()
   verificationToken = {}
