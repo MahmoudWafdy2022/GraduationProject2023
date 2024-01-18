@@ -67,7 +67,7 @@ function Login() {
       shadow={false}
       className="h-screen w-full max-w-xs m-auto flex flex-col  justify-center items-center"
     >
-      <Typography variant="h4" color="blue-gray" className="dark:text-white">
+      <Typography variant="h3" color="blue-gray" className="dark:text-white">
         {t("sign_in.title")}
       </Typography>
       <Typography color="gray" className="mt-1 dark:text-white font-normal">
@@ -120,7 +120,14 @@ function Login() {
             }}
           />
         </div>
-
+        <div className="mt-3 mb-0">
+          <Link
+            to="/resetpassword"
+            className="dark:text-blue-600  font-medium text-gray-900 "
+          >
+            Forget Password?
+          </Link>
+        </div>
         <Button
           className="mt-6 dark:bg-[#151725] dark:hover:bg-[#151729]"
           fullWidth

@@ -51,6 +51,7 @@ import BrandList from "./pages/admin/BrandList";
 import BrandEdit from "./pages/admin/BrandEdit";
 import CategoryList from "./pages/admin/CategoryList";
 import CategoryEdit from "./pages/admin/CategoryEdit";
+import ResetPassword from "./pages/ResetPassword";
 // actions
 // import registerAction from "./actions/registerAction";
 // import loginAction from "./actions/loginAction";
@@ -70,6 +71,11 @@ const router = createBrowserRouter(
         // action={loginAction}
       />
       <Route path="register" element={<Register />} loader={async () => null} />
+      <Route
+        path="resetpassword"
+        element={<ResetPassword />}
+        loader={async () => null}
+      />
 
       <Route
         path="products/page/:pageNumber"
