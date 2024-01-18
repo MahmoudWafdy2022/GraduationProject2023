@@ -37,21 +37,10 @@ const useProductValidation = () => {
 
   const validateBrand = (brand) => {
     // Your validation logic for brand
-    // Example: 2 words max, 25 characters max
-    if (!brand.trim()) {
+    if (!brand) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         brand: "Brand is required",
-      }));
-    } else if (brand.split(" ").length > 2) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        brand: "Max 2 words allowed",
-      }));
-    } else if (brand.length > 25) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        brand: "Max 25 characters allowed",
       }));
     } else {
       setErrors((prevErrors) => ({ ...prevErrors, brand: null }));
@@ -59,21 +48,10 @@ const useProductValidation = () => {
   };
   const validateCategory = (category) => {
     // Your validation logic for category
-    // Example: 2 words max, 20 characters max
-    if (!category || category.trim() === "") {
+    if (!category) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         category: "Category is required",
-      }));
-    } else if (category.split(" ").length > 2) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        category: "Max 2 words allowed",
-      }));
-    } else if (category.length > 20) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        category: "Max 20 characters allowed",
       }));
     } else {
       setErrors((prevErrors) => ({ ...prevErrors, category: null }));

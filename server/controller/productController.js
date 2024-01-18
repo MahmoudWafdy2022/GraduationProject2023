@@ -147,8 +147,8 @@ const createProduct = async (req, res) => {
       price: price || 0,
       user: user || req.currentUser.id,
       image: image || "/images/sample.jpg",
-      brand: brand || "Sample brand",
-      category: category || "Sample category",
+      brand: brand || "Apple",
+      category: category || "Laptops",
       countInStock: countInStock || 0,
       numReviews: 0,
       description: description || "Sample description",
@@ -179,15 +179,15 @@ const updateProduct = async (req, res) => {
     const product = await productModel.findById(req.params.id);
     console.log(image);
     if (product) {
-      product.name = name;
-      product.price = price;
-      product.description = description;
-      product.image = image;
-      product.brand = brand;
-      product.category = category;
-      product.countInStock = countInStock;
-      product.specifications = specifications;
-      product.longDescription = longDescription;
+      product.name = name || product.name;
+      product.price = price || product.price;
+      product.description = description || product.description;
+      product.image = image || product.image;
+      product.brand = brand || product.brand;
+      product.category = category || product.category;
+      product.countInStock = countInStock || product.countInStock;
+      product.specifications = specifications || product.specifications;
+      product.longDescription = longDescription || product.longDescription;
 
       const updatedProduct = await product.save();
 

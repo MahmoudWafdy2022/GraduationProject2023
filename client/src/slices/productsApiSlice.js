@@ -72,6 +72,34 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getBrands: builder.query({
+      query: () => ({
+        url: "http://localhost:3001/brands", // Adjust the URL accordingly
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    getBrandDetails: builder.query({
+      query: (brandId) => ({
+        url: `http://localhost:3001/brands/${brandId}`,
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    getCategory: builder.query({
+      query: () => ({
+        url: "http://localhost:3001/categories", // Adjust the URL accordingly
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    getCategoryDetails: builder.query({
+      query: (categoryId) => ({
+        url: `http://localhost:3001/categories/${categoryId}`,
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
@@ -85,4 +113,8 @@ export const {
   useGetSellerPendingProductsQuery,
   useGetSellerProductsQuery,
   useUploadProductImageMutation,
+  useGetBrandsQuery,
+  useGetBrandDetailsQuery,
+  useGetCategoryQuery,
+  useGetCategoryDetailsQuery,
 } = productsApiSlice;

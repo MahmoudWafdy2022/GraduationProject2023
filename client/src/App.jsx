@@ -47,6 +47,10 @@ import ProductPost from "./pages/seller/ProductPost";
 // loaders
 import productsLoader from "./loaders/productsLoader";
 import productDetailsLoader from "./loaders/productDetailsLoader";
+import BrandList from "./pages/admin/BrandList";
+import BrandEdit from "./pages/admin/BrandEdit";
+import CategoryList from "./pages/admin/CategoryList";
+import CategoryEdit from "./pages/admin/CategoryEdit";
 // actions
 // import registerAction from "./actions/registerAction";
 // import loginAction from "./actions/loginAction";
@@ -131,8 +135,20 @@ const router = createBrowserRouter(
           element={<UserList />}
           loader={async () => null}
         />
+        <Route
+          path="brandlist"
+          element={<BrandList />}
+          loader={async () => null}
+        />
+        <Route
+          path="categorylist"
+          element={<CategoryList />}
+          loader={async () => null}
+        />
         <Route path="user/:id/edit" element={<UserEdit />} />
         <Route path="product/:id/edit" element={<ProductEdit />} />
+        <Route path="brand/:id/edit" element={<BrandEdit />} />
+        <Route path="category/:id/edit" element={<CategoryEdit />} />
       </Route>
       <Route path="seller" element={<SellerRoute />} loader={async () => null}>
         <Route

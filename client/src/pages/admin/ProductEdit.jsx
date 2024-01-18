@@ -15,6 +15,8 @@ import CustomSpinner from "../../components/CustomSpinner";
 import {
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
+  useGetBrandsQuery,
+  useGetCategoryQuery,
 } from "../../slices/productsApiSlice";
 import useProductValidation from "../../utils/useProductValidation";
 import axios from "axios";
@@ -23,12 +25,23 @@ export default function ProductEdit() {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
+
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
+  const [brandOptions, setBrandOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const { data: brandTarget, isLoading: brandLoading } = useGetBrandsQuery();
+  const { data: categoryTarget, isLoading: categoryLoading } =
+    useGetCategoryQuery();
 
+  const [selectedBrand, setSelectedBrand] = useState(null); // Use selectedBrand state
+  const [selectedCategory, setSelectedCategory] = useState(null); // Use selectedBrand state
+  const brandData = brandTarget?.data?.listOfBrands;
+  const categoryData = categoryTarget?.data?.listOfCategories;
+
+  console.log(selectedBrand);
+  console.log(selectedCategory);
   const {
     errors,
     validateName,
@@ -54,7 +67,7 @@ export default function ProductEdit() {
 
     try {
       const res = await uploadProductImage(formData).unwrap();
-      console.log(res);
+      // console.log(res);
       toast.success(res?.message);
       setImage(res?.image);
       // setImage(e.target.files[0]); // Set the File object here
@@ -77,9 +90,9 @@ export default function ProductEdit() {
     id,
     name,
     price,
-    brand,
+    brand: selectedBrand,
     image,
-    category,
+    category: selectedCategory,
     description,
     longDescription,
     countInStock,
@@ -110,8 +123,9 @@ export default function ProductEdit() {
     validateCategory(values.category);
     validateDescription(values.description);
     validateLongDescription(values.longDescription);
-    console.log(values);
+    // console.log(values);
     // Check for validation errors
+
     if (
       errors.name ||
       errors.brand ||
@@ -127,8 +141,6 @@ export default function ProductEdit() {
       ...values,
       specifications: specifications.filter((spec) => spec.key && spec.value), // Remove empty specifications
       name: capitalizeWords(name),
-      category: capitalizeFirstLetter(category),
-      brand: capitalizeFirstLetter(brand),
       description: capitalizeFirstLetter(description),
       longDescription: capitalizeFirstLetter(longDescription),
     };
@@ -144,14 +156,14 @@ export default function ProductEdit() {
     transformedValues.price = (values.price - 0.01).toFixed(2);
 
     try {
-      const res = await axios.put(
+      await axios.put(
         `http://localhost:3001/products/${id}`,
         transformedValues,
         {
           headers: headers,
         }
       );
-      console.log(res);
+      // console.log(res);
       toast.success("Product updated");
       refetch();
       navigate("/admin/productlist");
@@ -163,11 +175,22 @@ export default function ProductEdit() {
   };
 
   useEffect(() => {
+    if (brandData) {
+      // Extracting the brand names from the API response
+
+      setBrandOptions(brandData?.map((brand) => brand.name));
+    }
+    if (categoryData) {
+      setCategoryOptions(categoryData?.map((cat) => cat.name));
+    }
+  }, [brandData, categoryData]);
+
+  useEffect(() => {
     if (product) {
       setName(product?.name || "");
       setPrice(product?.price || 0);
-      setBrand(product?.brand || "");
-      setCategory(product?.category || "");
+      setSelectedBrand(product?.brand || null); // Use setSelectedBrand instead of setBrand
+      setSelectedCategory(product?.category || null);
       setCountInStock(product?.countInStock || 0);
       setDescription(product?.description || "");
       setLongDescription(product?.longDescription || ""); // Add this line
@@ -246,9 +269,16 @@ export default function ProductEdit() {
             </Typography>
             <Input
               name="price"
-              type="number"
+              type="text"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => {
+                // Handle float validation and set the state
+                const inputValue = e.target.value;
+                // Validate if it's a valid float
+                if (/^\d*\.?\d*$/.test(inputValue)) {
+                  setPrice(inputValue);
+                }
+              }}
               min={1}
               id="price"
               size="lg"
@@ -266,37 +296,41 @@ export default function ProductEdit() {
             >
               Brand
             </Typography>
+            {brandLoading && <CustomSpinner />}
             {errors.brand ? (
               <Input
                 type="text"
-                value={brand}
+                value={selectedBrand || ""} // Use selectedBrand here
                 onChange={(e) => {
-                  setBrand(e.target.value);
-                  validateBrand(brand);
+                  setSelectedBrand(e.target.value);
+                  validateBrand(selectedBrand); // Use selectedBrand here
                 }}
                 size="lg"
                 label={errors.brand}
                 error
               />
             ) : (
-              <Input
+              <select
                 name="brand"
-                type="text"
-                value={brand}
+                value={selectedBrand || ""} // Use selectedBrand here
                 onChange={(e) => {
-                  setBrand(e.target.value);
-                  validateBrand(brand);
+                  setSelectedBrand(e.target.value);
+                  validateBrand(selectedBrand); // Use selectedBrand here
                 }}
                 id="brand"
                 size="lg"
-                placeholder="brand"
-                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-              />
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+                 `}
+              >
+                {brandOptions?.map((brandOption) => (
+                  <option key={brandOption} value={brandOption}>
+                    {brandOption}
+                  </option>
+                ))}
+              </select>
             )}
             {/* <ValidationError>{errors.brand}</ValidationError> */}
+            {categoryLoading && <CustomSpinner />}
             <Typography
               variant="h6"
               color="blue-gray"
@@ -307,32 +341,35 @@ export default function ProductEdit() {
             {errors.category ? (
               <Input
                 type="text"
-                value={category}
+                value={selectedCategory || ""} // Use selectedCategory here
                 onChange={(e) => {
-                  setCategory(e.target.value);
-                  validateCategory(category);
+                  setSelectedCategory(e.target.value);
+                  validateCategory(selectedCategory);
                 }}
                 size="lg"
                 label={errors.category}
                 error
               />
             ) : (
-              <Input
+              <select
                 name="category"
-                type="text"
-                value={category}
+                value={selectedCategory || ""} // Use selectedCategory here
                 onChange={(e) => {
-                  setCategory(e.target.value);
-                  validateCategory(category);
+                  setSelectedCategory(e.target.value);
+                  validateCategory(selectedCategory);
                 }}
                 id="category"
                 size="lg"
                 placeholder="category"
-                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-              />
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+                 `}
+              >
+                {categoryOptions?.map((categoryOption) => (
+                  <option key={categoryOption} value={categoryOption}>
+                    {categoryOption}
+                  </option>
+                ))}
+              </select>
             )}
             <Typography
               variant="h6"
