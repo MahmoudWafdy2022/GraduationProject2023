@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   // Form,
@@ -7,22 +7,36 @@ import {
   Input,
   Button,
   Typography,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import CustomSpinner from "../../components/CustomSpinner";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useUploadProductImageMutation } from "../../slices/productsApiSlice";
+import {
+  useGetBrandsQuery,
+  useGetCategoryQuery,
+  useUploadProductImageMutation,
+} from "../../slices/productsApiSlice";
 import useProductValidation from "../../utils/useProductValidation";
 export default function ProductPost() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
   const [specifications, setSpecifications] = useState([]);
+  const [brandOptions, setBrandOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const { data: brandTarget, isLoading: brandLoading } = useGetBrandsQuery();
+  const { data: categoryTarget, isLoading: categoryLoading } =
+    useGetCategoryQuery();
+
+  const [selectedBrand, setSelectedBrand] = useState(null); // Use selectedBrand state
+  const [selectedCategory, setSelectedCategory] = useState(null); // Use selectedBrand state
+  const brandData = brandTarget?.data?.listOfBrands;
+  const categoryData = categoryTarget?.data?.listOfCategories;
 
   const {
     errors,
@@ -71,9 +85,9 @@ export default function ProductPost() {
   const values = {
     name,
     price,
-    brand,
+    brand: selectedBrand,
     image,
-    category,
+    category: selectedCategory,
     description,
     longDescription,
     countInStock,
@@ -110,25 +124,13 @@ export default function ProductPost() {
     const transformedValues = {
       ...values,
       name: capitalizeWords(name),
-      category: capitalizeFirstLetter(category),
-      brand: capitalizeFirstLetter(brand),
       description: capitalizeFirstLetter(description),
       longDescription: capitalizeFirstLetter(longDescription),
+      specifications: specifications.filter((spec) => spec.key && spec.value), // Remove empty specifications
       user: user?.id,
     };
     console.log(transformedValues);
     try {
-      if (
-        !transformedValues.name ||
-        !transformedValues.brand ||
-        !transformedValues.category ||
-        !transformedValues.description ||
-        !transformedValues.user ||
-        !transformedValues.longDescription
-      ) {
-        toast.error("You must enter data first");
-        return;
-      }
       const emptyFields = Object.values(transformedValues).some(
         (value) => !value
       );
@@ -156,7 +158,16 @@ export default function ProductPost() {
       toast.error(err?.response?.data?.data || err.error);
     }
   };
+  useEffect(() => {
+    if (brandData) {
+      // Extracting the brand names from the API response
 
+      setBrandOptions(brandData?.map((brand) => brand.name));
+    }
+    if (categoryData) {
+      setCategoryOptions(categoryData?.map((cat) => cat.name));
+    }
+  }, [brandData, categoryData]);
   return (
     <>
       {/* <Link
@@ -228,9 +239,16 @@ export default function ProductPost() {
             </Typography>
             <Input
               name="price"
-              type="number"
+              type="text"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => {
+                // Handle float validation and set the state
+                const inputValue = e.target.value;
+                // Validate if it's a valid float
+                if (/^\d*\.?\d*$/.test(inputValue)) {
+                  setPrice(inputValue);
+                }
+              }}
               min={1}
               id="price"
               size="lg"
@@ -248,37 +266,52 @@ export default function ProductPost() {
             >
               Brand
             </Typography>
+            {brandLoading && <CustomSpinner />}
             {errors.brand ? (
-              <Input
-                type="text"
-                value={brand}
-                onChange={(e) => {
-                  setBrand(e.target.value);
-                  validateBrand(brand);
-                }}
-                size="lg"
-                label={errors.brand}
-                error
-              />
-            ) : (
-              <Input
+              <Select
                 name="brand"
-                type="text"
-                value={brand}
+                variant="standard"
+                value={selectedBrand || ""} // Use selectedBrand here
                 onChange={(e) => {
-                  setBrand(e.target.value);
-                  validateBrand(brand);
+                  console.log(e);
+                  setSelectedBrand(e);
+                  validateBrand(e); // Use selectedBrand here
                 }}
                 id="brand"
                 size="lg"
-                placeholder="brand"
-                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+               `}
+                label={errors.brand}
+                error
+              >
+                {brandOptions?.map((brandOption) => (
+                  <Option key={brandOption} value={brandOption}>
+                    {brandOption}
+                  </Option>
+                ))}
+              </Select>
+            ) : (
+              <select
+                name="brand"
+                value={selectedBrand || ""} // Use selectedBrand here
+                onChange={(e) => {
+                  setSelectedBrand(e.target.value);
+                  validateBrand(selectedBrand); // Use selectedBrand here
                 }}
-              />
+                id="brand"
+                size="lg"
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+                 `}
+              >
+                {brandOptions?.map((brandOption) => (
+                  <option key={brandOption} value={brandOption}>
+                    {brandOption}
+                  </option>
+                ))}
+              </select>
             )}
             {/* <ValidationError>{errors.brand}</ValidationError> */}
+            {categoryLoading && <CustomSpinner />}
             <Typography
               variant="h6"
               color="blue-gray"
@@ -287,34 +320,47 @@ export default function ProductPost() {
               Category
             </Typography>
             {errors.category ? (
-              <Input
-                type="text"
-                value={category}
-                onChange={(e) => {
-                  setCategory(e.target.value);
-                  validateCategory(category);
-                }}
-                size="lg"
-                label={errors.category}
-                error
-              />
-            ) : (
-              <Input
+              <Select
                 name="category"
-                type="text"
-                value={category}
+                value={selectedCategory || ""} // Use selectedCategory here
                 onChange={(e) => {
-                  setCategory(e.target.value);
-                  validateCategory(category);
+                  setSelectedCategory(e);
+                  validateCategory(e);
                 }}
                 id="category"
                 size="lg"
                 placeholder="category"
-                className=" !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white  focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+               `}
+                label={errors.category}
+                error
+              >
+                {categoryOptions?.map((categoryOption) => (
+                  <Option key={categoryOption} value={categoryOption}>
+                    {categoryOption}
+                  </Option>
+                ))}
+              </Select>
+            ) : (
+              <select
+                name="category"
+                value={selectedCategory || ""} // Use selectedCategory here
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  validateCategory(selectedCategory);
                 }}
-              />
+                id="category"
+                size="lg"
+                placeholder="category"
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+                 `}
+              >
+                {categoryOptions?.map((categoryOption) => (
+                  <option key={categoryOption} value={categoryOption}>
+                    {categoryOption}
+                  </option>
+                ))}
+              </select>
             )}
             <Typography
               variant="h6"
@@ -520,7 +566,7 @@ export default function ProductPost() {
             type="submit"
             onSubmit={submitHandler}
           >
-            {isLoading ? "Adding..." : "Add Product"}
+            {isLoading ? "Updating..." : "Update Product"}
           </Button>
         </form>
       </Card>

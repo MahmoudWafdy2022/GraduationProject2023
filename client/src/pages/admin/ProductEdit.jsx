@@ -8,6 +8,8 @@ import {
   Input,
   Button,
   Typography,
+  Option,
+  Select,
   // ValidationError,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
@@ -298,17 +300,26 @@ export default function ProductEdit() {
             </Typography>
             {brandLoading && <CustomSpinner />}
             {errors.brand ? (
-              <Input
-                type="text"
+              <Select
+                name="brand"
                 value={selectedBrand || ""} // Use selectedBrand here
                 onChange={(e) => {
-                  setSelectedBrand(e.target.value);
-                  validateBrand(selectedBrand); // Use selectedBrand here
+                  setSelectedBrand(e);
+                  validateBrand(e); // Use selectedBrand here
                 }}
+                id="brand"
                 size="lg"
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+               `}
                 label={errors.brand}
                 error
-              />
+              >
+                {brandOptions?.map((brandOption) => (
+                  <Option key={brandOption} value={brandOption}>
+                    {brandOption}
+                  </Option>
+                ))}
+              </Select>
             ) : (
               <select
                 name="brand"
@@ -339,17 +350,27 @@ export default function ProductEdit() {
               Category
             </Typography>
             {errors.category ? (
-              <Input
-                type="text"
+              <Select
+                name="category"
                 value={selectedCategory || ""} // Use selectedCategory here
                 onChange={(e) => {
-                  setSelectedCategory(e.target.value);
-                  validateCategory(selectedCategory);
+                  setSelectedCategory(e);
+                  validateCategory(e);
                 }}
+                id="category"
                 size="lg"
+                placeholder="category"
+                className={`w-full border p-3 !border-t-blue-gray-200 focus:!border-blue-gray-200 dark:text-white focus:!border-t-gray-900 dark:bg-[#1C1E2D]
+               `}
                 label={errors.category}
                 error
-              />
+              >
+                {categoryOptions?.map((categoryOption) => (
+                  <Option key={categoryOption} value={categoryOption}>
+                    {categoryOption}
+                  </Option>
+                ))}
+              </Select>
             ) : (
               <select
                 name="category"
