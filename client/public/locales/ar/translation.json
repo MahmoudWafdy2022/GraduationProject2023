@@ -105,5 +105,14 @@
     "postal_code": "الرمز البريدي",
     "payment": "الدفع",
     "check_out_with_payPal": "الدفع بـ Paypal"
+  },
+  "categories": {
+    "categories": "الفئات",
+    "Laptops": "لاب توب",
+    "TV & Video": "شاشات تليفزيونات",
+    "Headphones": "سماعات اذن",
+    "Gaming Accessories": "اكسسوارات العاب",
+    "Mobiles & Tablets": "الهواتف والتابلت",
+    "Smartwatches": "ساعات ذكية"
   }
 }

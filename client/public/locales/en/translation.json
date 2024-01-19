@@ -105,5 +105,14 @@
     "postal_code": "Postal Code",
     "payment": "Payment",
     "check_out_with_payPal": "Check out with PayPal"
+  },
+  "categories": {
+    "categories": "Categories",
+    "Laptops": "Laptops",
+    "TV & Video": "TV & Video",
+    "Headphones": "Headphones",
+    "Gaming Accessories": "Gaming Accessories",
+    "Mobiles & Tablets": "Mobiles & Tablets",
+    "Smartwatches": "Smartwatches"
   }
 }

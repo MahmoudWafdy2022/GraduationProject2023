@@ -2,20 +2,14 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
 import DarkModeBtn from "./DarkModeBtn";
+import CategoryDropDown from "./CategoryDropDown";
 export default function BottomHeader({ setIsDarkMode }) {
   const { t } = useTranslation();
 
   return (
     <div className="mt-4 flex items-center justify-between">
       <div className="flex gap-x-8">
-        <Link
-          to="/products/page/1"
-          className="cursor-pointer rounded-sm py-1 px-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#242635]"
-        >
-          <span className="relative text-sm font-medium w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-left dark:text-white dark:after:bg-white">
-            {t("homepage.shop")}
-          </span>
-        </Link>
+        <CategoryDropDown />
         <Link
           to="/products/page/1"
           className="cursor-pointer rounded-sm py-1 px-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#242635]"
