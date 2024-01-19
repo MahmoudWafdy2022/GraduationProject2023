@@ -115,5 +115,13 @@
     "Gaming Accessories": "Gaming Accessories",
     "Mobiles & Tablets": "Mobiles & Tablets",
     "Smartwatches": "Smartwatches"
+  },
+  "reset_password": {
+    "reset": "Reset Password",
+    "fill": "Fill up the form to reset the password",
+    "email": "Email address",
+    "enter": "Enter Email address",
+    "not_registered": "Not registered yet",
+    "register": "Register Now"
   }
 }
