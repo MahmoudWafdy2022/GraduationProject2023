@@ -15,6 +15,7 @@ import { addToFavorites, removeFromFavorites } from "../slices/favoriteSlice";
 
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 /* eslint-disable react/prop-types */
 export default function EcommerceCard({
@@ -26,6 +27,7 @@ export default function EcommerceCard({
 }) {
   const { image, name, price, description, rating, numReviews, countInStock } =
     product;
+  const [isFav, setIsFav] = useState(false);
   const { t } = useTranslation();
   const { userInfo } = useSelector((state) => state.auth);
   if (userInfo?.role === "ADMIN" || userInfo?.role === "SELLER")
@@ -34,8 +36,10 @@ export default function EcommerceCard({
   const isFavorite = favoriteItems.some((item) => item._id === id);
   const handleToggleFavorite = () => {
     if (isFavorite) {
+      setIsFav(true);
       dispatch(removeFromFavorites(product));
     } else {
+      setIsFav(false);
       dispatch(addToFavorites(product));
     }
   };
@@ -69,10 +73,12 @@ export default function EcommerceCard({
           <Button
             ripple={false}
             // fullWidth={true}
+            onMouseEnter={() => setIsFav(true)}
+            onMouseLeave={() => setIsFav(false)}
             onClick={handleToggleFavorite}
-            className="bg-transparent p-2 absolute top-0 right-0 inline focus:outline-none"
+            className="bg-transparent p-2 absolute top-0 right-0 inline focus:outline-none transform scale-100 transition-transform duration-300 hover:scale-150"
           >
-            {isFavorite ? (
+            {isFavorite || isFav ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
