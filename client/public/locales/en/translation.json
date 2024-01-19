@@ -45,7 +45,8 @@
     "password": "Password",
     "log_in": "Log in",
     "dont_have_an_account": "Don't have an account",
-    "sign_up": "Sign Up"
+    "sign_up": "Sign Up",
+    "forget_password": "Forget Password"
   },
   "cart": {
     "empty": "Your Cart is Empty",

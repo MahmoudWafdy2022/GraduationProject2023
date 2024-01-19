@@ -125,7 +125,8 @@ function Login() {
             to="/resetpassword"
             className="dark:text-blue-600  font-medium text-gray-900 "
           >
-            Forget Password?
+            {t("sign_in.forget_password")}
+            {i18n.dir() === "rtl" ? "؟" : "?"}{" "}
           </Link>
         </div>
         <Button
