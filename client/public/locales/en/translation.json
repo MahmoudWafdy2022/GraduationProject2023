@@ -50,7 +50,8 @@
   },
   "cart": {
     "empty": "Your Cart is Empty",
-    "items": "Cart Items"
+    "items": "Cart Items",
+    "details": "Add something to make me happy"
   },
   "favorutes": {
     "empty": "Your Favorite is Empty",

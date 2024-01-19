@@ -6,6 +6,7 @@ import CartSummary from "../components/cart/CartSummary";
 import CartCheckout from "../components/cart/CartCheckout";
 import useRedirect from "../utils/useRedirect";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 export default function Cart() {
   const cart = useSelector((store) => store.cart.cardItems);
   const subs = useSelector((store) => store.cart);
@@ -16,12 +17,31 @@ export default function Cart() {
   if (subs.cardItems.length <= 0) {
     return (
       <div className="grid h-screen px-4 bg-white dark:bg-[#1C1E2D] place-content-center ">
-        <div className="text-center">
+        <div className="text-center flex flex-col justify-center items-center dark:text-white">
           {/* <h1 className="font-black text-gray-200 text-5xl">!</h1> */}
-
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="60"
+            height="60"
+            fill="currentColor"
+            className="bi bi-cart-x my-2"
+            viewBox="0 0 16 16"
+          >
+            <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793z" />
+            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+          </svg>
           <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
             {t("cart.empty")}
           </p>
+          <p className="text-lg font-medium tracking-tight text-gray-700 sm:text-xl dark:text-white mt-1">
+            {t("cart.details")} {":)"}
+          </p>
+          <Link
+            to="/products/page/1"
+            className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700 mt-5"
+          >
+            {t("homepage.shop_now")}
+          </Link>
         </div>
       </div>
     );
