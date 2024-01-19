@@ -1,5 +1,4 @@
 const httpStatusText = require("../utils/httpStatusText");
-const { validationResult } = require("express-validator");
 const productModel = require("../models/productModel");
 const sellerProductModel = require("../models/sellerProductModel");
 const get_single_product = async (req, res) => {
@@ -90,16 +89,7 @@ const get_all_products = async (req, res) => {
         .limit(limit)
         .sort("-createdAt");
     }
-    //
 
-    //search
-    // const keyword = req.query.keyword
-    //   ? { name: { $regex: req.query.keyword, $options: "i" } }
-    //   : {};
-    // if(keyword){
-    //   mongooseQuery = await productModel.find(keyword).skip(skip).limit(limit);
-
-    // }
     if (req.query.keyword) {
       const query = {};
       query.$or = [{ name: { $regex: req.query.keyword, $options: "i" } }];

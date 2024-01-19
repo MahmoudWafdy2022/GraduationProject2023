@@ -4,7 +4,7 @@ const slugify = require("slugify");
 
 const createCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name ,image} = req.body;
     const randomSuffix = Math.floor(Math.random() * 1000);
 
     // Create a unique name using the base name and random suffix
@@ -13,6 +13,7 @@ const createCategory = async (req, res) => {
     const newCategory = new categoryModel({
       name: uniqueName,
       slug: slugify(uniqueName),
+      image:image || "/images/sampleCategory.jpg"
     });
     await newCategory.save();
     res.status(201).json({
@@ -54,11 +55,11 @@ const getSingleCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   try {
-    const name = req.body.name;
+    const {name,image} = req.body;
 
     const Category = await categoryModel.updateOne(
       { _id: req.params.categoryId },
-      { $set: { slug: slugify(name), ...req.body } }
+      { $set: { slug: slugify(name), image:image ,...req.body} }
     );
 
     if (Category.matchedCount == 0) {
