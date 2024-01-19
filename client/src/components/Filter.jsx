@@ -16,11 +16,14 @@ const sortOptions = [
   { name: "Price: Low to High", value: "price" }, // Replace "price" with your actual field
   { name: "Price: High to Low", value: "-price" }, // Replace "price" with your actual field
 ];
+// category=TV & Video
 const subCategories = [
-  { name: "Laptops", href: "#" },
-  { name: "Airpods", href: "#" },
-  { name: "Mobile Phones", href: "#" },
-  { name: "Others", href: "#" },
+  { name: "Laptops", to: "Laptops" },
+  { name: "TV & Video", to: "TV & Video" },
+  { name: "Headphones", to: "Headphones" },
+  { name: "Gaming Accessories", to: "Gaming Accessories" },
+  { name: "Mobiles & Tablets", to: "Mobiles & Tablets" },
+  { name: "Smartwatches", to: "Smartwatches" },
 ];
 const filters = [
   // {
@@ -73,7 +76,6 @@ export default function Filter({
   // concatenateQueryString,
 }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-
   const navigate = useNavigate();
   // Function to extract filter values from the URL
   const getFilterValuesFromUrl = () => {
@@ -94,23 +96,23 @@ export default function Filter({
 
   const filterValuesFromUrl = getFilterValuesFromUrl();
 
-  // const handleCheckboxChange = (filterId, value) => {
-  //   const sortQuery = new URLSearchParams(window.location.search).get("sort");
-  //   const updatedFilters = { ...selectedFilters, [filterId]: value };
+  const handleFilterChange = (e, filterId, value) => {
+    e.preventDefault();
+    const sortQuery = new URLSearchParams(window.location.search).get("sort");
+    const updatedFilters = { ...selectedFilters, [filterId]: [value] };
 
-  //   setSelectedFilters(updatedFilters);
+    console.log(updatedFilters);
+    setSelectedFilters(updatedFilters);
+    // Update the URL with the selected filters
+    const baseUrl = `/products/page/${pageNumber}`;
+    const queryString = createQueryString(updatedFilters);
+    const updatedUrl = `${baseUrl}${sortQuery ? `?sort=${sortQuery}` : "?"}${
+      queryString ? (sortQuery ? `&${queryString}` : queryString) : ""
+    }`;
+    console.log(updatedUrl);
+    navigate(updatedUrl);
+  };
 
-  //   // Update the URL with the selected filters
-  //   const baseUrl = `/products/page/${pageNumber}`;
-  //   const queryString = createQueryString(updatedFilters);
-  //   const updatedUrl = concatenateQueryString(baseUrl, {
-  //     sort: sortQuery,
-  //     ...queryString,
-  //   });
-
-  //   console.log(updatedUrl);
-  //   navigate(updatedUrl);
-  // };
   const handleClearFilters = () => {
     // Clear all selected filters
     const clearedFilters = {};
@@ -201,9 +203,19 @@ export default function Filter({
                     >
                       {subCategories.map((category) => (
                         <li key={category.name}>
-                          <a href={category.href} className="block px-2 py-3 ">
+                          <button
+                            // to={`/products/page/1/?category=${category.to}`}
+                            onClick={(e) =>
+                              handleFilterChange(
+                                e,
+                                "category",
+                                encodeURIComponent(category.to)
+                              )
+                            }
+                            className="block px-2 py-3 "
+                          >
                             {category.name}
-                          </a>
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -399,7 +411,21 @@ export default function Filter({
                 >
                   {subCategories.map((category) => (
                     <li key={category.name}>
-                      <a href={category.href}>{category.name}</a>
+                      <button
+                        // to={`/products/page/1/?category=${encodeURIComponent(
+                        //   category.to
+                        // )}`}
+                        onClick={(e) =>
+                          handleFilterChange(
+                            e,
+                            "category",
+                            encodeURIComponent(category.to)
+                          )
+                        }
+                        className="whitespace-nowrap"
+                      >
+                        {category.name}
+                      </button>
                     </li>
                   ))}
                 </ul>

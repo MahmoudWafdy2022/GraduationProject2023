@@ -37,7 +37,7 @@ const get_all_products = async (req, res) => {
     const allProducts = await productModel.find();
     let count = allProducts.length;
     //filter
-
+    console.log(req.query);
     const queryStringObject = { ...req.query };
     const excludeFields = ["pageNumber", "limit", "sort", "fields"];
     excludeFields.forEach((field) => delete queryStringObject[field]);

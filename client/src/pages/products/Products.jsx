@@ -20,6 +20,7 @@ export default function Products() {
     const sortQuery = new URLSearchParams(window.location.search).get("sort");
     const queryString = createQueryString(selectedFilters);
     console.log(queryString);
+    console.log(queryString);
     const newQueryString = keyword
       ? `/products/search/${keyword}/page/${newPage}${
           sortQuery ? `?sort=${sortQuery}` : "?"
@@ -35,7 +36,7 @@ export default function Products() {
     const queryString = Object.entries(filters)
       .map(([filterId, values]) => {
         if (values?.length > 0) {
-          return `${filterId}=${values.join(",")}`;
+          return `${filterId}=${values?.join(",")}`;
         }
         return null;
       })
