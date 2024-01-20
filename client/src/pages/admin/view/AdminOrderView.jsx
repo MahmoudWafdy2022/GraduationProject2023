@@ -27,6 +27,7 @@ export default function AdminOrderView() {
   const location = useLocation();
 
   const order = data?.data?.order || location?.state?.order;
+
   console.log(data);
   if (currentUser.role === "ADMIN") {
     const {

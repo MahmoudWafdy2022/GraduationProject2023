@@ -12,14 +12,25 @@ export default function Profile() {
   const [isEdit, setIsEdit] = useState(false);
   const user = useSelector((store) => store.auth.userInfo);
   const cart = useSelector((state) => state.cart);
-  const { shippingAddress } = cart;
+  let { shippingAddress } = cart;
   const { userInfo } = useSelector((state) => state.auth);
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
   const order = orders?.data?.orders;
-  console.log(orders?.data?.orders);
+
   // const orders = data.data.orders;
+
+  function isObjEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
+  if (isObjEmpty(shippingAddress)) {
+    if (order[0].shippingAddress) {
+      shippingAddress = order[0].shippingAddress;
+      console.log(shippingAddress);
+    }
+  }
   const dispatch = useDispatch();
 
   return (
