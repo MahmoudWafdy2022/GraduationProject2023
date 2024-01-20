@@ -25,12 +25,19 @@ export default function Profile() {
     return Object.keys(obj).length === 0;
   }
 
-  if (isObjEmpty(shippingAddress)) {
-    if (order[0]?.shippingAddress) {
-      shippingAddress = order[0]?.shippingAddress;
-      console.log(shippingAddress);
-    }
+  if (!isObjEmpty(shippingAddress)) {
+    // Use the existing shippingAddress from the cart
+    console.log(shippingAddress);
+  } else if (
+    Array.isArray(order) &&
+    order.length > 0 &&
+    order[0]?.shippingAddress
+  ) {
+    // Use the shippingAddress from the first order if available
+    shippingAddress = order[0]?.shippingAddress;
+    console.log(shippingAddress);
   }
+
   const dispatch = useDispatch();
 
   return (
