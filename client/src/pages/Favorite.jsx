@@ -9,7 +9,7 @@ const Favorites = () => {
   console.log(favorites);
   if (favorites?.length === 0) {
     return (
-      <div className="grid h-screen px-4 bg-white dark:bg-[#E61A23] place-content-center ">
+      <div className="grid h-screen px-4 bg-white dark:bg-[#151725] place-content-center ">
         <div className="text-center flex flex-col justify-center items-center text-[#F7003F]">
           {/* <h1 className="font-black text-gray-200 text-5xl">!</h1> */}
           <svg
