@@ -105,7 +105,7 @@ export default function VanDetails() {
           {/* <!-- Image gallery --> */}
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl  lg:gap-x-8 lg:px-8">
             <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
-              <div className="max-h-96  aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
+              <div className="max-h-80 max-w-[50%] aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                 <img
                   src={
                     product.image.includes("/uploads")
@@ -113,7 +113,7 @@ export default function VanDetails() {
                       : product.image
                   }
                   alt={product.name}
-                  className="h-full w-50 object-cover object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
             </div>
