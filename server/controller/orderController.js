@@ -177,11 +177,51 @@ const updateOrderToDeliverd = async (req, res) => {
   }
 };
 // not check
+
 const getOrders = async (req, res) => {
   try {
     const Orders = await orderModel.find({}).populate("user.id", "id name");
 
-    res.status(200).json({ status: httpStatusText.SUCCESS, data: { Orders } });
+    // Calculate total sales and weekly sales
+    let totalSales = 0;
+    let weeklySales = 0;
+    const today = new Date();
+    const oneWeekAgo = new Date(today);
+    oneWeekAgo.setDate(today.getDate() - 7);
+
+    const dailySales = Array(7).fill(0);
+
+    Orders.forEach((order) => {
+      if (order.isPaid) {
+        totalSales += order.totalPrice;
+
+        // Check if the order is within the last week
+        const orderDate = new Date(order.createdAt);
+        if (orderDate >= oneWeekAgo) {
+          weeklySales += order.totalPrice;
+          // Calculate the day index within the last 7 days
+          const dayIndex =
+            6 - Math.floor((today - orderDate) / (24 * 60 * 60 * 1000));
+
+          // Increment the daily sales for the corresponding day
+          dailySales[dayIndex] += order.totalPrice;
+        }
+      }
+    });
+    totalSales = totalSales.toFixed(2);
+    weeklySales = weeklySales.toFixed(2);
+
+    // Calculate sales percentage
+    let salesPercentage = 0;
+
+    if (totalSales > 0) {
+      salesPercentage = ((weeklySales / totalSales) * 100).toFixed(2);
+    }
+
+    res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      data: { Orders, totalSales, weeklySales, dailySales, salesPercentage },
+    });
   } catch (err) {
     res
       .status(401)

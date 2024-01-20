@@ -22,9 +22,14 @@ const get_all_products_no_pagination = async (req, res) => {
     // Retrieve all products without any filtering or pagination
     const products = await productModel.find();
 
+    const totalProductsInStock = products.reduce(
+      (total, product) => total + (product.countInStock || 0),
+      0
+    );
+
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
-      data: { products },
+      data: { products, totalProductsInStock },
     });
   } catch (err) {
     return res.status(400).json({ message: err.message });

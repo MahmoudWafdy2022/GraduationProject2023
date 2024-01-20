@@ -10,8 +10,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const httpStatusText = require("./utils/httpStatusText");
+const paypalService = require("./utils/paypalService");
 const app = express();
 const path = require("path");
+const fetch = require("node-fetch");
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -47,8 +49,26 @@ app.use("/", uploadRoute);
 app.use("/", brandRoute);
 app.use("/", categoryRoute);
 
-app.get("/config/paypal", (req, res) => {
-  res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
+app.get("/config/paypal", async (req, res) => {
+  try {
+    const clientId = process.env.PAYPAL_CLIENT_ID;
+    const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+    const balance = await paypalService.getPayPalAccountBalance(
+      clientId,
+      clientSecret
+    );
+    // const transactions = await paypalService.getPayPalTransactions(
+    //   clientId,
+    //   clientSecret
+    // );
+    res.send({ clientId, balance });
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(500)
+      .json({ status: httpStatusText.ERROR, message: "Internal Server Error" });
+  }
 });
 
 app.all("*", (req, res) => {
