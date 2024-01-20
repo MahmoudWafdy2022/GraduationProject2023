@@ -14,7 +14,7 @@ export default function CategoryDropDown() {
   const subCategories = data?.data?.listOfCategories;
   const categories = subCategories?.map((el) => {
     //           {t("categories.categories")}
-    return { _id: el._id, name: t(`categories.${el.name}`) };
+    return { _id: el._id, name: t(`categories.${el.name}`), href: el.name };
   });
 
   console.log(subCategories);
@@ -59,7 +59,7 @@ export default function CategoryDropDown() {
                 {({ active }) => (
                   <Link
                     to={`/products/page/1/?category=${encodeURIComponent(
-                      category.name
+                      category.href
                     )}`}
                     className={classNames(
                       active ? "bg-gray-100 text-gray-900" : "text-gray-700",
