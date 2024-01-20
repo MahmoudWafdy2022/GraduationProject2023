@@ -26,8 +26,8 @@ export default function Profile() {
   }
 
   if (isObjEmpty(shippingAddress)) {
-    if (order[0].shippingAddress) {
-      shippingAddress = order[0].shippingAddress;
+    if (order[0]?.shippingAddress) {
+      shippingAddress = order[0]?.shippingAddress;
       console.log(shippingAddress);
     }
   }
