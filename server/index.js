@@ -14,6 +14,7 @@ const paypalService = require("./utils/paypalService");
 const app = express();
 const path = require("path");
 const fetch = require("node-fetch");
+const session = require("express-session");
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -41,8 +42,14 @@ mongoose.connect(url).then(() => {
   console.log("Db connect success");
 });
 
+app.use(
+  session({
+    secret: "shopifyTM",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 app.use("/", userRoute);
-
 app.use("/", productRoute);
 app.use("/", orderRoute);
 app.use("/", uploadRoute);
