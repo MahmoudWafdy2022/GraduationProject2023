@@ -39,6 +39,19 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+
+    // brand: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref:"Brand",
+    //   required: [true,"product must be belong to Brand"]
+    // },
+    // category: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref:"Category",
+    //   required: [true,"product must be belong to category"]
+    // },
+
+
     description: {
       type: String,
       required: true,
