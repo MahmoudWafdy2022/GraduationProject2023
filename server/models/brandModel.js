@@ -8,5 +8,5 @@ const brandSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+  //hady
 module.exports = mongoose.model('Brand', brandSchema);
