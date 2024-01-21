@@ -1,54 +1,31 @@
-// ResetPassword
 import { Button, Card, Typography } from "@material-tailwind/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import CustomSpinner from "../components/CustomSpinner";
-// import i18n from "../i18n";
+import i18n from "../i18n";
 import { useTranslation } from "react-i18next";
-// import { Link } from "react-router-dom";
-export default function ResetPassword() {
-  const [password, setPassword] = useState("");
+import { Link } from "react-router-dom";
+export default function ForgetPassword() {
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [token, setToken] = useState("");
   const { t } = useTranslation();
-
-  useEffect(() => {
-    // Retrieve data from cookies
-    const userId = document.cookie.replace(
-      /(?:(?:^|.*;\s*)resetUserId\s*=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-    const token = document.cookie.replace(
-      /(?:(?:^|.*;\s*)resetToken\s*=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-
-    // Use userId and token as needed for your reset password logic
-    console.log(document.cookie);
-    setUserId(userId);
-    setToken(token);
-  }, []);
-  console.log("token is" + token);
-  console.log("userId is" + userId);
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    if (!password.trim()) {
+    if (!email.trim()) {
       toast.error("Field is empty");
       return;
     }
 
     try {
       setIsLoading(true);
-      // /users/reset-password/:id/:token
       const response = await fetch(
-        `http://localhost:3001/users/reset-password-link/${userId}/${token}`,
+        "http://localhost:3001/users/reset-password-link",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ password }),
+          body: JSON.stringify({ email }),
         }
       );
       setIsLoading(false);
@@ -74,10 +51,10 @@ export default function ResetPassword() {
       {isLoading && <CustomSpinner />}
       {/* <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300"> */}
       <Typography variant="h3" color="blue-gray" className="dark:text-white">
-        {t("reset_password.reset")}
+        {t("reset_password.forget")}
       </Typography>
       <Typography color="gray" className="mt-1 dark:text-white font-normal">
-        {t("reset_password.fill2")}
+        {t("reset_password.fill")}
       </Typography>
 
       <form
@@ -85,18 +62,18 @@ export default function ResetPassword() {
         className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96"
       >
         <div className="flex flex-col space-y-5">
-          <label htmlFor="password">
+          <label htmlFor="email">
             <p className="font-medium text-slate-700 pb-2 dark:text-white">
-              Password
+              {t("reset_password.email")}
             </p>
             <input
-              id="password"
-              name="password"
-              type="password"
+              id="email"
+              name="email"
+              type="email"
               className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-              placeholder={t("reset_password.enter2")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t("reset_password.enter")}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </label>
 
@@ -116,10 +93,10 @@ export default function ResetPassword() {
               >
                 <path d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
               </svg>
-              <p className="px-2">{t("reset_password.reset")}</p>
+              <p className="px-2">{t("reset_password.send")}</p>
             </span>
           </Button>
-          {/* <p className="text-center dark:text-white">
+          <p className="text-center dark:text-white">
             {t("reset_password.not_registered")}
             {i18n.dir() === "rtl" ? "؟" : "?"}{" "}
             <Link
@@ -139,7 +116,7 @@ export default function ResetPassword() {
                 </svg>
               </span>
             </Link>
-          </p> */}
+          </p>
         </div>
       </form>
       {/* </div> */}

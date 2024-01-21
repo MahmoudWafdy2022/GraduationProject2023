@@ -4,11 +4,10 @@ import { useProfileMutation } from "../slices/userApiSlice";
 import { useGetMyOrdersQuery } from "../slices/orderApiSlice";
 
 // import { useNavigate } from "react-router-dom";
-import useRedirect from "../utils/useRedirect";
+
 import About from "../components/profile/About";
 import OrderHistory from "../components/profile/OrderHistory";
 export default function Profile() {
-  useRedirect();
   const [isEdit, setIsEdit] = useState(false);
   const user = useSelector((store) => store.auth.userInfo);
   const cart = useSelector((state) => state.cart);
@@ -18,7 +17,7 @@ export default function Profile() {
     useProfileMutation();
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
   const order = orders?.data?.orders;
-
+  // console.log(userInfo?.role !== "USER");
   // const orders = data.data.orders;
 
   function isObjEmpty(obj) {
@@ -61,7 +60,7 @@ export default function Profile() {
               isEdit={isEdit}
               setIsEdit={setIsEdit}
             />
-            {!isEdit && (
+            {!isEdit && userInfo?.role === "USER" && (
               <OrderHistory order={order} isLoading={isLoading} error={error} />
             )}
           </div>

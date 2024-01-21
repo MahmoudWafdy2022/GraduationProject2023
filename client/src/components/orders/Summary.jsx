@@ -67,6 +67,7 @@ export default function Summary({
                           createOrder={createOrder}
                           onApprove={onApprove}
                           onError={onError}
+                          fundingSource="paypal"
                         />
                       </div>
                     </div>

@@ -118,10 +118,14 @@
     "Smartwatches": "Smartwatches"
   },
   "reset_password": {
+    "forget": "Forget Password",
     "reset": "Reset Password",
+    "send": "Send",
     "fill": "Fill up the form to reset the password",
+    "fill2": "Type your new password",
     "email": "Email address",
     "enter": "Enter Email address",
+    "enter2": "Enter a New Password",
     "not_registered": "Not registered yet",
     "register": "Register Now"
   }

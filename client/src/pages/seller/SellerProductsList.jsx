@@ -7,7 +7,7 @@ import {
   useGetSellerAcceptedProductsQuery,
   useGetSellerPendingProductsQuery,
 } from "../../slices/productsApiSlice";
-export default function SellerProfile() {
+export default function SellerProductsList() {
   const user = useSelector((store) => store.auth.userInfo);
   const id = user.id;
   const {
@@ -34,16 +34,11 @@ export default function SellerProfile() {
   console.log(product);
 
   return (
-    <div className="xs:min-w-max bg-gray-100 w-screen h-screen	dark:bg-[#151725]">
-      <div className="min-w-fit container mx-auto  p-5 ">
+    <div className="xs:min-w-max bg-gray-100 min-w-max h-screen	dark:bg-[#151725]">
+      <div className="min-w-fit container mx-auto  px-5 ">
         <div className="md:flex no-wrap md:-mx-2 ">
-          {/* <!-- Left Side --> */}
-          <div className="w-full md:w-3/12 md:mx-2">
-            <ProfileCard user={user} />
-            <div className="my-4"></div>
-          </div>
           {/* <!-- Right Side --> */}
-          <div className="w-full md:w-9/12 mx-2 h-64">
+          <div className="px-3 mx-2 h-64">
             <SellerProducts product={product} />
           </div>
         </div>
@@ -51,23 +46,12 @@ export default function SellerProfile() {
     </div>
   );
 }
-function ProfileCard({ user }) {
-  return (
-    <div className="bg-white p-3  dark:bg-[#1C1E2D] ">
-      <h1 className="text-gray-900 font-bold text-xl leading-8 my-1 dark:text-white">
-        {user?.firstname} {user?.lastname}
-      </h1>
-      <h3 className="text-gray-600 font-lg text-semibold leading-6 dark:text-white">
-        {user?.email}
-      </h3>
-    </div>
-  );
-}
+
 function SellerProducts({ product }) {
   const disableCart = false;
   return (
     <>
-      <div className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
+      <div className="w-fit mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-4 mt-10 mb-5">
         {product?.map((p) => {
           return (
             <EcommerceCard

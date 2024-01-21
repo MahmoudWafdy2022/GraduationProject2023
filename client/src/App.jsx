@@ -40,9 +40,10 @@ import UserEdit from "./pages/admin/UserEdit";
 import AdminOrderView from "./pages/admin/view/AdminOrderView";
 // seller
 import SellerRoute from "./components/seller/SellerRoute";
-import SellerProduct from "./pages/seller/SellerProduct";
-import SellerProfile from "./pages/seller/SellerProfile";
+import SellerProductsList from "./pages/seller/SellerProductsList";
 import ProductPost from "./pages/seller/ProductPost";
+import SellerProduct from "./pages/seller/SellerProduct";
+import SellerDashboard from "./pages/seller/SellerDashboard";
 
 // loaders
 import productsLoader from "./loaders/productsLoader";
@@ -51,6 +52,7 @@ import BrandList from "./pages/admin/BrandList";
 import BrandEdit from "./pages/admin/BrandEdit";
 import CategoryList from "./pages/admin/CategoryList";
 import CategoryEdit from "./pages/admin/CategoryEdit";
+import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 // actions
 // import registerAction from "./actions/registerAction";
@@ -72,7 +74,12 @@ const router = createBrowserRouter(
       />
       <Route path="register" element={<Register />} loader={async () => null} />
       <Route
-        path="resetpassword"
+        path="forget-password"
+        element={<ForgetPassword />}
+        loader={async () => null}
+      />
+      <Route
+        path="reset-password"
         element={<ResetPassword />}
         loader={async () => null}
       />
@@ -157,14 +164,15 @@ const router = createBrowserRouter(
         <Route path="category/:id/edit" element={<CategoryEdit />} />
       </Route>
       <Route path="seller" element={<SellerRoute />} loader={async () => null}>
+        <Route index element={<SellerDashboard />} loader={async () => null} />
         <Route
           path="productlist"
           element={<SellerProduct />}
           loader={async () => null}
         />
         <Route
-          path="profile"
-          element={<SellerProfile />}
+          path="items"
+          element={<SellerProductsList />}
           loader={async () => null}
         />
         <Route

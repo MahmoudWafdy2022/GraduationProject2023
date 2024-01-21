@@ -3,10 +3,12 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import EcommerceCard from "../components/EcommerceCard";
 import { Link } from "react-router-dom";
+import useRedirect from "../utils/useRedirect";
 const Favorites = () => {
+  useRedirect();
   const favorites = useSelector((store) => store.favorites.favoriteItems);
   const { t } = useTranslation();
-  console.log(favorites);
+
   if (favorites?.length === 0) {
     return (
       <div className="grid h-screen px-4 bg-white dark:bg-[#1C1E2D] place-content-center ">

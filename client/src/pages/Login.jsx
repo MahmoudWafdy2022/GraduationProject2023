@@ -122,7 +122,7 @@ function Login() {
         </div>
         <div className="mt-3 mb-0">
           <Link
-            to="/resetpassword"
+            to="/forget-password"
             className="dark:text-blue-600  font-medium text-gray-900 "
           >
             {t("sign_in.forget_password")}

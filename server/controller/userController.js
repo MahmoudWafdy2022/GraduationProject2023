@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const JWTGenerateToken = require("../utils//JWTGenerateToken");
 const userRoles = require("../utils/userRoles");
 const allowedTo = require("../middleware/allowedTo");
-const sendEmail = require("../utils/sendEmail")
+const sendEmail = require("../utils/sendEmail");
 // const asyncHandler = require("../middleware/asyncHandler");
 const checkUserExistence = async (req, res) => {
   try {
@@ -68,20 +68,22 @@ const register = async (req, res) => {
     });
     newuser.token = token;
     await newuser.save();
-    const link = `http://localhost:3001/users/${newuser._id}/verify/${newuser.token}`
+    const link = `http://localhost:3001/users/${newuser._id}/verify/${newuser.token}`;
 
     const htmlTemplate = `
     <div>
     <p>click on the link below to verufy your email</p>
     <a href = "${link}">Verify</a>
     </div>
-    `
+    `;
 
-await sendEmail(newuser.email,"verify Your Email",htmlTemplate)
+    await sendEmail(newuser.email, "verify Your Email", htmlTemplate);
 
-return res
-.status(200)
-.json({ status: httpStatusText.SUCCESS, message:"we send to you an email please verify your email address", data: { newuser } });
+    return res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      message: "we send to you an email please verify your email address",
+      data: { newuser },
+    });
 
     // return res
     //   .status(200)
@@ -108,9 +110,10 @@ const login = async (req, res) => {
   }
   const matchedPassword = await bcrypt.compare(password, oldUser.password);
   //
-  if(!oldUser.isAccountVerified){
-return res.status(400).json({message:"we sent to you an email,please verify your email address"})
-
+  if (!oldUser.isAccountVerified) {
+    return res.status(400).json({
+      message: "we sent to you an email,please verify your email address",
+    });
   }
   if (oldUser && matchedPassword) {
     const token = await JWTGenerateToken({
@@ -118,7 +121,6 @@ return res.status(400).json({message:"we sent to you an email,please verify your
       id: oldUser._id,
       role: oldUser.role,
     });
-
 
     const { firstname, lastname, email, id, role } = oldUser;
 
@@ -139,159 +141,151 @@ return res.status(400).json({message:"we sent to you an email,please verify your
 // @route GET/api/users/:usedId/verify/:token
 // @access public
 
-const verifyUserAccountCtrl = async(req,res)=>{
-try{
-const user = await userModel.findById(req.params.id)
-console.log("user ",user)
-if(!user){
-  console.log("!user")
+const verifyUserAccountCtrl = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.params.id);
+    console.log("user ", user);
+    if (!user) {
+      console.log("!user");
 
-  return res
-  .status(400)
-  .json({ status: httpStatusText.FAIL, message:"Invalid link"})
-}
-let verificationToken = await userModel.findOne({
-  _id:user._id,
-  token:req.params.token
-})
-console.log("verificationToken ",verificationToken)
-console.log("id ",verificationToken._id)
-console.log("token ",verificationToken.token)
+      return res
+        .status(400)
+        .json({ status: httpStatusText.FAIL, message: "Invalid link" });
+    }
+    let verificationToken = await userModel.findOne({
+      _id: user._id,
+      token: req.params.token,
+    });
+    console.log("verificationToken ", verificationToken);
+    console.log("id ", verificationToken._id);
+    console.log("token ", verificationToken.token);
 
-
-if(!verificationToken){
-  console.log("!verificationToken")
-  return res
-  .status(400)
-  .json({ status: httpStatusText.FAIL, message:"Invalid link"})
-}
-user.isAccountVerified = true
-await user.save()
-verificationToken = {}
-return res.status(200).json({ status: httpStatusText.SUCCESS, message:"your account verified"})
-}catch (err) {
+    if (!verificationToken) {
+      console.log("!verificationToken");
+      return res
+        .status(400)
+        .json({ status: httpStatusText.FAIL, message: "Invalid link" });
+    }
+    user.isAccountVerified = true;
+    await user.save();
+    verificationToken = {};
+    return res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      message: "your account verified",
+    });
+  } catch (err) {
     return res
       .status(404)
       .json({ status: httpStatusText.FAIL, msg: err.message });
   }
-
-  
-}
+};
 // @des send reset password link
 // @route POST/users/reset-password
 // @access public
 
-const sendResetPasswordLinkCtrl = async(req,res)=>{
-//1.validation skip
-//2.get the user from DB by email
-try {
-  const user  = await userModel.findOne({email:req.body.email})
-if(!user){
-res.status(404).json({status:httpStatusText.FAIL,message:"this Email does not exist"})
+const sendResetPasswordLinkCtrl = async (req, res) => {
+  //1.validation skip
+  //2.get the user from DB by email
+  try {
+    const user = await userModel.findOne({ email: req.body.email });
+    if (!user) {
+      res.status(404).json({
+        status: httpStatusText.FAIL,
+        message: "this Email does not exist",
+      });
+    }
+    //3.creating verificationtoken
+    let verificationToken = await userModel.findOne({
+      _id: user._id,
+    });
+    if (!verificationToken) {
+      let token = await JWTGenerateToken({
+        email: newuser.email,
+        id: newuser._id,
+        role: newuser.role,
+      });
+      user.token = token;
+    }
+    //4.create link
+    const link = `http://localhost:3001/users/reset-password/${user._id}/${user.token}`;
 
-}
-//3.creating verificationtoken
-let verificationToken = await userModel.findOne({
-  _id:user._id,
-})
-if(!verificationToken){
-  let token = await JWTGenerateToken({
-    email: newuser.email,
-    id: newuser._id,
-    role: newuser.role,
-  });
-  user.token = token;
-}
-//4.create link
-const link = `http://localhost:3001/users/reset-password/${user._id}/${user.token}`
+    //5.creating html template
+    const htmlTemplate = `<a href = "${link}">click here the to reset your password</a>`;
 
+    //6.send email
+    await sendEmail(user.email, "Reset password", htmlTemplate);
 
-//5.creating html template
-const htmlTemplate = `<a href = "${link}">click here the to reset your password</a>`
-
-//6.send email
-await sendEmail(user.email,"Reset password",htmlTemplate)
-
-//7.response to the client
-res.status(200).json({message:"password reset link sent to your email, please check your email"})
-
-} catch (error) {
-res.status(400).json({error})
-  
-}
-
-}
+    //7.response to the client
+    res.status(200).json({
+      message:
+        "password reset link sent to your email, please check your email",
+    });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
 
 // @des get reset password link
 // @route GET/users/reset-password
 // @access public
 
-const getResetPasswordLinkCtrl = async(req,res)=>{
-
+const getResetPasswordLinkCtrl = async (req, res) => {
   try {
-    const user  = await userModel.findById(req.params.id)
-  if(!user){
-  return res.status(404).json({status:httpStatusText.FAIL,message:"Invalid link"}) 
-  }
-  //3.creating verificationtoken
-  const verificationToken = await userModel.findOne({
-    _id:user._id,
-    token:req.params.token
-  })
-  if(!verificationToken){
-    return res.status(404).json({status:httpStatusText.FAIL,message:"Invalid link"}) 
+    const user = await userModel.findById(req.params.id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: httpStatusText.FAIL, message: "Invalid link" });
+    }
 
-  }
-  
-  return res.status(404).json({status:httpStatusText.SUCCESS,message:"valid url"}) 
-  
-  
+    // Set userId and token as cookies
+    res.cookie("resetUserId", user._id);
+    res.cookie("resetToken", req.params.token);
+    console.log(req.params);
+
+    // Redirect to the generic reset password route
+    res.redirect("http://localhost:5173/reset-password");
   } catch (error) {
-  res.status(400).json({message:error.message})
-    
+    res.status(400).json({ message: error.message });
   }
-}
-
+};
 
 // @des reset password
 // @route POST/users/reset-password
 // @access public
 
-const resetPasswordCtrl = async(req,res)=>{
-
+const resetPasswordCtrl = async (req, res) => {
   try {
-    const user  = await userModel.findById(req.params.id)
-  if(!user){
-  return res.status(400).json({status:httpStatusText.FAIL,message:"Invalid link"}) 
+    const user = await userModel.findById(req.params.id);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ status: httpStatusText.FAIL, message: "Invalid link" });
+    }
+    let verificationToken = await userModel.findOne({
+      _id: user._id,
+      token: req.params.token,
+    });
+    if (!verificationToken) {
+      return res
+        .status(400)
+        .json({ status: httpStatusText.FAIL, message: "Invalid link" });
+    }
+    if (!user.isAccountVerified) {
+      user.isAccountVerified = true;
+    }
+    const salt = await bcrypt.genSalt(10);
+    let hashedPassword = await bcrypt.hash(req.body.password, salt);
+    user.password = hashedPassword;
+    await user.save();
+    verificationToken = {};
+    res
+      .status(200)
+      .json({ message: "password reset successfully, please log in" });
+  } catch (error) {
+    res.status(400).json({ message: message.error });
   }
-  let verificationToken = await userModel.findOne({
-    _id:user._id,
-    token:req.params.token
-  })
-  if(!verificationToken){
-    return res
-    .status(400)
-    .json({ status: httpStatusText.FAIL, message:"Invalid link"})
-  }
-  if(!user.isAccountVerified){
-    user.isAccountVerified = true
-  }
-  const salt = await bcrypt.genSalt(10)
-  let hashedPassword = await bcrypt.hash(req.body.password,salt)
-  user.password = hashedPassword
-  await user.save()
-  verificationToken = {}
-res.status(200).json({message:"password reset successfully, please log in"})
-}
-
-catch (error) {
-  res.status(400).json({message:message.error})
-    
-  }
-
-
-
-}
+};
 
 // @des logout/clear cookie
 // @route Post/api/users
@@ -453,4 +447,4 @@ module.exports = {
   resetPasswordCtrl,
   getResetPasswordLinkCtrl,
   sendResetPasswordLinkCtrl,
-}
+};
