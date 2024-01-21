@@ -159,5 +159,19 @@
     "product_list": "قائمة المنتجات",
     "profile": "الصفحة الشخصية",
     "logout": "تسجيل خروج"
+  },
+  "filter": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "sort": "الفرز",
+    "most_popular": "الاشهر",
+    "best_rating": "الاعلي تقييماً",
+    "newest": "الاحدث",
+    "price_low_to_high": "السعر الاقل للاعلي",
+    "price_high_to_low": "السعر الاعلي للاقل",
+    "new_arrivals": "فلتر صنفك",
+    "brand": "الماركة",
+    "next": "التالي",
+    "previous": "السابق"
   }
 }

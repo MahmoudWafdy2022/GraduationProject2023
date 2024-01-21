@@ -159,5 +159,19 @@
     "product_list": "Product List",
     "profile": "Profile",
     "logout": "Logout"
+  },
+  "filter": {
+    "home": "Home",
+    "products": "Products",
+    "sort": "Sort",
+    "most_popular": "Most Popular",
+    "best_rating": "Best Rating",
+    "newest": "Newest",
+    "price_low_to_high": "Price: Low to High",
+    "price_high_to_low": "Price: High to Low",
+    "new_arrivals": "Filter Your Product",
+    "brand": "Brand",
+    "next": "Next",
+    "previous": "Previous"
   }
 }

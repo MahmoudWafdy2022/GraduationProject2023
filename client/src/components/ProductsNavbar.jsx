@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 export default function ProductsNavbar({ product }) {
+  const { t } = useTranslation();
   return (
     <nav aria-label="Breadcrumb">
       <ol
@@ -12,7 +14,7 @@ export default function ProductsNavbar({ product }) {
               to="/"
               className="mr-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-              Home
+              {t("filter.home")}
             </Link>
             <svg
               width="16"
@@ -32,7 +34,7 @@ export default function ProductsNavbar({ product }) {
               to="/products/page/1"
               className="mr-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-              Products
+              {t("filter.products")}
             </Link>
             <svg
               width="16"

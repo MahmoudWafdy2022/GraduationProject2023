@@ -50,7 +50,7 @@ export default function CategoryDropDown() {
       >
         <Menu.Items
           className={`absolute ${
-            i18n.dir() === "rtl" ? "right-0" : "left-0"
+            i18n.dir() === "rtl" ? "right-0 text-right" : "left-0 text-left"
           } z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300`}
         >
           <div className="py-1">

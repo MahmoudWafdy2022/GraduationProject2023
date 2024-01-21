@@ -1,14 +1,16 @@
 import React from "react";
 import { Button, IconButton } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
-
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n.js";
 export default function DefaultPagination({
   activePage,
   totalPages,
   onPageChange,
 }) {
   const [active, setActive] = React.useState(activePage);
-
+  const { t } = useTranslation();
+  const isRTL = i18n.dir() === "rtl";
   React.useEffect(() => {
     // Update the active state when the prop changes
     setActive(activePage);
@@ -37,14 +39,20 @@ export default function DefaultPagination({
   };
 
   return (
-    <div className="flex items-center gap-4 mx-auto">
+    <div className="flex items-center gap-4 mx-auto ">
       <Button
         variant="text"
         className="flex items-center gap-2 dark:text-white"
         onClick={prev}
         disabled={active === 1}
       >
-        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4 " /> Previous
+        {isRTL ? (
+          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+        ) : (
+          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4 " />
+        )}
+
+        {t("filter.previous")}
       </Button>
       <div className="flex items-center gap-2">
         {[...Array(totalPages).keys()].map((index) => (
@@ -63,8 +71,12 @@ export default function DefaultPagination({
         onClick={next}
         disabled={active === totalPages}
       >
-        Next
-        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+        {t("filter.next")}
+        {isRTL ? (
+          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4 " />
+        ) : (
+          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+        )}
       </Button>
     </div>
   );
