@@ -27,10 +27,16 @@ export default function CartSummary({ c: product, ind, setCurrent }) {
 
   const addToCartHandler = async (inp) => {
     if (qt < 1 || qt > product.countInStock) return;
-    let num = +inp > qt ? 1 : -1;
-    const value = Math.max(1, Math.min(product.countInStock, Number(inp)));
-    const qty = qt + num;
+
+    // let num = +inp > qt ? 1 : -1;
+    // const newValue = qt + num;
+
+    // Ensure newValue is within the valid range
+    const value = Math.max(1, Math.min(product.countInStock, inp));
+
+    const qty = value;
     product = { ...product, qty };
+
     dispatch(addToCart({ product, qty }));
     setQt(() => value);
   };
@@ -68,13 +74,15 @@ export default function CartSummary({ c: product, ind, setCurrent }) {
                 -
               </button>
               <input
-                className="h-8 w-8 border bg-white text-gray-700 text-center text-xs outline-none dark:bg-[#151729] dark:text-white dark:border-none"
-                type="number"
+                className="h-8 w-10 p-2 text-sm dark:bg-[#151725] dark:text-white"
+                type="text"
                 placeholder={qt}
                 value={qt}
-                min={1}
-                max={product.countInStock}
-                onChange={(e) => addToCartHandler(e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value > product.countInStock) return;
+                  setQt(e.target.value);
+                  addToCartHandler(e.target.value);
+                }}
               />
               <button
                 onClick={handleInc}

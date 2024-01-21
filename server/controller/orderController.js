@@ -73,6 +73,24 @@ const getMyOrders = async (req, res) => {
       .json({ status: httpStatusText.ERROR, msg: err.message });
   }
 };
+const getMyData = async (req, res) => {
+  try {
+    // const id = req.currentUser.id;
+    const orders = await orderModel.find({ "user.id": req.currentUser.id });
+    let shippingAddress;
+    if (orders.length > 0 && orders[0]?.shippingAddress) {
+      shippingAddress = orders[0]?.shippingAddress;
+    }
+    console.log(shippingAddress);
+    return res
+      .status(200)
+      .json({ status: httpStatusText.SUCCESS, data: { shippingAddress } });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ status: httpStatusText.ERROR, msg: err.message });
+  }
+};
 
 const getOrderById = async (req, res) => {
   console.log("test");
@@ -228,6 +246,88 @@ const getOrders = async (req, res) => {
       .json({ status: httpStatusText.ERROR, data: null, msg: err.message });
   }
 };
+const sellerProfits = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Fetch all orders
+    const orders = await orderModel.find();
+
+    // Filter paid orders
+    const paidOrders = orders.filter((order) => order.isPaid);
+    const unpaidOrders = orders.filter((order) => !order.isPaid);
+
+    // Get seller's products
+    const sellerProducts = await productModel.find({ user: id });
+
+    // Initialize total seller profits
+    let totalSellerProfits = 0;
+    let weeklySellerSales = 0;
+    const today = new Date();
+    const oneWeekAgo = new Date(today);
+    oneWeekAgo.setDate(today.getDate() - 7);
+    const dailySellerSales = Array(7).fill(0);
+    let totalPaidOrders = 0;
+    let totalUnpaidOrders = 0;
+
+    unpaidOrders.forEach((order) => {
+      order.orderItems.forEach((orderItem) => {
+        // Check if the product belongs to the seller
+        const sellerProduct = sellerProducts.find(
+          (product) => product._id.toString() === orderItem.product.toString()
+        );
+        if (sellerProduct) {
+          totalUnpaidOrders++;
+        }
+      });
+    });
+    // Iterate through paid orders
+    paidOrders.forEach((order) => {
+      // Iterate through order items
+
+      order.orderItems.forEach((orderItem) => {
+        // Check if the product belongs to the seller
+        const sellerProduct = sellerProducts.find(
+          (product) => product._id.toString() === orderItem.product.toString()
+        );
+
+        if (sellerProduct) {
+          // Calculate total profit for the seller's product in this order
+          totalPaidOrders++;
+          const productProfit = sellerProduct.price * orderItem.qty;
+          totalSellerProfits += productProfit;
+          if (order.createdAt >= oneWeekAgo) {
+            weeklySellerSales += sellerProduct.price * orderItem.qty;
+          }
+          // Calculate the day index within the last 7 days
+          const dayIndex =
+            6 - Math.floor((today - order.createdAt) / (24 * 60 * 60 * 1000));
+
+          // Increment the daily sales for the corresponding day
+          if (dayIndex >= 0 && dayIndex < 7) {
+            dailySellerSales[dayIndex] += Number(productProfit.toFixed(2));
+          }
+        }
+      });
+    });
+    totalSellerProfits = Number(totalSellerProfits.toFixed(2));
+    weeklySellerSales = Number(weeklySellerSales.toFixed(2));
+
+    res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      data: {
+        totalPaidOrders,
+        totalSellerProfits,
+        weeklySellerSales,
+        dailySellerSales,
+        totalUnpaidOrders,
+      },
+    });
+  } catch (err) {
+    res
+      .status(401)
+      .json({ status: httpStatusText.ERROR, data: null, msg: err.message });
+  }
+};
 
 module.exports = {
   addOrderItems,
@@ -236,4 +336,6 @@ module.exports = {
   updateOrderToPaid,
   updateOrderToDeliverd,
   getOrders,
+  getMyData,
+  sellerProfits,
 };

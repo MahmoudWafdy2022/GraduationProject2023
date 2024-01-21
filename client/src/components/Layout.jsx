@@ -9,6 +9,7 @@ import Sidebar from "./admin/Sidebar";
 import { logout } from "../slices/authSlice";
 import { resetCart } from "../slices/cartSlice";
 import axios from "axios";
+import SellerSidebar from "./seller/SellerSidebar";
 export default function Layout() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Check if there's a saved dark mode preference in localStorage
@@ -66,6 +67,21 @@ export default function Layout() {
         <ToastContainer />
         <div className="bg-primary w-full grid grid-cols-[15rem,1fr] dark:bg-[#1C1E2D] overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700">
           <Sidebar />
+          <main className="min-h-screen content-start">
+            <Outlet />
+          </main>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+  if (userInfo?.role === "SELLER") {
+    return (
+      <>
+        <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+        <ToastContainer />
+        <div className="bg-primary w-full grid grid-cols-[15rem,1fr] dark:bg-[#1C1E2D] overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700">
+          <SellerSidebar />
           <main className="min-h-screen content-start">
             <Outlet />
           </main>

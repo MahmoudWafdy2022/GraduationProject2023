@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -7,6 +7,7 @@ import { saveShippingAddress } from "../slices/cartSlice";
 import useRedirect from "../utils/useRedirect";
 import CustomSpinner from "../components/CustomSpinner";
 import { useTranslation } from "react-i18next";
+import { useGetMyDataQuery } from "../slices/orderApiSlice";
 export default function Shipping() {
   useRedirect();
   const { t } = useTranslation();
@@ -14,6 +15,11 @@ export default function Shipping() {
   const [isLoadingCity, setIsLoadingCity] = useState(false);
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
+  const {
+    data,
+    isLoading,
+    // error
+  } = useGetMyDataQuery();
 
   const [address, setAddress] = useState(shippingAddress.address || "");
   const [addressError, setAddressError] = useState("");
@@ -255,6 +261,74 @@ export default function Shipping() {
     }
   };
 
+  useEffect(() => {
+    if (data?.data?.shippingAddress) {
+      const { address, postalCode } = data.data.shippingAddress;
+
+      setAddress(address || "");
+      setPostalCode(postalCode || "");
+
+      // const fetchCountry = async () => {
+      //   try {
+      //     setIsLoadingCountry(true);
+      //     const response = await fetch(
+      //       `http://api.geonames.org/searchJSON?q=${country}&username=xxxatlas69`
+      //     );
+      //     const data = await response.json();
+      //     console.log(data);
+      //     // Extract relevant information from the API response
+      //     // const countriesData = data?.geonames.map((country) => ({
+      //     //   value: country.countryCode,
+      //     //   label: country.countryName,
+      //     //   // Add the country flag URL to each option
+      //     //   // https://flagsapi.com/EG/flat/32.png
+      //     //   // ${
+
+      //     //   //     ? ""
+      //     //   //     : country.countryCode
+      //     //   // }
+      //     //   image: `${
+      //     //     [
+      //     //       "BL",
+      //     //       "BQ",
+      //     //       "BV",
+      //     //       "GF",
+      //     //       "GP",
+      //     //       "HM",
+      //     //       "IO",
+      //     //       "SX",
+      //     //       "SJ",
+      //     //       "PM",
+      //     //       "UM",
+      //     //       "XK",
+      //     //     ].includes(country.countryCode)
+      //     //       ? ""
+      //     //       : `https://flagsapi.com/${country.countryCode}/flat/24.png`
+      //     //   }`,
+      //     // }));
+
+      //     // setAllCountries(countriesData);
+      //     // setIsLoadingCountry(false);
+      //   } catch (error) {
+      //     setCountryError(`Error fetching countries: ${error}`);
+      //   }
+      // };
+
+      // fetchCountry();
+
+      // const countryOption = allCountries.find(
+      //   (option) => option.label === country
+      // );
+
+      // setSelectedCountry(countryOption || null);
+
+      // Fetch cities based on the selected country
+      // handleFetchCity();
+    }
+  }, [allCountries, data]);
+  console.log(selectedCity);
+  console.log(selectedCountry);
+  if (isLoading) return <CustomSpinner />;
   return (
     <div className="bg-gray-100 dark:bg-[#1C1E2D] h-screen w-full">
       <div className="w-full max-w-3xl mx-auto p-8">
