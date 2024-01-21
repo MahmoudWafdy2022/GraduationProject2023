@@ -1,10 +1,13 @@
+import { useTranslation } from "react-i18next";
+
 export default function QuickStats({ data, data2, data3, data4 }) {
+  const { t } = useTranslation();
   console.log(data3);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 dark:text-white">
       <div className="bg-slate-50 p-5 m-2 flex justify-between items-center shadow dark:bg-[#1C1E2D]">
         <div>
-          <h3 className="font-bold">Paid Orders</h3>
+          <h3 className="font-bold">{t("seller.paid_orders")}</h3>
           <p className="text-gray-500">{data3}</p>
         </div>
         <svg
@@ -21,7 +24,7 @@ export default function QuickStats({ data, data2, data3, data4 }) {
       </div>
       <div className="bg-slate-50 p-5 m-2 flex justify-between items-center shadow dark:bg-[#1C1E2D]">
         <div>
-          <h3 className="font-bold">Unpaid Orders</h3>
+          <h3 className="font-bold">{t("seller.unpaid_orders")}</h3>
           <p className="text-gray-500">{data2}</p>
         </div>
         <svg
@@ -39,7 +42,7 @@ export default function QuickStats({ data, data2, data3, data4 }) {
 
       <div className="bg-slate-50 p-5 m-2 flex justify-between items-center shadow dark:bg-[#1C1E2D]">
         <div>
-          <h3 className="font-bold">Available Products</h3>
+          <h3 className="font-bold">{t("seller.available_products")}</h3>
           <p className="text-gray-500">{data?.data?.products.length}</p>
         </div>
         <svg
@@ -56,7 +59,7 @@ export default function QuickStats({ data, data2, data3, data4 }) {
 
       <div className="bg-slate-50 p-5 m-2 flex justify-between items-center shadow dark:bg-[#1C1E2D]">
         <div>
-          <h3 className="font-bold">Pending Products</h3>
+          <h3 className="font-bold">{t("seller.pending_products")}</h3>
           <p className="text-gray-500">{data4?.data?.products.length}</p>
         </div>
         <svg

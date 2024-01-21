@@ -7,7 +7,7 @@ import {
   useGetSellerAcceptedProductsQuery,
   useGetSellerPendingProductsQuery,
 } from "../../slices/productsApiSlice";
-export default function SellerProductsList() {
+export default function SellerProductsGallery() {
   const user = useSelector((store) => store.auth.userInfo);
   const id = user.id;
   const {

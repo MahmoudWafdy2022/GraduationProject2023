@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
-
+import { useTranslation } from "react-i18next";
 const WeeklySalesChart = ({ dailySales }) => {
+  const { t } = useTranslation();
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -30,7 +31,7 @@ const WeeklySalesChart = ({ dailySales }) => {
           labels: labels,
           datasets: [
             {
-              label: "Weekly Sales",
+              label: t("chart.sales_this_week"),
               data: dailySales,
               fill: false,
               borderColor: "rgba(75, 192, 192, 1)",
@@ -60,7 +61,7 @@ const WeeklySalesChart = ({ dailySales }) => {
         chartInstance.current.destroy();
       }
     };
-  }, [chartRef, dailySales]);
+  }, [chartRef, dailySales, t]);
 
   return <canvas ref={chartRef} width="400" height="200"></canvas>;
 };

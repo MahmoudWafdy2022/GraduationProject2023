@@ -9,8 +9,10 @@ import ErrorComponent from "../../components/ErrorComponent";
 // import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { Card } from "@material-tailwind/react";
+import { useTranslation } from "react-i18next";
 
 export default function SellerProduct() {
+  const { t } = useTranslation();
   const user = useSelector((store) => store.auth.userInfo);
   const id = user.id;
   const navigate = useNavigate();
@@ -57,7 +59,7 @@ export default function SellerProduct() {
               onClick={createProductHandler}
               className=" m-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Add Product
+              {t("productlist_tables.Add_Product")}
               <svg
                 className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
                 aria-hidden="true"
@@ -73,22 +75,22 @@ export default function SellerProduct() {
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
-                      ID
+                      {t("productlist_tables.ID")}
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Product name
+                      {t("productlist_tables.PRODUCT_NAME")}
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Brand
+                      {t("productlist_tables.BRAND")}
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Category
+                      {t("productlist_tables.CATEGORY")}
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Price
+                      {t("productlist_tables.PRICE")}
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Status
+                      {t("productlist_tables.STATUS")}
                     </th>
                   </tr>
                 </thead>

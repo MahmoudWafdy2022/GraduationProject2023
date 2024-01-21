@@ -128,5 +128,36 @@
     "enter2": "ادخل كلمة السر الجديدة",
     "not_registered": "لا تملك حساب",
     "register": "سجل حساب جديد الآن"
+  },
+  "seller": {
+    "paid_orders": "الطلبات المدفوعة",
+    "unpaid_orders": "الطلبات غير المدفوعة",
+    "pending_products": "المنتجات قيد الانتظار",
+    "available_products": "المنتجات الموافق عليها"
+  },
+  "chart": {
+    "products_in_stock": "المنتجات الخاصة بك في المخزن",
+    "sales_this_week": "المبيعات هذا الاسبوع"
+  },
+  "dashboard": {
+    "dashboard": "لوحة القيادة",
+    "product_list": "قائمة المنتجات",
+    "all_items": "معرض المنتجات",
+    "setting": "الاعدادات",
+    "log_out": "تسجيل الخروج"
+  },
+  "productlist_tables": {
+    "STATUS": "الحالة",
+    "PRICE": "السعر",
+    "CATEGORY": "الفئة",
+    "BRAND": "الماركة",
+    "PRODUCT_NAME": "اسم المنتج",
+    "ID": "رقم التعريف",
+    "Add_Product": "اضف منتجات"
+  },
+  "dropdown": {
+    "product_list": "قائمة المنتجات",
+    "profile": "الصفحة الشخصية",
+    "logout": "تسجيل خروج"
   }
 }

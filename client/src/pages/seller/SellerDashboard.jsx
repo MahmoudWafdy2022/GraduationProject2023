@@ -11,8 +11,10 @@ import "chart.js/auto";
 import QuickStats from "../../components/seller/QuicksStats";
 import WeeklySalesChart from "../../components/admin/WeeklySalesChart";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 export default function SellerDashboard() {
+  const { t } = useTranslation();
   const user = useSelector((store) => store.auth.userInfo);
   const id = user.id;
   const { data } = useGetSellerAcceptedProductsQuery(id);
@@ -49,7 +51,7 @@ export default function SellerDashboard() {
               {totalProductsInStock}
             </span>
             <h3 className="text-base font-normal text-gray-500">
-              Products in Stock
+              {t("chart.products_in_stock")}
             </h3>
           </div>
           {data && <ProductChart data={data.data.products} />}
@@ -60,7 +62,7 @@ export default function SellerDashboard() {
               ${weeklySellerSales}
             </span>
             <h3 className="text-base font-normal text-gray-500">
-              Sales this week
+              {t("chart.sales_this_week")}
             </h3>
             <div className="flex items-center justify-end flex-1 text-green-500 text-base font-bold">
               {salesPercentage ? (

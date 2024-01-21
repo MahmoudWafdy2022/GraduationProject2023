@@ -50,7 +50,7 @@ function Login() {
         return;
       }
       if (userInfo?.role === "SELLER") {
-        navigate("/seller/productlist");
+        navigate("/seller");
         return;
       }
       navigate(redirect);

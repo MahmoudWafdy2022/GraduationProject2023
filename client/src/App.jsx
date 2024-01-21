@@ -40,7 +40,7 @@ import UserEdit from "./pages/admin/UserEdit";
 import AdminOrderView from "./pages/admin/view/AdminOrderView";
 // seller
 import SellerRoute from "./components/seller/SellerRoute";
-import SellerProductsList from "./pages/seller/SellerProductsList";
+import SellerProductsGallery from "./pages/seller/SellerProductsGallery";
 import ProductPost from "./pages/seller/ProductPost";
 import SellerProduct from "./pages/seller/SellerProduct";
 import SellerDashboard from "./pages/seller/SellerDashboard";
@@ -172,7 +172,7 @@ const router = createBrowserRouter(
         />
         <Route
           path="items"
-          element={<SellerProductsList />}
+          element={<SellerProductsGallery />}
           loader={async () => null}
         />
         <Route

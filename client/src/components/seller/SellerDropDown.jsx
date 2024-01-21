@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import i18n from "../../i18n";
 export default function SellerDropDown({ user, handleLogout }) {
+  const { t } = useTranslation();
+  const isRTL = i18n.dir() === "rtl";
+  console.log(isRTL);
   const btnRef = useRef();
   const [showAdmin, setShowAdmin] = useState(false);
   useEffect(() => {
@@ -35,13 +40,17 @@ export default function SellerDropDown({ user, handleLogout }) {
         </button>
 
         {showAdmin && (
-          <div className="absolute right-0 w-40 mt-2 py-2 bg-white border rounded shadow-xl">
+          <div
+            className={`absolute  w-40 mt-2 py-2 bg-white border rounded shadow-xl ${
+              isRTL ? "left-0" : "right-0"
+            }`}
+          >
             <Link
               to="/seller/productlist"
               onClick={() => setShowAdmin(false)}
               className="transition-colors duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-purple-500 hover:text-white"
             >
-              Product List
+              {t("dropdown.product_list")}
             </Link>
 
             <Link
@@ -49,16 +58,16 @@ export default function SellerDropDown({ user, handleLogout }) {
               onClick={() => setShowAdmin(false)}
               className="transition-colors duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-purple-500 hover:text-white"
             >
-              Profile
+              {t("dropdown.profile")}
             </Link>
             <div className="py-2">
               <hr></hr>
             </div>
             <button
-              className="transition-colors text-left w-full duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-purple-500 hover:text-white"
+              className="transition-colors text-left duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-purple-500 hover:text-white"
               onClick={handleLogout}
             >
-              Logout
+              {t("dropdown.logout")}
             </button>
           </div>
         )}

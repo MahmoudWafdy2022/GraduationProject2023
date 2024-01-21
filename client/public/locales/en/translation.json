@@ -128,5 +128,36 @@
     "enter2": "Enter a New Password",
     "not_registered": "Not registered yet",
     "register": "Register Now"
+  },
+  "seller": {
+    "paid_orders": "Paid Orders",
+    "unpaid_orders": "Unpaid Orders",
+    "pending_products": "Pending Products",
+    "available_products": "Available Products"
+  },
+  "chart": {
+    "products_in_stock": "Products in Stock",
+    "sales_this_week": "Sales this week"
+  },
+  "dashboard": {
+    "dashboard": "Dashboard",
+    "product_list": "Products List",
+    "all_items": "Products Gallery",
+    "setting": "Setting",
+    "log_out": "Log Out"
+  },
+  "productlist_tables": {
+    "STATUS": "STATUS",
+    "PRICE": "PRICE",
+    "CATEGORY": "CATEGORY",
+    "BRAND": "BRAND",
+    "PRODUCT_NAME": "PRODUCT NAME",
+    "ID": "ID",
+    "Add_Product": "Add Product"
+  },
+  "dropdown": {
+    "product_list": "Product List",
+    "profile": "Profile",
+    "logout": "Logout"
   }
 }
