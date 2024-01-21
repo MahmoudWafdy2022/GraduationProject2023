@@ -16,7 +16,6 @@ export default function About({
   setIsEdit,
 }) {
   const { t } = useTranslation();
-
   const [editedUser, setEditedUser] = useState({
     firstname: user.firstname,
     lastname: user.lastname,
@@ -203,22 +202,26 @@ export default function About({
                 {/* <div className="px-4 py-2 font-semibold">Contact No.</div>
                       <div className="px-4 py-2">+11 998001001</div> */}
               </div>
-              <div className="grid grid-cols-2">
-                <div className="px-4 py-2 font-semibold dark:text-white">
-                  {t("profile.current_address")}:
-                </div>
-                <div className="px-4 py-2 dark:text-white">
-                  {shippingAddress?.address}
-                </div>
-              </div>
-              <div className="grid grid-cols-2">
-                <div className="px-4 py-2 font-semibold dark:text-white">
-                  {t("profile.city")}:
-                </div>
-                <div className="px-4 py-2 dark:text-white">
-                  {shippingAddress?.city}
-                </div>
-              </div>
+              {user?.role === "USER" && (
+                <>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold dark:text-white">
+                      {t("profile.current_address")}:
+                    </div>
+                    <div className="px-4 py-2 dark:text-white">
+                      {shippingAddress?.address}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold dark:text-white">
+                      {t("profile.city")}:
+                    </div>
+                    <div className="px-4 py-2 dark:text-white">
+                      {shippingAddress?.city}
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="grid grid-cols-2">
                 <div className="px-4 py-2 font-semibold dark:text-white">
                   {t("profile.email")}:
@@ -229,14 +232,16 @@ export default function About({
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2">
-                <div className="px-4 py-2 font-semibold dark:text-white">
-                  {t("profile.country")}:
+              {user?.role === "USER" && (
+                <div className="grid grid-cols-2">
+                  <div className="px-4 py-2 font-semibold dark:text-white">
+                    {t("profile.country")}:
+                  </div>
+                  <div className="px-4 py-2 dark:text-white">
+                    {shippingAddress?.country}
+                  </div>
                 </div>
-                <div className="px-4 py-2 dark:text-white">
-                  {shippingAddress?.country}
-                </div>
-              </div>
+              )}
             </div>
           </div>
           <button

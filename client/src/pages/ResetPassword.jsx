@@ -1,6 +1,7 @@
 // ResetPassword
 import { Button, Card, Typography } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CustomSpinner from "../components/CustomSpinner";
 // import i18n from "../i18n";
@@ -12,7 +13,7 @@ export default function ResetPassword() {
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
   const { t } = useTranslation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     // Retrieve data from cookies
     const userId = document.cookie.replace(
@@ -42,7 +43,7 @@ export default function ResetPassword() {
       setIsLoading(true);
       // /users/reset-password/:id/:token
       const response = await fetch(
-        `http://localhost:3001/users/reset-password-link/${userId}/${token}`,
+        `http://localhost:3001/users/reset-password/${userId}/${token}`,
         {
           method: "POST",
           headers: {
@@ -56,6 +57,7 @@ export default function ResetPassword() {
         // Handle success, show a message to the user
         toast.success("Password reset link sent successfully");
         console.log("Password reset link sent successfully");
+        navigate("/login");
       } else {
         // Handle error, show an error message to the user
         console.error("Failed to send reset password link");

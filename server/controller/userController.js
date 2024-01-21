@@ -239,7 +239,7 @@ const getResetPasswordLinkCtrl = async (req, res) => {
     }
 
     // Set userId and token as cookies
-    res.cookie("resetUserId", user._id);
+    res.cookie("resetUserId", String(user._id));
     res.cookie("resetToken", req.params.token);
     console.log(req.params);
 
@@ -257,6 +257,7 @@ const getResetPasswordLinkCtrl = async (req, res) => {
 const resetPasswordCtrl = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id);
+    console.log(user);
     if (!user) {
       return res
         .status(400)
@@ -283,7 +284,7 @@ const resetPasswordCtrl = async (req, res) => {
       .status(200)
       .json({ message: "password reset successfully, please log in" });
   } catch (error) {
-    res.status(400).json({ message: message.error });
+    res.status(400).json({ message: error.message });
   }
 };
 
