@@ -56,28 +56,30 @@ app.use("/", uploadRoute);
 app.use("/", brandRoute);
 app.use("/", categoryRoute);
 
-app.get("/config/paypal", async (req, res) => {
-  try {
-    const clientId = process.env.PAYPAL_CLIENT_ID;
-    const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+// app.get("/config/paypal", async (req, res) => {
+//   try {
+//     const clientId = process.env.PAYPAL_CLIENT_ID;
+//     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-    const balance = await paypalService.getPayPalAccountBalance(
-      clientId,
-      clientSecret
-    );
-    // const transactions = await paypalService.getPayPalTransactions(
-    //   clientId,
-    //   clientSecret
-    // );
-    res.send({ clientId, balance });
-  } catch (error) {
-    console.error("Error:", error);
-    res
-      .status(500)
-      .json({ status: httpStatusText.ERROR, message: "Internal Server Error" });
-  }
+//     const balance = await paypalService.getPayPalAccountBalance(
+//       clientId,
+//       clientSecret
+//     );
+//     // const transactions = await paypalService.getPayPalTransactions(
+//     //   clientId,
+//     //   clientSecret
+//     // );
+//     res.send({ clientId, balance });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res
+//       .status(500)
+//       .json({ status: httpStatusText.ERROR, message: "Internal Server Error" });
+//   }
+// });
+app.get("/config/paypal", (req, res) => {
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
-
 app.all("*", (req, res) => {
   res
     .status(404)

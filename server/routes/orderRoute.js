@@ -10,7 +10,9 @@ router.get(
   allowdTo(userRole.ADMIN),
   orderController.getOrders
 );
+
 router.get("/orders/myorders", verifyToken, orderController.getMyOrders);
+router.get("/orders/mydata", verifyToken, orderController.getMyData);
 router.post("/orders", verifyToken, orderController.addOrderItems);
 router.get("/orders/:id", verifyToken, orderController.getOrderById);
 router.post("/orders/:id/pay", verifyToken, orderController.updateOrderToPaid);
@@ -19,6 +21,11 @@ router.put(
   verifyToken,
   allowdTo(userRole.ADMIN),
   orderController.updateOrderToDeliverd
+);
+router.get(
+  "/seller-profits/:id",
+  // verifyToken,
+  orderController.sellerProfits
 );
 
 module.exports = router;

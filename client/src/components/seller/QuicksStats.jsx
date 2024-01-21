@@ -2,31 +2,27 @@ export default function QuickStats({ data, data2, data3, data4 }) {
   console.log(data3);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 dark:text-white">
-      {data2 && (
-        <>
-          <div className="bg-slate-50 p-5 m-2 rounded-md flex justify-between items-center shadow  dark:bg-[#1C1E2D]">
-            <div>
-              <h3 className="font-bold">Total Users</h3>
-              <p className="text-gray-500">{data2?.data?.users?.length}</p>
-            </div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="currentColor"
-              className="bi bi-people-fill "
-              viewBox="0 0 16 16"
-            >
-              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
-            </svg>
-          </div>
-        </>
-      )}
-
       <div className="bg-slate-50 p-5 m-2 flex justify-between items-center shadow dark:bg-[#1C1E2D]">
         <div>
-          <h3 className="font-bold">Total Orders</h3>
-          <p className="text-gray-500">{data3?.data?.Orders.length}</p>
+          <h3 className="font-bold">Paid Orders</h3>
+          <p className="text-gray-500">{data3}</p>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          fill="currentColor"
+          className="bi bi-clipboard-minus-fill"
+          viewBox="0 0 16 16"
+        >
+          <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z" />
+          <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5zM6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1 0-1" />
+        </svg>
+      </div>
+      <div className="bg-slate-50 p-5 m-2 flex justify-between items-center shadow dark:bg-[#1C1E2D]">
+        <div>
+          <h3 className="font-bold">Unpaid Orders</h3>
+          <p className="text-gray-500">{data2}</p>
         </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"

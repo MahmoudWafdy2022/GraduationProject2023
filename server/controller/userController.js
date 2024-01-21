@@ -242,11 +242,6 @@ const getResetPasswordLinkCtrl = async (req, res) => {
     res.cookie("resetUserId", user._id);
     res.cookie("resetToken", req.params.token);
     console.log(req.params);
-    // Clear the verificationToken (optional)
-    await userModel.findOneAndUpdate(
-      { _id: user._id, token: req.params.token },
-      { token: null }
-    );
 
     // Redirect to the generic reset password route
     res.redirect("http://localhost:5173/reset-password");
