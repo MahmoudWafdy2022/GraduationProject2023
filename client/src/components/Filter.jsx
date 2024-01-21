@@ -66,7 +66,7 @@ export default function Filter({
 
     return filterValuesFromUrl;
   };
-  // {t("filter.most_popular")}
+
   const sortOptions = [
     { name: t("filter.most_popular"), value: "-createdAt" },
     { name: t("filter.best_rating"), value: "-rating" }, // Replace "rating" with your actual field
@@ -74,8 +74,7 @@ export default function Filter({
     { name: t("filter.price_low_to_high"), value: "price" }, // Replace "price" with your actual field
     { name: t("filter.price_high_to_low"), value: "-price" }, // Replace "price" with your actual field
   ];
-  // category=TV & Video
-  // {t("filter.new_arrivals")}
+
   const subCategories = [
     { name: t("categories.Laptops"), to: "Laptops" },
     { name: t("categories.TV & Video"), to: "TV & Video" },
@@ -501,10 +500,10 @@ export default function Filter({
                                 <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
                               </svg>
                               <span
-                                className="ml-3  text-gray-600 dark:text-white"
+                                className="ml-3  text-gray-600 dark:text-white mr-2"
                                 style={{ whiteSpace: "nowrap" }}
                               >
-                                Clear
+                                {t("filter.clear")}
                               </span>
                             </div>
                           </button>
