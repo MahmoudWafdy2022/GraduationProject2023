@@ -67,7 +67,7 @@
     "oops": "Oops",
     "reconnect": "Please re-connect to the internet",
     "go_home": "Go Back Home",
-    "page_not_exist": "That page not exist"
+    "page_not_exist": "Sorry, but this page doesn't exist."
   },
   "profile": {
     "first_name": "First Name",

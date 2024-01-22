@@ -66,6 +66,7 @@ module.exports = withMT({
     require("tailwind-scrollbar"),
     require("@tailwindcss/forms"),
     require("@tailwindcss/aspect-ratio"),
+    require("tailwindcss-animated"),
   ],
   variants: {
     scrollbar: ["dark"],

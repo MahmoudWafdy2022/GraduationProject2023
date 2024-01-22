@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   useGetOrderDetailsQuery,
@@ -15,20 +15,25 @@ import { toast } from "react-toastify";
 import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import Summary from "../components/orders/Summary";
 
-export default function PlaceOrder() {
+export default function Order() {
   let cart = useSelector((store) => store.cart.cardItems);
   let subs = useSelector((store) => store.cart);
   let user = useSelector((store) => store.auth.userInfo);
-
+  const userID = user.id;
+  const role = user.role;
+  console.log(role);
+  console.log(userID);
   const dispatch = useDispatch();
   const token = user.token;
 
   const { id } = useParams();
   const { data, refetch, isLoading, error } = useGetOrderDetailsQuery(
     id,
-    token
+    token,
+    encodeURIComponent(userID),
+    encodeURIComponent(role)
   );
-
+  console.log(data?.config);
   const location = useLocation();
 
   const order = data?.data?.order || location?.state?.order;
@@ -127,14 +132,14 @@ export default function PlaceOrder() {
   return isLoading ? (
     <CustomSpinner />
   ) : error ? (
-    <ErrorComponent />
+    <ErrorComponent error={error} />
   ) : (
     <>
       <div className="bg-gray-100 dark:bg-[#1C1E2D] min-w-full min-h-full">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 p-5">
           Order: {id}
         </h1>
-        <ShippingSteps />
+
         <Summary
           // onApproveTest={onApproveTest}
 
@@ -152,49 +157,5 @@ export default function PlaceOrder() {
         />
       </div>
     </>
-  );
-}
-
-function ShippingSteps() {
-  return (
-    <div className="flex items-center justify-center mb-3">
-      <Link
-        to="/cart"
-        className="flex text-sm text-blue-500 focus:outline-none"
-      >
-        <span className="flex items-center justify-center text-white bg-blue-500 rounded-full h-5 w-5 mr-2">
-          1
-        </span>{" "}
-        Cart
-      </Link>
-      <Link
-        to="/shipping"
-        className="flex text-sm text-blue-500 ml-8 focus:outline-none"
-      >
-        <span className="flex items-center justify-center text-white bg-blue-500 rounded-full h-5 w-5 mr-2">
-          2
-        </span>{" "}
-        Shipping
-      </Link>
-      <Link
-        to="/payment"
-        className="flex text-sm text-blue-500 ml-8 focus:outline-none"
-      >
-        <span className="flex items-center justify-center text-white bg-blue-500 rounded-full h-5 w-5 mr-2">
-          3
-        </span>{" "}
-        Payments
-      </Link>
-
-      <Link
-        to="/placeorder"
-        className="flex text-sm text-blue-500 ml-8 focus:outline-none"
-      >
-        <span className="flex items-center justify-center text-white bg-blue-500 rounded-full h-5 w-5 mr-2">
-          4
-        </span>{" "}
-        Place Order
-      </Link>
-    </div>
   );
 }
