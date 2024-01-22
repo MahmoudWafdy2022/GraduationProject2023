@@ -9,12 +9,15 @@ export const apiSlice = createApi({
       console.log("Preparing headers...");
       if (getState().auth.userInfo) {
         const user = getState().auth.userInfo;
-        const token = user.token;
+        const { id, token, role } = user;
         if (user.role === "ADMIN") {
           headers.set("Authorization", `Bearer ${token}`);
         } else if (user && endpoint !== "refresh") {
           headers.set("Authorization", `Bearer ${token}`);
         }
+        // Optionally, you can include additional headers
+        headers.set("User-ID", id);
+        headers.set("User-Role", role);
         return headers;
       }
     },

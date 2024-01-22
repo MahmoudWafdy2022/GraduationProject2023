@@ -69,6 +69,8 @@ export default function PlaceOrder() {
           progress: undefined,
           theme: "dark",
         });
+      } else {
+        toast.error(err?.data?.msg);
       }
     }
   };
@@ -102,7 +104,7 @@ function ShippingSteps() {
         Cart
       </Link>
       <Link
-        to="/shipping"
+        // to="/shipping"
         className="flex text-sm text-blue-500 ml-8 focus:outline-none"
       >
         <span className="flex items-center justify-center text-white bg-blue-500 rounded-full h-5 w-5 mr-2">
@@ -132,55 +134,3 @@ function ShippingSteps() {
     </div>
   );
 }
-
-// function PaymentInfo() {
-//   return (
-//     <div>
-//       <h2 className="text-xl font-semibold text-gray-700 dark:text-white mb-2">
-//         Payment Information
-//       </h2>
-//       <div className="mt-4">
-//         <label
-//           htmlFor="card_number"
-//           className="block text-gray-700 dark:text-white mb-1"
-//         >
-//           Card Number
-//         </label>
-//         <input
-//           type="text"
-//           id="card_number"
-//           className="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none"
-//         />
-//       </div>
-
-//       <div className="grid grid-cols-2 gap-4 mt-4">
-//         <div>
-//           <label
-//             htmlFor="exp_date"
-//             className="block text-gray-700 dark:text-white mb-1"
-//           >
-//             Expiration Date
-//           </label>
-//           <input
-//             type="text"
-//             id="exp_date"
-//             className="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none"
-//           />
-//         </div>
-//         <div>
-//           <label
-//             htmlFor="cvv"
-//             className="block text-gray-700 dark:text-white mb-1"
-//           >
-//             CVV
-//           </label>
-//           <input
-//             type="text"
-//             id="cvv"
-//             className="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none"
-//           />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }

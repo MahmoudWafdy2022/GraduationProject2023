@@ -8,6 +8,8 @@ import useRedirect from "../utils/useRedirect";
 import CustomSpinner from "../components/CustomSpinner";
 import { useTranslation } from "react-i18next";
 import { useGetMyDataQuery } from "../slices/orderApiSlice";
+import i18n from "../i18n";
+import { toast } from "react-toastify";
 export default function Shipping() {
   useRedirect();
   const { t } = useTranslation();
@@ -41,6 +43,8 @@ export default function Shipping() {
     shippingAddress.selectedCountry || null
   );
   const [countryError, setCountryError] = useState("");
+
+  const [isClearPressed, setIsClearPressed] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -130,8 +134,10 @@ export default function Shipping() {
 
           setAllCities(citiesData);
           setIsLoadingCity(false);
+          return true;
         } catch (error) {
           setCityError(`Error fetching cities: ${error}`);
+          return false;
         }
       }
     };
@@ -255,79 +261,30 @@ export default function Shipping() {
     }
   };
 
-  const handleCityMenuOpen = () => {
+  const handleCityMenuOpen = async () => {
+    setIsClearPressed(false);
     if (selectedCountry && allCities.length === 0) {
-      handleFetchCity();
+      const fetchCitySuccess = await handleFetchCity();
+      if (!fetchCitySuccess && !allCities.length && isClearPressed) {
+        toast.error("Please Select a Country again");
+      }
+      console.log(allCities);
     }
   };
 
   useEffect(() => {
     if (data?.data?.shippingAddress) {
-      const { address, postalCode } = data.data.shippingAddress;
+      const { address, postalCode, city, country } = data.data.shippingAddress;
 
       setAddress(address || "");
       setPostalCode(postalCode || "");
-
-      // const fetchCountry = async () => {
-      //   try {
-      //     setIsLoadingCountry(true);
-      //     const response = await fetch(
-      //       `http://api.geonames.org/searchJSON?q=${country}&username=xxxatlas69`
-      //     );
-      //     const data = await response.json();
-      //     console.log(data);
-      //     // Extract relevant information from the API response
-      //     // const countriesData = data?.geonames.map((country) => ({
-      //     //   value: country.countryCode,
-      //     //   label: country.countryName,
-      //     //   // Add the country flag URL to each option
-      //     //   // https://flagsapi.com/EG/flat/32.png
-      //     //   // ${
-
-      //     //   //     ? ""
-      //     //   //     : country.countryCode
-      //     //   // }
-      //     //   image: `${
-      //     //     [
-      //     //       "BL",
-      //     //       "BQ",
-      //     //       "BV",
-      //     //       "GF",
-      //     //       "GP",
-      //     //       "HM",
-      //     //       "IO",
-      //     //       "SX",
-      //     //       "SJ",
-      //     //       "PM",
-      //     //       "UM",
-      //     //       "XK",
-      //     //     ].includes(country.countryCode)
-      //     //       ? ""
-      //     //       : `https://flagsapi.com/${country.countryCode}/flat/24.png`
-      //     //   }`,
-      //     // }));
-
-      //     // setAllCountries(countriesData);
-      //     // setIsLoadingCountry(false);
-      //   } catch (error) {
-      //     setCountryError(`Error fetching countries: ${error}`);
-      //   }
-      // };
-
-      // fetchCountry();
-
-      // const countryOption = allCountries.find(
-      //   (option) => option.label === country
-      // );
-
-      // setSelectedCountry(countryOption || null);
-
-      // Fetch cities based on the selected country
-      // handleFetchCity();
+      setSelectedCountry(country || null);
+      setSelectedCity(city || null);
     }
-  }, [allCountries, data]);
+  }, [data]);
   console.log(selectedCity);
   console.log(selectedCountry);
+
   if (isLoading) return <CustomSpinner />;
   return (
     <div className="bg-gray-100 dark:bg-[#1C1E2D] h-screen w-full">
@@ -374,19 +331,43 @@ export default function Shipping() {
                 >
                   {t("order.country")}
                 </label>
-
-                <Select
-                  value={selectedCountry}
-                  onChange={handleCountryChange}
-                  onMenuOpen={handleCountryMenuOpen}
-                  onClick={handleFetchCountry}
-                  options={allCountries}
-                  isLoading={isLoadingCountry}
-                  id="country"
-                  styles={customStyles}
-                  components={{ Option: countryOption }}
-                  isDarkMode={JSON.parse(localStorage.getItem("darkMode"))}
-                />
+                {typeof selectedCountry === "string" &&
+                selectedCountry.length ? (
+                  <div className="flex items-center relative">
+                    <input
+                      type="text"
+                      value={selectedCountry}
+                      disabled={true}
+                      // onChange={(e) => setInputCityValue(e.target.value)}
+                      className="w-full border py-2 px-3" // Adjusted to accommodate the button
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedCountry(null);
+                        setSelectedCity(null);
+                      }}
+                      className={`absolute ${
+                        i18n.dir() === "rtl" ? "left-0" : "right-0"
+                      } px-2 py-1 font-medium text-blue-600 dark:text-blue-500 hover:underline`}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                ) : (
+                  <Select
+                    value={selectedCountry}
+                    onChange={handleCountryChange}
+                    onMenuOpen={handleCountryMenuOpen}
+                    onClick={handleFetchCountry}
+                    options={allCountries}
+                    isLoading={isLoadingCountry}
+                    id="country"
+                    styles={customStyles}
+                    components={{ Option: countryOption }}
+                    isDarkMode={JSON.parse(localStorage.getItem("darkMode"))}
+                  />
+                )}
 
                 <p className="text-red-500">{countryError}</p>
               </div>
@@ -399,20 +380,43 @@ export default function Shipping() {
                   >
                     {t("order.city")}
                   </label>
-
-                  <Select
-                    value={selectedCity}
-                    onChange={handleCityChange}
-                    onMenuOpen={handleCityMenuOpen}
-                    onClick={handleFetchCity}
-                    options={allCities}
-                    isLoading={isLoadingCity}
-                    isDisabled={!selectedCountry}
-                    id="city"
-                    styles={customStyles}
-                    components={{ Option: cityOption }}
-                    menuPortalTarget={document.body}
-                  />
+                  {typeof selectedCity === "string" && selectedCity.length ? (
+                    <div className="flex items-center relative">
+                      <input
+                        type="text"
+                        value={selectedCity}
+                        disabled={true}
+                        // onChange={(e) => setInputCityValue(e.target.value)}
+                        className="w-full border py-2 px-3"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedCity(null);
+                          setIsClearPressed(true);
+                        }}
+                        className={`absolute ${
+                          i18n.dir() === "rtl" ? "left-0" : "right-0"
+                        } px-2 py-1 font-medium text-blue-600 dark:text-blue-500 hover:underline`}
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  ) : (
+                    <Select
+                      value={selectedCity}
+                      onChange={handleCityChange}
+                      onMenuOpen={handleCityMenuOpen}
+                      onClick={() => handleFetchCity()}
+                      options={allCities}
+                      isLoading={isLoadingCity}
+                      isDisabled={!selectedCountry}
+                      id="city"
+                      styles={customStyles}
+                      components={{ Option: cityOption }}
+                      menuPortalTarget={document.body}
+                    />
+                  )}
 
                   <p className="text-red-500">{cityError}</p>
                 </div>

@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import i18n from "../../i18n";
+
 export default function StoreFront() {
   const { t } = useTranslation();
+
   return (
-    <div className="relative overflow-hidden bg-white dark:bg-[#151725] border-b dark:border-0">
+    <div className="relative overflow-hidden bg-white dark:bg-[#151725] border-b dark:border-0 animate-fade-right animate-once animate-duration-300 animate-delay-[600ms]">
       <div className="pb-80 pt-16 sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40">
         <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
           <div
@@ -37,7 +40,7 @@ export default function StoreFront() {
                       <div className="h-100 w-100 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
                         <img
                           src="/assets/header-4.png"
-                          alt=""
+                          alt="Homepage Hero"
                           className={
                             i18n.dir() === "rtl"
                               ? "h-full w-full object-cover object-center "

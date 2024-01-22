@@ -93,21 +93,41 @@ const getMyData = async (req, res) => {
 };
 
 const getOrderById = async (req, res) => {
-  console.log("test");
+  const userId = req.headers["user-id"];
+  const userRole = req.headers["user-role"];
+
   try {
     const order = await orderModel
       .findById(req.params.id)
       .populate("user.id", "name email");
-    console.log(order);
-    if (order) {
-      return res
-        .status(200)
-        .json({ status: httpStatusText.SUCCESS, data: { order } });
-    } else {
+
+    if (!order || userRole === "SELLER") {
       return res.status(404).json({
         status: httpStatusText.FAIL,
         data: null,
         msg: "Order not found",
+      });
+    }
+
+    // Check if the user is an ADMIN
+    if (userRole === "ADMIN") {
+      return res.status(200).json({
+        status: httpStatusText.SUCCESS,
+        data: { order },
+      });
+    }
+
+    // Check if the user is the one who made the order
+    if (userId === order.user.id._id.toString()) {
+      return res.status(200).json({
+        status: httpStatusText.SUCCESS,
+        data: { order },
+      });
+    } else {
+      return res.status(403).json({
+        status: httpStatusText.FAIL,
+        data: null,
+        msg: "You are not authorized to view this order",
       });
     }
   } catch (err) {

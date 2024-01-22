@@ -17,6 +17,7 @@ export default function LatestProducts() {
   const { data, isLoading, error } = useGetProductsPaginateQuery();
   const newArrival = true;
   const products = data?.data.products || [];
+
   return (
     <>
       {isLoading ? (
@@ -36,7 +37,7 @@ export default function LatestProducts() {
                 onDragStart={handleDragStart}
                 role="presentation"
                 key={product._id}
-                className="w-full min-h-full pb-5"
+                className="w-full min-h-full pb-5 animate-fade-right animate-once animate-duration-300 animate-delay-[600ms]"
                 data-value={`${i}`}
               >
                 <EcommerceCard
