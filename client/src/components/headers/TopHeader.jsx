@@ -10,6 +10,7 @@ import UserHamburger from "./UserHamburger";
 import AdminDropDown from "../admin/AdminDropDown";
 import SellerDropDown from "../seller/SellerDropDown";
 import FavoritesButton from "./FavoritesButton";
+import { useScreenWidth } from "../../utils/useScreenWidth";
 export default function TopHeader({
   user,
   cart,
@@ -21,7 +22,8 @@ export default function TopHeader({
   logoutApiCall,
 }) {
   const navigate = useNavigate();
-
+  const isMobile = useScreenWidth();
+  console.log(isMobile);
   useEffect(() => {
     // Apply or remove 'dark' class to #root based on darkMode state
     document.body.classList.toggle("dark", isDarkMode);
@@ -41,6 +43,43 @@ export default function TopHeader({
       console.error(err);
     }
   };
+  if (isMobile) {
+    return (
+      <header className="bg-white dark:bg-[#242635]">
+        <div className="border py-3 px-6 dark:border-none">
+          <div className="flex justify-between">
+            <div className="flex items-center justify-center ">
+              <Logo />
+            </div>
+
+            <div className="ml-2 flex items-center justify-center">
+              {(user?.role === "USER" || !user?.token) && (
+                <>
+                  {/* <CartButton cart={cart} /> */}
+                  {/* <FavoritesButton /> */}
+                </>
+              )}
+              {(!user?.token || user?.role === "USER") && (
+                <UserHamburger
+                  user={user}
+                  showProfile={showProfile}
+                  setShowProfile={setShowProfile}
+                  handleLogout={handleLogout}
+                />
+              )}
+              {user?.role === "ADMIN" && (
+                <AdminDropDown user={user} handleLogout={handleLogout} />
+              )}
+              {user?.role === "SELLER" && (
+                <SellerDropDown user={user} handleLogout={handleLogout} />
+              )}
+            </div>
+          </div>
+          <BottomHeader setIsDarkMode={setIsDarkMode} />
+        </div>
+      </header>
+    );
+  }
   return (
     <header className="bg-white dark:bg-[#242635]">
       <div className="border py-3 px-6 dark:border-none">
@@ -90,17 +129,4 @@ export default function TopHeader({
                 <span className="text-sm font-medium">Orders</span>
               </div>
    */
-}
-{
-  /* <div className="flex cursor-pointer items-center gap-x-1 rounded-md py-2 px-4 hover:bg-gray-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-500"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-                </svg>
-                <span className="text-sm font-medium">Favorites</span>
-              </div> */
 }

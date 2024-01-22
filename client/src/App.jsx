@@ -12,6 +12,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // Layouts
 import Layout from "./components/Layout";
+import RedirectComponent from "./components/RedirectComponent";
 // Pages
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
@@ -83,7 +84,31 @@ const router = createBrowserRouter(
         element={<ResetPassword />}
         loader={async () => null}
       />
-
+      {/* Redirect to /product/page/:pageNumber */}
+      <Route
+        path="/product"
+        element={<RedirectComponent to={`/products/page/`} />}
+      />
+      <Route
+        path="/product/page"
+        element={<RedirectComponent to={`/products/page/`} />}
+      />
+      <Route
+        path="/product/:pageNumber"
+        element={<RedirectComponent to={`/products/page/`} />}
+      />
+      <Route
+        path="/products"
+        element={<RedirectComponent to={`/products/page/`} />}
+      />
+      <Route
+        path="/products/page"
+        element={<RedirectComponent to={`/products/page/`} />}
+      />
+      <Route
+        path="/products/:pageNumber"
+        element={<RedirectComponent to={`/products/page/`} />}
+      />
       <Route
         path="products/page/:pageNumber"
         element={<Products />}

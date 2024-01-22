@@ -7,13 +7,14 @@ import { clearCartItems } from "../slices/cartSlice";
 import useRedirect from "../utils/useRedirect";
 import { toast } from "react-toastify";
 import Summary from "../components/placeorder/Summary";
+import { useScreenWidth } from "../utils/useScreenWidth";
 
 export default function PlaceOrder() {
   useRedirect();
   const cart = useSelector((store) => store.cart.cardItems);
   const subs = useSelector((store) => store.cart);
   const user = useSelector((store) => store.auth.userInfo);
-
+  const isMobile = useScreenWidth();
   let token = user.token;
   // { isLoading, error }
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
@@ -27,15 +28,15 @@ export default function PlaceOrder() {
       navigate("/payment");
     }
   }, [subs.paymentMethod, subs.shippingAddress.address, navigate]);
-
+  console.log(subs);
   const placeOrderHandler = async () => {
     const { address, postalCode, selectedCity, selectedCountry } =
       subs.shippingAddress;
     const shipAdd = {
       address,
       postalCode,
-      city: selectedCity.label,
-      country: selectedCountry.label,
+      city: selectedCity || selectedCity?.label,
+      country: selectedCountry || selectedCountry?.label,
     };
 
     try {
@@ -80,7 +81,8 @@ export default function PlaceOrder() {
       <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 p-5">
         Place Order
       </h1>
-      <ShippingSteps />
+
+      {!isMobile && <ShippingSteps />}
       <Summary
         cart={cart}
         subs={subs}

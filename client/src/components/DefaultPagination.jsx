@@ -54,7 +54,7 @@ export default function DefaultPagination({
 
         {t("filter.previous")}
       </Button>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 xs:hidden">
         {[...Array(totalPages).keys()].map((index) => (
           <IconButton
             className="dark:text-white"

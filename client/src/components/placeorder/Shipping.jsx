@@ -1,9 +1,16 @@
+import { useScreenWidth } from "../../utils/useScreenWidth";
+
 export default function Shipping({ subs }) {
+  const isMobile = useScreenWidth();
   return (
     <>
-      <div className="flex justify-center flex-col md:flex-row flex-col items-stretch h-full  space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
+      <div className="flex justify-center flex-col md:flex-row flex-col items-stretch h-full  space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8 xs:space-y-0">
         {/*  */}
-        <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-[#151725] space-y-6">
+        <div
+          className={`flex flex-col px-4 ${
+            isMobile ? "" : "py-6"
+          } md:p-6 xl:p-8 w-full xs:p-0 bg-gray-50 dark:bg-[#151725] space-y-6`}
+        >
           <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
             Summary
           </h3>

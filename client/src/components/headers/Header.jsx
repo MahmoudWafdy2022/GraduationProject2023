@@ -21,7 +21,7 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
   const cart = useSelector((store) => store.cart.cardItems);
   const user = useSelector((store) => store.auth.userInfo);
 
-  const [showProfile, setShowProfile] = useState(false);
+  const [showProfile, setShowProfile] = useState(true);
 
   const dispatch = useDispatch();
   const [logoutApiCall] = useLogoutMutation();
