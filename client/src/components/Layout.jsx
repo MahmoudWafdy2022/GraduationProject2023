@@ -10,6 +10,7 @@ import { logout } from "../slices/authSlice";
 import { resetCart } from "../slices/cartSlice";
 import axios from "axios";
 import SellerSidebar from "./seller/SellerSidebar";
+import { useScreenWidth } from "../utils/useScreenWidth";
 export default function Layout() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Check if there's a saved dark mode preference in localStorage
@@ -19,7 +20,7 @@ export default function Layout() {
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const isMobile = useScreenWidth();
   useEffect(() => {
     function forceLogout() {
       toast.error("This user doesn't exist anymore");
@@ -80,9 +81,13 @@ export default function Layout() {
       <>
         <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
         <ToastContainer />
-        <div className="bg-primary w-full grid grid-cols-[15rem,1fr] dark:bg-[#1C1E2D] overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700">
-          <SellerSidebar />
-          <main className="min-h-screen content-start">
+        <div className="bg-primary w-full grid grid-cols-[15rem,1fr] dark:bg-[#151725] overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:scrollbar-thumb-blue-500 dark:scrollbar-track-gray-700">
+          {!isMobile && <SellerSidebar />}
+          <main
+            className={`min-h-screen content-start z-0 ${
+              isMobile ? "w-screen" : ""
+            }`}
+          >
             <Outlet />
           </main>
         </div>

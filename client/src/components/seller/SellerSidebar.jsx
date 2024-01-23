@@ -23,7 +23,7 @@ export default function SellerSidebar() {
   };
   return (
     <>
-      <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 max-h-min w-64 p-4 shadow-xl shadow-blue-gray-900/5 dark:bg-[#151725] dark:text-white">
+      <div className="lg:col-span-1 relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 max-h-min w-64 p-4 shadow-xl shadow-blue-gray-900/5 dark:bg-[#151725] dark:text-white z-100">
         <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-normal text-gray-700 dark:text-white">
           <Link
             to="/seller"

@@ -34,11 +34,11 @@ export default function SellerProductsGallery() {
   console.log(product);
 
   return (
-    <div className="xs:min-w-max bg-gray-100 min-w-max h-screen	dark:bg-[#151725]">
-      <div className="min-w-fit container mx-auto  px-5 ">
-        <div className="md:flex no-wrap md:-mx-2 ">
+    <div className="xs:min-w-max bg-gray-100 min-w-max h-screen	dark:bg-[#151725] ">
+      <div className="min-w-fit container mx-auto  px-5 h-screen dark:bg-[#151725]">
+        <div className="md:flex no-wrap md:-mx-2 dark:bg-[#151725]">
           {/* <!-- Right Side --> */}
-          <div className="px-3 mx-2 h-64">
+          <div className="px-3 mx-2 h-screen dark:bg-[#151725]">
             <SellerProducts product={product} />
           </div>
         </div>
@@ -51,7 +51,7 @@ function SellerProducts({ product }) {
   const disableCart = false;
   return (
     <>
-      <div className="w-fit mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-4 mt-10 mb-5">
+      <div className="w-fit mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-4 mt-10 mb-5 dark:bg-[#151725]">
         {product?.map((p) => {
           return (
             <EcommerceCard

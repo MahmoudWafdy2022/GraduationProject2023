@@ -105,10 +105,10 @@ const router = createBrowserRouter(
         path="/products/page"
         element={<RedirectComponent to={`/products/page/`} />}
       />
-      <Route
+      {/* <Route
         path="/products/:pageNumber"
         element={<RedirectComponent to={`/products/page/`} />}
-      />
+      /> */}
       <Route
         path="products/page/:pageNumber"
         element={<Products />}

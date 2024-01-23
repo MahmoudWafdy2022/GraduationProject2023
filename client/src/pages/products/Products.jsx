@@ -62,7 +62,7 @@ export default function Products() {
     throw new Error("Please re-connect to the internet.");
   }
   return (
-    <section className="dark:bg-[#1C1E2D]">
+    <section className="dark:bg-[#1C1E2D] w-full">
       <div className="pt-6">
         <ProductsNavbar />
       </div>
@@ -76,7 +76,7 @@ export default function Products() {
             createQueryString={createQueryString}
           />
         </div>
-        <div className=" grid grid-cols-3 xs:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 w-screen">
+        <div className="md:col-span-3 lg:col-span-3 grid grid-cols-3 xs:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-6 gap-6 max-w-full">
           <React.Suspense fallback={<CustomSpinner />}>
             <Await resolve={dataPromise.products}>
               {(products) => {

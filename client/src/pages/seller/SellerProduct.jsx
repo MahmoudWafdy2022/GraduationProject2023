@@ -46,7 +46,7 @@ export default function SellerProduct() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto min-w-fit min-h-screen my-3">
+    <div className="w-[100wh-60px] lg:w-[100wh-250px]  py-5 pl-5 pr-0 mr-0 right-0 transition-all duration-500 ease-in-out">
       {isLoading || isLoading2 ? (
         <CustomSpinner />
       ) : error || error2 ? (
@@ -70,8 +70,8 @@ export default function SellerProduct() {
                 <path stroke="currentColor" d="M1 5h12m0 0L9 1m4 4L9 9" />
               </svg>
             </button>
-            <Card className="h-full w-full xs:overflow-scroll sm:overflow-scroll md:overflow-auto">
-              <table className="w-full min-w-max table-auto text-sm text-left text-gray-500 dark:text-gray-400">
+            <Card className="h-full w-full  xs:overflow-scroll sm:overflow-scroll md:overflow-auto z-0">
+              <table className="w-full min-w-max table-auto text-sm text-left text-gray-500 dark:text-gray-400 z-0">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
